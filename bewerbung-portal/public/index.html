@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bewerbung - Remind Server</title>
+    <link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="container">
+            <h1>Remind Server</h1>
+            <p class="subtitle">Bewerbungsportal</p>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <h2 class="page-title">Bewerbung einreichen</h2>
+            <p class="page-subtitle">
+                Du interessierst dich für einen Platz auf unserem Server? 
+                Dann fülle einfach das Formular aus und unser Team wird sich deine Bewerbung ansehen.
+            </p>
+
+            <div class="form-wrapper">
+                <div id="formFeedback"></div>
+
+                <form id="applicationForm">
+                    <!-- Name -->
+                    <div class="form-group">
+                        <label for="name">
+                            Dein Name <span class="required">*</span>
+                        </label>
+                        <input 
+                            type="text" 
+                            id="name" 
+                            name="name" 
+                            placeholder="z.B. Max Mustermann"
+                            required
+                        >
+                        <div class="form-error" id="nameError"></div>
+                    </div>
+
+                    <!-- Discord -->
+                    <div class="form-group">
+                        <label for="discord">
+                            Discord Tag <span class="required">*</span>
+                        </label>
+                        <input 
+                            type="text" 
+                            id="discord" 
+                            name="discord" 
+                            placeholder="z.B. MaxMustermann#1234 oder Nutzername"
+                            required
+                        >
+                        <p class="form-hint">
+                            Dein Discord Name mit Tag oder dein Nutzername
+                        </p>
+                        <div class="form-error" id="discordError"></div>
+                    </div>
+
+                    <!-- Alter -->
+                    <div class="form-group">
+                        <label for="age">
+                            Alter <span class="required">*</span>
+                        </label>
+                        <input 
+                            type="number" 
+                            id="age" 
+                            name="age" 
+                            placeholder="z.B. 18"
+                            min="13"
+                            max="120"
+                            required
+                        >
+                        <p class="form-hint">
+                            Du musst mindestens 13 Jahre alt sein
+                        </p>
+                        <div class="form-error" id="ageError"></div>
+                    </div>
+
+                    <!-- Erfahrung -->
+                    <div class="form-group">
+                        <label for="experience">
+                            Deine Erfahrung mit RP <span class="required">*</span>
+                        </label>
+                        <textarea 
+                            id="experience" 
+                            name="experience" 
+                            placeholder="Erzähle uns kurz von deiner Erfahrung mit Roleplay..."
+                            required
+                        ></textarea>
+                        <p class="form-hint">
+                            Mindestens 10 Zeichen | Maximal 500 Zeichen
+                        </p>
+                        <div class="form-error" id="experienceError"></div>
+                    </div>
+
+                    <!-- Motivation -->
+                    <div class="form-group">
+                        <label for="motivation">
+                            Warum möchtest du auf Remind spielen? <span class="required">*</span>
+                        </label>
+                        <textarea 
+                            id="motivation" 
+                            name="motivation" 
+                            placeholder="Erzähle uns, warum du gerade Remind Server interessant findest..."
+                            required
+                        ></textarea>
+                        <p class="form-hint">
+                            Mindestens 20 Zeichen | Maximal 2000 Zeichen
+                        </p>
+                        <div class="form-error" id="motivationError"></div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="btn btn-primary" id="submitBtn">
+                        <span id="submitBtnText">Bewerbung einreichen</span>
+                        <span class="loading" id="submitBtnLoader" style="display: none;"></span>
+                    </button>
+                </form>
+
+                <div id="successMessage" style="display: none; margin-top: 24px;">
+                    <div class="alert alert-success">
+                        ✅ Deine Bewerbung wurde erfolgreich eingereicht!<br>
+                        Das Admin-Team wird sich deine Bewerbung ansehen und sich bei dir melden.
+                    </div>
+                    <button onclick="location.reload()" class="btn btn-secondary">
+                        Weitere Bewerbung einreichen
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <p>&copy; 2026 Remind Server Bewerbungsportal. Alle Rechte vorbehalten.</p>
+                <a href="admin/login.html" class="btn btn-secondary" style="font-size: 0.85rem; padding: 8px 16px;">
+                    🔐 Admin Login
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="assets/js/api.js"></script>
+    <script src="assets/js/form.js"></script>
+</body>
+</html>

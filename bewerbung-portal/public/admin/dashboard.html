@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Bewerbungsportal</title>
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <style>
+        /* Dashboard Specific Styles */
+        .dashboard-container {
+            display: grid;
+            grid-template-columns: 260px 1fr;
+            gap: 32px;
+            margin-bottom: 40px;
+        }
+
+        .sidebar {
+            position: sticky;
+            top: 80px;
+            height: fit-content;
+        }
+
+        .nav-item {
+            padding: 14px 16px;
+            border-radius: 8px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            display: block;
+            margin-bottom: 8px;
+            transition: all var(--motion);
+            cursor: pointer;
+            border: 1px solid transparent;
+        }
+
+        .nav-item:hover {
+            background: rgba(161, 143, 255, 0.08);
+            color: var(--primary-color);
+        }
+
+        .nav-item.active {
+            background: linear-gradient(135deg, rgba(161, 143, 255, 0.2), rgba(161, 143, 255, 0.08));
+            color: var(--primary-color);
+            border-color: var(--border-color);
+            font-weight: 600;
+        }
+
+        .sidebar-section {
+            margin-bottom: 24px;
+        }
+
+        .sidebar-title {
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+            letter-spacing: 0.1em;
+        }
+
+        /* Main Content */
+        .dashboard-main {
+            min-height: 600px;
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(161, 143, 255, 0.3), transparent);
+        }
+
+        .stat-value {
+            font-size: 2.8rem;
+            font-weight: 900;
+            color: var(--primary-color);
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        /* Applications Table */
+        .applications-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .applications-table thead {
+            background: rgba(161, 143, 255, 0.08);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .applications-table th {
+            padding: 16px;
+            text-align: left;
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--primary-color);
+        }
+
+        .applications-table td {
+            padding: 16px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-secondary);
+        }
+
+        .applications-table tbody tr:hover {
+            background: rgba(161, 143, 255, 0.04);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .status-badge.pending {
+            background: rgba(249, 171, 0, 0.15);
+            color: #f9ab00;
+        }
+
+        .status-badge.accepted {
+            background: rgba(52, 168, 83, 0.15);
+            color: #a5d34f;
+        }
+
+        .status-badge.rejected {
+            background: rgba(211, 47, 47, 0.15);
+            color: #ff7f7f;
+        }
+
+        /* Modals */
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 40px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: slideUp 400ms var(--motion) both;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 32px;
+            height: 32px;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color var(--motion);
+        }
+
+        .modal-close:hover {
+            color: var(--text-primary);
+        }
+
+        .modal h3 {
+            margin-top: 0;
+            font-size: 1.5rem;
+            margin-bottom: 24px;
+        }
+
+        .modal-info {
+            margin-bottom: 24px;
+            padding: 16px;
+            background: rgba(161, 143, 255, 0.06);
+            border-left: 3px solid var(--primary-color);
+            border-radius: 4px;
+        }
+
+        .modal-info-row {
+            display: grid;
+            grid-template-columns: 120px 1fr;
+            gap: 16px;
+            margin-bottom: 12px;
+            font-size: 0.9rem;
+        }
+
+        .modal-info-label {
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 32px;
+            flex-wrap: wrap;
+        }
+
+        /* Filter */
+        .filter-bar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 32px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 10px 16px;
+            border: 1px solid var(--border-color);
+            background: transparent;
+            border-radius: 8px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all var(--motion);
+            font-size: 0.9rem;
+        }
+
+        .filter-btn:hover {
+            background: rgba(161, 143, 255, 0.08);
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .filter-btn.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard-container {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                position: static;
+            }
+
+            .stat-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .stat-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-content {
+                padding: 24px;
+            }
+
+            .applications-table {
+                font-size: 0.85rem;
+            }
+
+            .applications-table th,
+            .applications-table td {
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="site-header">
+        <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <h1>Remind Server</h1>
+                <p class="subtitle">Admin Dashboard</p>
+                <p id="adminBadge" style="font-size: 0.82rem; color: var(--text-muted); margin: 4px 0 0;">Wird geladen...</p>
+            </div>
+            <button id="logoutBtn" class="btn btn-secondary btn-sm">
+                Abmelden
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <div class="dashboard-container">
+                <!-- Sidebar Navigation -->
+                <aside class="sidebar">
+                    <div class="sidebar-section">
+                        <h3 class="sidebar-title">Übersicht</h3>
+                        <a class="nav-item active" data-section="overview" onclick="showSection('overview', event)">
+                            📊 Übersicht
+                        </a>
+                        <a class="nav-item" data-section="applications" onclick="showSection('applications', event)">
+                            📋 Bewerbungen
+                        </a>
+                        <a class="nav-item" id="adminManagementNav" data-section="admins" onclick="showSection('admins', event)" style="display: none;">
+                            🛡️ Admin Verwaltung
+                        </a>
+                    </div>
+
+                    <div class="sidebar-section">
+                        <h3 class="sidebar-title">Filter</h3>
+                        <a class="nav-item" data-filter="all" onclick="filterByStatus('all', event)">
+                            Alle
+                        </a>
+                        <a class="nav-item" data-filter="pending" onclick="filterByStatus('pending', event)">
+                            ⏳ Ausstehend
+                        </a>
+                        <a class="nav-item" data-filter="accepted" onclick="filterByStatus('accepted', event)">
+                            ✅ Akzeptiert
+                        </a>
+                        <a class="nav-item" data-filter="rejected" onclick="filterByStatus('rejected', event)">
+                            ❌ Abgelehnt
+                        </a>
+                    </div>
+                </aside>
+
+                <!-- Main Content -->
+                <div class="dashboard-main">
+                    <!-- Overview Section -->
+                    <div id="overview" class="section">
+                        <h2 class="page-title">Übersicht</h2>
+
+                        <div class="stat-grid" id="statsContainer">
+                            <div class="stat-card">
+                                <div class="stat-value">-</div>
+                                <div class="stat-label">Gesamt Bewerbungen</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value">-</div>
+                                <div class="stat-label">Ausstehend</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value">-</div>
+                                <div class="stat-label">Akzeptiert</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value">-</div>
+                                <div class="stat-label">Abgelehnt</div>
+                            </div>
+                        </div>
+
+                        <h3 style="margin-top: 40px; margin-bottom: 20px;">Letzte Bewerbungen</h3>
+                        <div id="recentApplicationsContainer">
+                            <p style="text-align: center; color: var(--text-muted);">Wird geladen...</p>
+                        </div>
+                    </div>
+
+                    <!-- Applications Section -->
+                    <div id="applications" class="section" style="display: none;">
+                        <h2 class="page-title">Bewerbungen verwalten</h2>
+
+                        <div class="filter-bar">
+                            <button class="filter-btn active" onclick="filterByStatus('all', event)">Alle</button>
+                            <button class="filter-btn" onclick="filterByStatus('pending', event)">Ausstehend</button>
+                            <button class="filter-btn" onclick="filterByStatus('accepted', event)">Akzeptiert</button>
+                            <button class="filter-btn" onclick="filterByStatus('rejected', event)">Abgelehnt</button>
+                        </div>
+
+                        <div id="applicationsContainer" style="overflow-x: auto;">
+                            <table class="applications-table">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Discord</th>
+                                        <th>Alter</th>
+                                        <th>Status</th>
+                                        <th>Datum</th>
+                                        <th>Aktion</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="applicationsTableBody">
+                                    <tr>
+                                        <td colspan="6" style="text-align: center; color: var(--text-muted);">
+                                            Wird geladen...
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Admin Management Section -->
+                    <div id="admins" class="section" style="display: none;">
+                        <h2 class="page-title">Admin Verwaltung</h2>
+                        <p class="page-subtitle" style="margin-bottom: 24px;">
+                            Erstelle neue Admin Accounts und verwalte Rollen/Berechtigungen.
+                        </p>
+
+                        <div class="card" style="margin-bottom: 24px;">
+                            <h3 style="margin-top: 0; margin-bottom: 16px;">Neuen Admin erstellen</h3>
+                            <div id="adminFormFeedback"></div>
+                            <form id="createAdminForm" style="display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));">
+                                <input id="newAdminUsername" type="text" placeholder="Username" minlength="3" required>
+                                <input id="newAdminPassword" type="password" placeholder="Passwort (min. 8 Zeichen)" minlength="8" required>
+                                <input id="newAdminEmail" type="email" placeholder="E-Mail (optional)">
+                                <select id="newAdminRole" required></select>
+                                <button type="submit" class="btn btn-primary">Admin erstellen</button>
+                            </form>
+                        </div>
+
+                        <div class="card" style="overflow-x: auto;">
+                            <h3 style="margin-top: 0; margin-bottom: 16px;">Bestehende Admins</h3>
+                            <table class="applications-table">
+                                <thead>
+                                    <tr>
+                                        <th>Username</th>
+                                        <th>Rolle</th>
+                                        <th>Rechte</th>
+                                        <th>Erstellt</th>
+                                        <th>Aktion</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="adminsTableBody">
+                                    <tr>
+                                        <td colspan="5" style="text-align: center; color: var(--text-muted);">
+                                            Wird geladen...
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="card" style="overflow-x: auto; margin-top: 24px;">
+                            <h3 style="margin-top: 0; margin-bottom: 16px;">Rollenmatrix</h3>
+                            <p style="margin-top: 0; color: var(--text-muted); font-size: 0.9rem;">
+                                Zeigt pro Rolle exakt, welche Rechte vergeben sind.
+                            </p>
+                            <table class="applications-table" id="rolesMatrixTable">
+                                <thead>
+                                    <tr id="rolesMatrixHeadRow"></tr>
+                                </thead>
+                                <tbody id="rolesMatrixBody">
+                                    <tr>
+                                        <td style="text-align: center; color: var(--text-muted);">Wird geladen...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Detail Modal -->
+    <div id="detailModal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+            <h3 id="modalTitle">Bewerbungsdetails</h3>
+
+            <div id="modalInfo"></div>
+
+            <div id="modalActions" class="modal-actions">
+                <button class="btn btn-success btn-sm" onclick="reviewApplication('accepted')">
+                    ✅ Akzeptieren
+                </button>
+                <button class="btn btn-danger btn-sm" onclick="reviewApplication('rejected')">
+                    ❌ Ablehnen
+                </button>
+                <button class="btn btn-secondary btn-sm" onclick="closeModal()">
+                    Schließen
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="site-footer">
+        <div class="container">
+            <p>&copy; 2026 Remind Server Bewerbungsportal. Alle Rechte vorbehalten.</p>
+        </div>
+    </footer>
+
+    <script src="../assets/js/api.js"></script>
+    <script src="../assets/js/dashboard.js"></script>
+</body>
+</html>

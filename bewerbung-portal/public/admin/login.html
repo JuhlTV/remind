@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - Bewerbungsportal</title>
+    <link rel="stylesheet" href="../assets/css/main.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="container">
+            <h1>Remind Server</h1>
+            <p class="subtitle">Admin Panel</p>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <h2 class="page-title">Admin Login</h2>
+            <p class="page-subtitle">
+                Melde dich mit deinen Zugangsdaten an, um Bewerbungen zu verwalten.
+            </p>
+
+            <div class="form-wrapper" style="max-width: 450px;">
+                <div id="loginFeedback"></div>
+
+                <form id="loginForm">
+                    <!-- Username -->
+                    <div class="form-group">
+                        <label for="username">
+                            Username <span class="required">*</span>
+                        </label>
+                        <input 
+                            type="text" 
+                            id="username" 
+                            name="username" 
+                            placeholder="Admin Username"
+                            required
+                            autocomplete="username"
+                        >
+                        <div class="form-error" id="usernameError"></div>
+                    </div>
+
+                    <!-- Passwort -->
+                    <div class="form-group">
+                        <label for="password">
+                            Passwort <span class="required">*</span>
+                        </label>
+                        <input 
+                            type="password" 
+                            id="password" 
+                            name="password" 
+                            placeholder="Dein Passwort"
+                            required
+                            autocomplete="current-password"
+                        >
+                        <div class="form-error" id="passwordError"></div>
+                    </div>
+
+                    <!-- Login Button -->
+                    <button type="submit" class="btn btn-primary" id="loginBtn">
+                        <span id="loginBtnText">Anmelden</span>
+                        <span class="loading" id="loginBtnLoader" style="display: none;"></span>
+                    </button>
+                </form>
+
+                <div style="margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--border-color);">
+                    <p style="font-size: 0.85rem; color: var(--text-muted);">
+                        🔐 Nur für autorisierte Administratoren
+                    </p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <p>&copy; 2026 Remind Server Bewerbungsportal. Alle Rechte vorbehalten.</p>
+        </div>
+    </footer>
+
+    <script src="../assets/js/api.js"></script>
+    <script src="../assets/js/login.js"></script>
+</body>
+</html>

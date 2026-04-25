@@ -24,6 +24,11 @@ BACKEND_SUBDIR="${BACKEND_SUBDIR:-bewerbung-portal/backend}"
 RUN_DB_SETUP="${RUN_DB_SETUP:-1}"
 CREATE_OWNER="${CREATE_OWNER:-0}"
 RESTART_CMD="${RESTART_CMD:-}"
+PRESERVE_PATHS="${PRESERVE_PATHS:-${BACKEND_SUBDIR}/.env .env}"
+
+command_exists() {
+  command -v "$1" >/dev/null 2>&1
+}
 
 log() {
   printf '\n[%s] %s\n' "$(date '+%Y-%m-%d %H:%M:%S')" "$*"
@@ -43,11 +48,59 @@ build_repo_url() {
 
 REPO_AUTH_URL="$(build_repo_url "$REPO_URL")"
 
+for cmd in git npm; do
+  if ! command_exists "$cmd"; then
+    log "ERROR: Required command not found: $cmd"
+    exit 1
+  fi
+done
+
 log "Deploy start"
 log "APP_DIR: $APP_DIR"
 log "BRANCH: $BRANCH"
 
 mkdir -p "$APP_DIR"
+
+LOCK_DIR="/tmp/remind-deploy-$(printf '%s' "$APP_DIR" | tr '/ ' '__').lock"
+if ! mkdir "$LOCK_DIR" 2>/dev/null; then
+  log "ERROR: Another deployment appears to be running for APP_DIR=$APP_DIR"
+  exit 1
+fi
+
+PRESERVE_TMP_DIR="$(mktemp -d /tmp/remind-preserve.XXXXXX)"
+cleanup() {
+  rm -rf "$PRESERVE_TMP_DIR" >/dev/null 2>&1 || true
+  rmdir "$LOCK_DIR" >/dev/null 2>&1 || true
+}
+trap cleanup EXIT
+
+save_preserved_files() {
+  local rel src dst
+  for rel in $PRESERVE_PATHS; do
+    src="$APP_DIR/$rel"
+    if [[ -f "$src" ]]; then
+      dst="$PRESERVE_TMP_DIR/$rel"
+      mkdir -p "$(dirname "$dst")"
+      cp -p "$src" "$dst"
+      log "Preserved: $rel"
+    fi
+  done
+}
+
+restore_preserved_files() {
+  local rel src dst
+  for rel in $PRESERVE_PATHS; do
+    src="$PRESERVE_TMP_DIR/$rel"
+    if [[ -f "$src" ]]; then
+      dst="$APP_DIR/$rel"
+      mkdir -p "$(dirname "$dst")"
+      cp -p "$src" "$dst"
+      log "Restored: $rel"
+    fi
+  done
+}
+
+save_preserved_files
 
 if [[ -d "$APP_DIR/.git" ]]; then
   log "Existing git repo found, updating..."
@@ -77,6 +130,8 @@ else
   fi
 fi
 
+restore_preserved_files
+
 required_files=(
   "index.html"
   "site-theme.css"
@@ -93,6 +148,7 @@ for rel in "${required_files[@]}"; do
 done
 
 log "Frontend deploy verification passed (HTML/CSS/JS present)."
+log "Deployed commit: $(git -C "$APP_DIR" rev-parse --short HEAD)"
 
 BACKEND_DIR="$APP_DIR/$BACKEND_SUBDIR"
 if [[ ! -d "$BACKEND_DIR" ]]; then

@@ -51,9 +51,15 @@ mkdir -p "$APP_DIR"
 
 if [[ -d "$APP_DIR/.git" ]]; then
   log "Existing git repo found, updating..."
+  git -C "$APP_DIR" remote remove origin >/dev/null 2>&1 || true
+  git -C "$APP_DIR" remote add origin "$REPO_AUTH_URL"
+  # Ensure a previous sparse/partial checkout does not hide files like CSS/assets.
+  git -C "$APP_DIR" sparse-checkout disable >/dev/null 2>&1 || true
+  git -C "$APP_DIR" config core.sparseCheckout false >/dev/null 2>&1 || true
   git -C "$APP_DIR" fetch --all --prune
-  git -C "$APP_DIR" checkout "$BRANCH"
+  git -C "$APP_DIR" checkout "$BRANCH" 2>/dev/null || git -C "$APP_DIR" checkout -B "$BRANCH" "origin/$BRANCH"
   git -C "$APP_DIR" reset --hard "origin/$BRANCH"
+  git -C "$APP_DIR" clean -fdx
 else
   if [[ -n "$(ls -A "$APP_DIR" 2>/dev/null)" ]]; then
     log "Existing non-empty directory found. Converting to git working tree..."
@@ -70,6 +76,23 @@ else
     git clone --branch "$BRANCH" --single-branch "$REPO_AUTH_URL" "$APP_DIR"
   fi
 fi
+
+required_files=(
+  "index.html"
+  "site-theme.css"
+  "utils.js"
+  "bewerbung-portal/public/index.html"
+  "bewerbung-portal/public/assets/css/main.css"
+)
+
+for rel in "${required_files[@]}"; do
+  if [[ ! -f "$APP_DIR/$rel" ]]; then
+    log "ERROR: Required file missing after deploy: $rel"
+    exit 1
+  fi
+done
+
+log "Frontend deploy verification passed (HTML/CSS/JS present)."
 
 BACKEND_DIR="$APP_DIR/$BACKEND_SUBDIR"
 if [[ ! -d "$BACKEND_DIR" ]]; then

@@ -25,6 +25,7 @@ RUN_DB_SETUP="${RUN_DB_SETUP:-1}"
 CREATE_OWNER="${CREATE_OWNER:-0}"
 RESTART_CMD="${RESTART_CMD:-}"
 PRESERVE_PATHS="${PRESERVE_PATHS:-${BACKEND_SUBDIR}/.env .env}"
+STRICT_BACKEND_TOOLS="${STRICT_BACKEND_TOOLS:-0}"
 
 command_exists() {
   command -v "$1" >/dev/null 2>&1
@@ -48,12 +49,18 @@ build_repo_url() {
 
 REPO_AUTH_URL="$(build_repo_url "$REPO_URL")"
 
-for cmd in git npm; do
+for cmd in git; do
   if ! command_exists "$cmd"; then
     log "ERROR: Required command not found: $cmd"
     exit 1
   fi
 done
+
+if command_exists npm; then
+  NPM_BIN="npm"
+else
+  NPM_BIN=""
+fi
 
 log "Deploy start"
 log "APP_DIR: $APP_DIR"
@@ -158,19 +165,30 @@ fi
 
 cd "$BACKEND_DIR"
 
-log "Installing backend dependencies..."
-if [[ -f package-lock.json ]]; then
-  npm ci --omit=dev
+if [[ -z "$NPM_BIN" ]]; then
+  if [[ "$STRICT_BACKEND_TOOLS" == "1" ]]; then
+    log "ERROR: npm is not installed, but STRICT_BACKEND_TOOLS=1 is set."
+    exit 1
+  fi
+
+  log "WARNING: npm not found on server."
+  log "WARNING: Frontend files are deployed, backend install/setup steps are skipped."
+  log "WARNING: Install Node.js/npm on host and rerun for full backend deployment."
 else
-  npm install --omit=dev
+  log "Installing backend dependencies..."
+  if [[ -f package-lock.json ]]; then
+    "$NPM_BIN" ci --omit=dev
+  else
+    "$NPM_BIN" install --omit=dev
+  fi
 fi
 
-if [[ "$RUN_DB_SETUP" == "1" ]]; then
+if [[ "$RUN_DB_SETUP" == "1" && -n "$NPM_BIN" ]]; then
   log "Running database setup/migration..."
-  npm run setup-db
+  "$NPM_BIN" run setup-db
 fi
 
-if [[ "$CREATE_OWNER" == "1" ]]; then
+if [[ "$CREATE_OWNER" == "1" && -n "$NPM_BIN" ]]; then
   : "${OWNER_USER:?OWNER_USER is required when CREATE_OWNER=1}"
   : "${OWNER_PASS:?OWNER_PASS is required when CREATE_OWNER=1}"
   OWNER_ROLE="${OWNER_ROLE:-website_owner}"
@@ -178,7 +196,7 @@ if [[ "$CREATE_OWNER" == "1" ]]; then
 
   log "Creating first owner admin (if username does not already exist)..."
   set +e
-  npm run create-admin -- "$OWNER_USER" "$OWNER_PASS" "$OWNER_ROLE" "$OWNER_EMAIL"
+  "$NPM_BIN" run create-admin -- "$OWNER_USER" "$OWNER_PASS" "$OWNER_ROLE" "$OWNER_EMAIL"
   status=$?
   set -e
 

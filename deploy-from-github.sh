@@ -1,32 +1,27 @@
-#!/usr/bin/env bash
+#!/bin/bash
 set -euo pipefail
 
-# Deploy script for a server that should pull code from GitHub.
-# Usage (example):
-#   REPO_URL="https://github.com/OWNER/REPO.git" \
-#   BRANCH="main" \
-#   APP_DIR="/var/www/irgendwas" \
-#   BACKEND_SUBDIR="bewerbung-portal/backend" \
-#   RUN_DB_SETUP="1" \
-#   RESTART_CMD="pm2 restart bewerbung-portal" \
-#   bash deploy-from-github.sh
+# Deploy script: Pull entire remind.git project from GitHub to server
+# Deploys bewerbung-portal backend to APP_DIR
 #
-# Optional for private repos:
-#   GITHUB_TOKEN="ghp_xxx"   (must have repo read permissions)
+# Usage:
+#   ./deploy-from-github.sh
 #
-# Optional first-owner creation (one-time):
-#   CREATE_OWNER="1"
-#   OWNER_USER="owner"
-#   OWNER_PASS="YourSecurePassword123!"
-#   OWNER_ROLE="website_owner"
-#   OWNER_EMAIL="owner@example.com"
+# Environment variables (all optional with defaults):
+#   REPO_URL="https://github.com/JuhlTV/remind.git" (default)
+#   BRANCH="main" (default)
+#   APP_DIR="/home/remindro/public_html" (default, will be auto-detected by deploy-physgun.sh)
+#   RUN_DB_SETUP="1" (default: yes)
+#   CREATE_OWNER="1" (optional: create first admin account)
+#   OWNER_USER="admin"
+#   OWNER_PASS="SecurePassword123!"
+#   OWNER_EMAIL="admin@example.com"
 
-: "${REPO_URL:?REPO_URL is required, e.g. https://github.com/OWNER/REPO.git}"
-
+REPO_URL="${REPO_URL:-https://github.com/JuhlTV/remind.git}"
 BRANCH="${BRANCH:-main}"
-APP_DIR="${APP_DIR:-/var/www/irgendwas}"
-BACKEND_SUBDIR="${BACKEND_SUBDIR:-bewerbung-portal/backend}"
-RUN_DB_SETUP="${RUN_DB_SETUP:-0}"
+APP_DIR="${APP_DIR:-/home/remindro/public_html}"
+BACKEND_SUBDIR="bewerbung-portal/backend"
+RUN_DB_SETUP="${RUN_DB_SETUP:-1}"
 CREATE_OWNER="${CREATE_OWNER:-0}"
 RESTART_CMD="${RESTART_CMD:-}"
 

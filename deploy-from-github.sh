@@ -20,7 +20,7 @@ set -euo pipefail
 REPO_URL="${REPO_URL:-https://github.com/JuhlTV/remind.git}"
 BRANCH="${BRANCH:-main}"
 APP_DIR="${APP_DIR:-/home/remindro/public_html}"
-BACKEND_SUBDIR="bewerbung-portal/backend"
+BACKEND_SUBDIR="${BACKEND_SUBDIR:-bewerbung-portal/backend}"
 RUN_DB_SETUP="${RUN_DB_SETUP:-1}"
 CREATE_OWNER="${CREATE_OWNER:-0}"
 RESTART_CMD="${RESTART_CMD:-}"
@@ -47,15 +47,28 @@ log "Deploy start"
 log "APP_DIR: $APP_DIR"
 log "BRANCH: $BRANCH"
 
+mkdir -p "$APP_DIR"
+
 if [[ -d "$APP_DIR/.git" ]]; then
-  log "Existing repo found, updating..."
+  log "Existing git repo found, updating..."
   git -C "$APP_DIR" fetch --all --prune
   git -C "$APP_DIR" checkout "$BRANCH"
   git -C "$APP_DIR" reset --hard "origin/$BRANCH"
 else
-  log "Cloning repository..."
-  mkdir -p "$(dirname "$APP_DIR")"
-  git clone --branch "$BRANCH" --single-branch "$REPO_AUTH_URL" "$APP_DIR"
+  if [[ -n "$(ls -A "$APP_DIR" 2>/dev/null)" ]]; then
+    log "Existing non-empty directory found. Converting to git working tree..."
+    git -C "$APP_DIR" init
+    git -C "$APP_DIR" remote remove origin >/dev/null 2>&1 || true
+    git -C "$APP_DIR" remote add origin "$REPO_AUTH_URL"
+    git -C "$APP_DIR" fetch --depth 1 origin "$BRANCH"
+    git -C "$APP_DIR" checkout -B "$BRANCH"
+    git -C "$APP_DIR" reset --hard FETCH_HEAD
+    # Remove stale untracked files so deployed content matches repository state.
+    git -C "$APP_DIR" clean -fd
+  else
+    log "Empty target directory found, cloning repository..."
+    git clone --branch "$BRANCH" --single-branch "$REPO_AUTH_URL" "$APP_DIR"
+  fi
 fi
 
 BACKEND_DIR="$APP_DIR/$BACKEND_SUBDIR"

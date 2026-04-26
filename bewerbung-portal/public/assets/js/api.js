@@ -19,6 +19,49 @@ class APIClient {
         this.token = localStorage.getItem('token');
         this.baseUrl = API_BASE_URL;
         this.baseUrlChecked = false;
+        this.requestTimeoutMs = 15000;
+        this.maxRetries = 1;
+    }
+
+    sleep(ms) {
+        return new Promise((resolve) => setTimeout(resolve, ms));
+    }
+
+    shouldRetry(method, status, error) {
+        const normalizedMethod = String(method || 'GET').toUpperCase();
+        const idempotentMethods = ['GET', 'HEAD', 'OPTIONS'];
+
+        if (!idempotentMethods.includes(normalizedMethod)) {
+            return false;
+        }
+
+        if (error?.name === 'TypeError' || error?.name === 'AbortError') {
+            return true;
+        }
+
+        return [502, 503, 504].includes(Number(status));
+    }
+
+    parseResponseBody(raw, contentType) {
+        const text = raw?.trim() || '';
+        const isJson = contentType.includes('application/json');
+
+        if (!text) {
+            return {};
+        }
+
+        if (isJson) {
+            try {
+                return JSON.parse(text);
+            } catch {
+                return {
+                    message: 'Ungültige JSON-Antwort vom Server erhalten',
+                    raw: text.slice(0, 500)
+                };
+            }
+        }
+
+        return { message: text };
     }
 
     getBaseUrlCandidates() {
@@ -79,7 +122,7 @@ class APIClient {
         await this.ensureBaseUrl();
 
         const url = `${this.baseUrl}${endpoint}`;
-        const config = {
+        const requestOptions = {
             headers: {
                 'Content-Type': 'application/json',
                 ...options.headers
@@ -87,27 +130,74 @@ class APIClient {
             ...options
         };
 
+        const method = String(requestOptions.method || 'GET').toUpperCase();
+
         // Füge Token zu Authorization Header ein, wenn vorhanden
         if (this.token) {
-            config.headers.Authorization = `Bearer ${this.token}`;
+            requestOptions.headers.Authorization = `Bearer ${this.token}`;
         }
 
-        try {
-            const response = await fetch(url, config);
-            const data = await response.json();
+        for (let attempt = 0; attempt <= this.maxRetries; attempt += 1) {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), this.requestTimeoutMs);
 
-            if (!response.ok) {
-                throw {
-                    status: response.status,
-                    ...data
-                };
+            try {
+                const response = await fetch(url, {
+                    ...requestOptions,
+                    signal: controller.signal
+                });
+                const contentType = response.headers.get('content-type') || '';
+                const raw = await response.text();
+                const data = this.parseResponseBody(raw, contentType);
+
+                if (!response.ok) {
+                    if (this.shouldRetry(method, response.status) && attempt < this.maxRetries) {
+                        await this.sleep(300 * (attempt + 1));
+                        continue;
+                    }
+
+                    if (response.status === 401) {
+                        this.logout();
+                    }
+
+                    throw {
+                        status: response.status,
+                        ...data
+                    };
+                }
+
+                return data;
+            } catch (error) {
+                if (this.shouldRetry(method, undefined, error) && attempt < this.maxRetries) {
+                    await this.sleep(300 * (attempt + 1));
+                    continue;
+                }
+
+                if (error?.name === 'AbortError') {
+                    throw {
+                        status: 408,
+                        message: 'Die Anfrage hat zu lange gedauert. Bitte versuche es erneut.'
+                    };
+                }
+
+                if (error?.name === 'TypeError') {
+                    throw {
+                        status: 0,
+                        message: 'Netzwerkfehler: Server nicht erreichbar oder CORS blockiert'
+                    };
+                }
+
+                console.error(`API Fehler [${endpoint}]:`, error);
+                throw error;
+            } finally {
+                clearTimeout(timeoutId);
             }
-
-            return data;
-        } catch (error) {
-            console.error(`API Fehler [${endpoint}]:`, error);
-            throw error;
         }
+
+        throw {
+            status: 500,
+            message: 'Unbekannter API-Fehler'
+        };
     }
 
     /**
@@ -197,7 +287,10 @@ class APIClient {
      * Bewerbungen abrufen (nur Admin)
      */
     async getApplications(filters = {}) {
-        const params = new URLSearchParams(filters);
+        const cleanFilters = Object.fromEntries(
+            Object.entries(filters).filter(([, value]) => value !== undefined && value !== null && value !== '')
+        );
+        const params = new URLSearchParams(cleanFilters);
         return this.request(`/applications?${params.toString()}`, {
             method: 'GET'
         });

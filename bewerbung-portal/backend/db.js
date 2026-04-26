@@ -13,9 +13,15 @@ export async function initializePool() {
             password: process.env.DB_PASSWORD,
             database: process.env.DB_NAME,
             port: process.env.DB_PORT || 3306,
+            charset: 'utf8mb4',
             waitForConnections: true,
             connectionLimit: 10,
-            queueLimit: 0
+            queueLimit: 0,
+            connectTimeout: 10000,
+            enableKeepAlive: true,
+            keepAliveInitialDelay: 0,
+            supportBigNumbers: true,
+            bigNumberStrings: true
         });
 
         console.log('✅ MySQL Connection Pool erstellt');

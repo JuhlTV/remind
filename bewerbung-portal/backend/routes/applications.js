@@ -45,6 +45,13 @@ router.post('/', validateApplication, async (req, res) => {
             }
         });
     } catch (error) {
+        if (error?.code === 'ER_DUP_ENTRY') {
+            return res.status(409).json({
+                success: false,
+                message: 'Für diesen Discord-Account existiert bereits eine Bewerbung.'
+            });
+        }
+
         console.error('Application Submit Fehler:', error);
         res.status(500).json({
             success: false,
@@ -61,6 +68,14 @@ router.get('/', authMiddleware, requirePermission('applications.read'), async (r
     try {
         const pool = getPool();
         const { status, sortBy = 'created_at', order = 'DESC' } = req.query;
+        const allowedStatus = ['pending', 'accepted', 'rejected'];
+
+        if (status && !allowedStatus.includes(String(status))) {
+            return res.status(400).json({
+                success: false,
+                message: 'Ungültiger Status-Filter'
+            });
+        }
 
         let query = `
             SELECT 
@@ -119,7 +134,14 @@ router.get('/', authMiddleware, requirePermission('applications.read'), async (r
 router.get('/:id', authMiddleware, requirePermission('applications.read'), async (req, res) => {
     try {
         const pool = getPool();
-        const { id } = req.params;
+        const id = Number(req.params.id);
+
+        if (!Number.isInteger(id) || id <= 0) {
+            return res.status(400).json({
+                success: false,
+                message: 'Ungültige Bewerbungs-ID'
+            });
+        }
 
         const [applications] = await pool.execute(
             `SELECT 
@@ -158,8 +180,15 @@ router.get('/:id', authMiddleware, requirePermission('applications.read'), async
 router.patch('/:id', authMiddleware, requirePermission('applications.review'), async (req, res) => {
     try {
         const pool = getPool();
-        const { id } = req.params;
+        const id = Number(req.params.id);
         const { status, notes } = req.body;
+
+        if (!Number.isInteger(id) || id <= 0) {
+            return res.status(400).json({
+                success: false,
+                message: 'Ungültige Bewerbungs-ID'
+            });
+        }
 
         // Validiere Status
         if (!['accepted', 'rejected'].includes(status)) {
@@ -169,12 +198,20 @@ router.patch('/:id', authMiddleware, requirePermission('applications.review'), a
             });
         }
 
+        const sanitizedNotes = typeof notes === 'string' ? notes.trim() : '';
+        if (sanitizedNotes.length > 2000) {
+            return res.status(400).json({
+                success: false,
+                message: 'Notizen dürfen maximal 2000 Zeichen lang sein'
+            });
+        }
+
         // Update Bewerbung
         const [result] = await pool.execute(
             `UPDATE applications 
             SET status = ?, admin_notes = ?, reviewed_at = NOW(), reviewed_by = ?
             WHERE id = ?`,
-            [status, notes || null, req.admin.id, id]
+            [status, sanitizedNotes || null, req.admin.id, id]
         );
 
         if (result.affectedRows === 0) {
@@ -205,7 +242,14 @@ router.patch('/:id', authMiddleware, requirePermission('applications.review'), a
 router.delete('/:id', authMiddleware, requirePermission('applications.delete'), async (req, res) => {
     try {
         const pool = getPool();
-        const { id } = req.params;
+        const id = Number(req.params.id);
+
+        if (!Number.isInteger(id) || id <= 0) {
+            return res.status(400).json({
+                success: false,
+                message: 'Ungültige Bewerbungs-ID'
+            });
+        }
 
         const [result] = await pool.execute(
             'DELETE FROM applications WHERE id = ?',

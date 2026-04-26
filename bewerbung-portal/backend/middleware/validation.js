@@ -2,11 +2,15 @@
  * Validiert Bewerbungsformular
  */
 export function validateApplication(req, res, next) {
-    const { name, discord, age, experience, motivation } = req.body;
+    const name = typeof req.body.name === 'string' ? req.body.name.trim() : '';
+    const discord = typeof req.body.discord === 'string' ? req.body.discord.trim() : '';
+    const experience = typeof req.body.experience === 'string' ? req.body.experience.trim() : '';
+    const motivation = typeof req.body.motivation === 'string' ? req.body.motivation.trim() : '';
+    const ageRaw = req.body.age;
     const errors = [];
 
     // Name validieren
-    if (!name || name.trim().length < 2) {
+    if (!name || name.length < 2) {
         errors.push('Name muss mindestens 2 Zeichen lang sein');
     }
     if (name && name.length > 100) {
@@ -14,7 +18,7 @@ export function validateApplication(req, res, next) {
     }
 
     // Discord validieren
-    if (!discord || discord.trim().length < 3) {
+    if (!discord || discord.length < 3) {
         errors.push('Discord Tag muss mindestens 3 Zeichen lang sein');
     }
     if (discord && !/^.+#\d{4}$/.test(discord) && !/^[a-zA-Z0-9_]{3,32}$/.test(discord)) {
@@ -23,8 +27,8 @@ export function validateApplication(req, res, next) {
     }
 
     // Alter validieren
-    const ageNum = parseInt(age);
-    if (!age || isNaN(ageNum) || ageNum < 13) {
+    const ageNum = parseInt(ageRaw, 10);
+    if (!ageRaw || Number.isNaN(ageNum) || ageNum < 13) {
         errors.push('Du musst mindestens 13 Jahre alt sein');
     }
     if (ageNum > 120) {
@@ -32,7 +36,7 @@ export function validateApplication(req, res, next) {
     }
 
     // Erfahrung validieren
-    if (!experience || experience.trim().length < 10) {
+    if (!experience || experience.length < 10) {
         errors.push('Erfahrung muss mindestens 10 Zeichen lang sein');
     }
     if (experience && experience.length > 500) {
@@ -40,7 +44,7 @@ export function validateApplication(req, res, next) {
     }
 
     // Motivation validieren
-    if (!motivation || motivation.trim().length < 20) {
+    if (!motivation || motivation.length < 20) {
         errors.push('Motivation muss mindestens 20 Zeichen lang sein');
     }
     if (motivation && motivation.length > 2000) {
@@ -55,6 +59,13 @@ export function validateApplication(req, res, next) {
         });
     }
 
+    // Use normalized values downstream to avoid duplicate checks with different casing/whitespace.
+    req.body.name = name;
+    req.body.discord = discord.toLowerCase();
+    req.body.age = ageNum;
+    req.body.experience = experience;
+    req.body.motivation = motivation;
+
     next();
 }
 
@@ -62,7 +73,8 @@ export function validateApplication(req, res, next) {
  * Validiert Admin Login
  */
 export function validateLogin(req, res, next) {
-    const { username, password } = req.body;
+    const username = typeof req.body.username === 'string' ? req.body.username.trim() : '';
+    const password = typeof req.body.password === 'string' ? req.body.password : '';
     const errors = [];
 
     if (!username || username.trim().length < 3) {
@@ -80,6 +92,9 @@ export function validateLogin(req, res, next) {
             errors
         });
     }
+
+    req.body.username = username;
+    req.body.password = password;
 
     next();
 }

@@ -41,9 +41,17 @@ export async function authMiddleware(req, res, next) {
         };
         next();
     } catch (error) {
-        return res.status(403).json({
+        if (error?.name === 'JsonWebTokenError' || error?.name === 'TokenExpiredError') {
+            return res.status(403).json({
+                success: false,
+                message: 'Token ungültig oder abgelaufen. Bitte melde dich neu an.'
+            });
+        }
+
+        console.error('Auth Middleware Fehler:', error);
+        return res.status(500).json({
             success: false,
-            message: 'Token ungültig oder abgelaufen. Bitte melde dich neu an.'
+            message: 'Authentifizierung derzeit nicht verfügbar. Bitte erneut versuchen.'
         });
     }
 }

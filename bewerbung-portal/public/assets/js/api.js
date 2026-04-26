@@ -18,12 +18,66 @@ class APIClient {
     constructor() {
         this.token = localStorage.getItem('token');
         this.baseUrl = API_BASE_URL;
+        this.baseUrlChecked = false;
+    }
+
+    getBaseUrlCandidates() {
+        const origin = window.location.origin;
+        const candidates = [
+            this.baseUrl,
+            `${origin}/api`,
+            `${origin}/bewerbung-portal/backend/api`
+        ];
+
+        return [...new Set(candidates.map((url) => url.replace(/\/+$/, '')))];
+    }
+
+    async probeHealth(baseUrl) {
+        try {
+            const response = await fetch(`${baseUrl}/health`, {
+                method: 'GET',
+                headers: {
+                    Accept: 'application/json'
+                }
+            });
+
+            return response.ok;
+        } catch {
+            return false;
+        }
+    }
+
+    async ensureBaseUrl() {
+        if (this.baseUrlChecked) {
+            return this.baseUrl;
+        }
+
+        const candidates = this.getBaseUrlCandidates();
+
+        for (const candidate of candidates) {
+            const healthy = await this.probeHealth(candidate);
+            if (healthy) {
+                this.baseUrl = candidate;
+                this.baseUrlChecked = true;
+                return this.baseUrl;
+            }
+        }
+
+        this.baseUrlChecked = true;
+        return this.baseUrl;
+    }
+
+    async checkHealth() {
+        await this.ensureBaseUrl();
+        return this.probeHealth(this.baseUrl);
     }
 
     /**
      * Generische Fetch Funktion
      */
     async request(endpoint, options = {}) {
+        await this.ensureBaseUrl();
+
         const url = `${this.baseUrl}${endpoint}`;
         const config = {
             headers: {

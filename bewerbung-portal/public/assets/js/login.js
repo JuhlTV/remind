@@ -134,8 +134,8 @@ loginForm.addEventListener('submit', async (e) => {
  */
 window.addEventListener('load', async () => {
     try {
-        const response = await fetch(`${api.baseUrl}/health`);
-        if (!response.ok) {
+        const isHealthy = await api.checkHealth();
+        if (!isHealthy) {
             showFeedback(
                 '⚠️ Der Server antwortet nicht. Stelle sicher, dass der Backend Server läuft.',
                 'danger'

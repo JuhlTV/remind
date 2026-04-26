@@ -101,6 +101,8 @@ BACKEND_SUBDIR="${BACKEND_SUBDIR:-bewerbung-portal/backend}"
 RUN_DB_SETUP="${RUN_DB_SETUP:-1}"
 OVERWRITE_MODE="${OVERWRITE_MODE:-hard}"
 BACKUP_BEFORE_DEPLOY="${BACKUP_BEFORE_DEPLOY:-1}"
+AUTO_START_BACKEND="${AUTO_START_BACKEND:-1}"
+START_CMD="${START_CMD:-npm run start}"
 
 # On most game-hosting panels, restart is done via panel button/startup command.
 # Keep this empty by default to avoid killing unrelated processes.
@@ -113,6 +115,8 @@ export BACKEND_SUBDIR
 export RUN_DB_SETUP
 export OVERWRITE_MODE
 export BACKUP_BEFORE_DEPLOY
+export AUTO_START_BACKEND
+export START_CMD
 export RESTART_CMD
 
 # Optional pass-throughs
@@ -126,6 +130,7 @@ export OWNER_EMAIL="${OWNER_EMAIL:-}"
 echo "Selected APP_DIR: $APP_DIR"
 echo "Overwrite mode: $OVERWRITE_MODE"
 echo "Backup before deploy: $BACKUP_BEFORE_DEPLOY"
+echo "Auto start backend: $AUTO_START_BACKEND"
 
 bash "$BASE_SCRIPT"
 

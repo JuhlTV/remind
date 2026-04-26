@@ -29,6 +29,10 @@ STRICT_BACKEND_TOOLS="${STRICT_BACKEND_TOOLS:-0}"
 BACKUP_BEFORE_DEPLOY="${BACKUP_BEFORE_DEPLOY:-1}"
 BACKUP_DIR="${BACKUP_DIR:-/tmp/remind-backups}"
 OVERWRITE_MODE="${OVERWRITE_MODE:-hard}"
+AUTO_START_BACKEND="${AUTO_START_BACKEND:-1}"
+START_CMD="${START_CMD:-npm run start}"
+PID_FILE_NAME="${PID_FILE_NAME:-.backend.pid}"
+LOG_FILE_NAME="${LOG_FILE_NAME:-backend.log}"
 
 command_exists() {
   command -v "$1" >/dev/null 2>&1
@@ -69,6 +73,7 @@ log "Deploy start"
 log "APP_DIR: $APP_DIR"
 log "BRANCH: $BRANCH"
 log "OVERWRITE_MODE: $OVERWRITE_MODE"
+log "AUTO_START_BACKEND: $AUTO_START_BACKEND"
 
 mkdir -p "$APP_DIR"
 
@@ -240,6 +245,30 @@ fi
 if [[ -n "$RESTART_CMD" ]]; then
   log "Restarting service..."
   bash -lc "$RESTART_CMD"
+elif [[ "$AUTO_START_BACKEND" == "1" && -n "$NPM_BIN" ]]; then
+  PID_FILE="$BACKEND_DIR/$PID_FILE_NAME"
+  LOG_FILE="$BACKEND_DIR/$LOG_FILE_NAME"
+
+  if [[ -f "$PID_FILE" ]]; then
+    old_pid="$(cat "$PID_FILE" 2>/dev/null || true)"
+    if [[ -n "$old_pid" ]] && kill -0 "$old_pid" >/dev/null 2>&1; then
+      log "Stopping previous backend process (PID $old_pid)..."
+      kill "$old_pid" >/dev/null 2>&1 || true
+      sleep 1
+    fi
+    rm -f "$PID_FILE"
+  fi
+
+  if command_exists nohup; then
+    log "Starting backend in background..."
+    nohup bash -lc "cd '$BACKEND_DIR' && $START_CMD" >> "$LOG_FILE" 2>&1 &
+    new_pid=$!
+    echo "$new_pid" > "$PID_FILE"
+    log "Backend started. PID: $new_pid"
+    log "Backend log: $LOG_FILE"
+  else
+    log "WARNING: nohup not available, cannot auto-start background process."
+  fi
 fi
 
 log "Deploy finished successfully"

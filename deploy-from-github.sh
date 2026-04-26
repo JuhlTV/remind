@@ -26,6 +26,9 @@ CREATE_OWNER="${CREATE_OWNER:-0}"
 RESTART_CMD="${RESTART_CMD:-}"
 PRESERVE_PATHS="${PRESERVE_PATHS:-${BACKEND_SUBDIR}/.env .env}"
 STRICT_BACKEND_TOOLS="${STRICT_BACKEND_TOOLS:-0}"
+BACKUP_BEFORE_DEPLOY="${BACKUP_BEFORE_DEPLOY:-1}"
+BACKUP_DIR="${BACKUP_DIR:-/tmp/remind-backups}"
+OVERWRITE_MODE="${OVERWRITE_MODE:-hard}"
 
 command_exists() {
   command -v "$1" >/dev/null 2>&1
@@ -65,6 +68,7 @@ fi
 log "Deploy start"
 log "APP_DIR: $APP_DIR"
 log "BRANCH: $BRANCH"
+log "OVERWRITE_MODE: $OVERWRITE_MODE"
 
 mkdir -p "$APP_DIR"
 
@@ -109,6 +113,26 @@ restore_preserved_files() {
 
 save_preserved_files
 
+create_backup_if_requested() {
+  if [[ "$BACKUP_BEFORE_DEPLOY" != "1" ]]; then
+    return
+  fi
+
+  if [[ -z "$(ls -A "$APP_DIR" 2>/dev/null)" ]]; then
+    return
+  fi
+
+  mkdir -p "$BACKUP_DIR"
+  local backup_name="remind-backup-$(date '+%Y%m%d-%H%M%S').tar.gz"
+  local backup_path="$BACKUP_DIR/$backup_name"
+
+  log "Creating backup: $backup_path"
+  tar -czf "$backup_path" -C "$APP_DIR" .
+  log "Backup created successfully"
+}
+
+create_backup_if_requested
+
 if [[ -d "$APP_DIR/.git" ]]; then
   log "Existing git repo found, updating..."
   git -C "$APP_DIR" remote remove origin >/dev/null 2>&1 || true
@@ -119,7 +143,11 @@ if [[ -d "$APP_DIR/.git" ]]; then
   git -C "$APP_DIR" fetch --all --prune
   git -C "$APP_DIR" checkout "$BRANCH" 2>/dev/null || git -C "$APP_DIR" checkout -B "$BRANCH" "origin/$BRANCH"
   git -C "$APP_DIR" reset --hard "origin/$BRANCH"
-  git -C "$APP_DIR" clean -fdx
+  if [[ "$OVERWRITE_MODE" == "hard" ]]; then
+    git -C "$APP_DIR" clean -fdx
+  else
+    log "OVERWRITE_MODE=soft -> skipping git clean -fdx"
+  fi
 else
   if [[ -n "$(ls -A "$APP_DIR" 2>/dev/null)" ]]; then
     log "Existing non-empty directory found. Converting to git working tree..."
@@ -129,8 +157,12 @@ else
     git -C "$APP_DIR" fetch --depth 1 origin "$BRANCH"
     git -C "$APP_DIR" checkout -B "$BRANCH"
     git -C "$APP_DIR" reset --hard FETCH_HEAD
-    # Remove stale untracked files so deployed content matches repository state.
-    git -C "$APP_DIR" clean -fd
+    if [[ "$OVERWRITE_MODE" == "hard" ]]; then
+      # Remove stale untracked files so deployed content matches repository state.
+      git -C "$APP_DIR" clean -fd
+    else
+      log "OVERWRITE_MODE=soft -> skipping git clean -fd"
+    fi
   else
     log "Empty target directory found, cloning repository..."
     git clone --branch "$BRANCH" --single-branch "$REPO_AUTH_URL" "$APP_DIR"

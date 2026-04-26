@@ -44,7 +44,21 @@ passwordInput.addEventListener('input', () => showFieldError('password', ''));
  * Zeige Feedback Nachricht
  */
 function showFeedback(message, type = 'info') {
-    loginFeedback.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+    loginFeedback.innerHTML = `<div class="alert alert-${type}">${escapeHtml(message)}</div>`;
+}
+
+function escapeHtml(text) {
+    if (text === null || text === undefined) return '';
+    return String(text).replace(/[&<>"']/g, (char) => {
+        const map = {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#039;'
+        };
+        return map[char] || char;
+    });
 }
 
 /**

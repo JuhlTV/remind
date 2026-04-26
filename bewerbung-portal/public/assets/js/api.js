@@ -19,6 +19,7 @@ class APIClient {
         this.token = localStorage.getItem('token');
         this.baseUrl = API_BASE_URL;
         this.baseUrlChecked = false;
+        this.baseUrlResolvePromise = null;
         this.requestTimeoutMs = 15000;
         this.maxRetries = 1;
     }
@@ -76,17 +77,23 @@ class APIClient {
     }
 
     async probeHealth(baseUrl) {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 5000);
+
         try {
             const response = await fetch(`${baseUrl}/health`, {
                 method: 'GET',
                 headers: {
                     Accept: 'application/json'
-                }
+                },
+                signal: controller.signal
             });
 
             return response.ok;
         } catch {
             return false;
+        } finally {
+            clearTimeout(timeoutId);
         }
     }
 
@@ -95,19 +102,31 @@ class APIClient {
             return this.baseUrl;
         }
 
-        const candidates = this.getBaseUrlCandidates();
-
-        for (const candidate of candidates) {
-            const healthy = await this.probeHealth(candidate);
-            if (healthy) {
-                this.baseUrl = candidate;
-                this.baseUrlChecked = true;
-                return this.baseUrl;
-            }
+        if (this.baseUrlResolvePromise) {
+            return this.baseUrlResolvePromise;
         }
 
-        this.baseUrlChecked = true;
-        return this.baseUrl;
+        this.baseUrlResolvePromise = (async () => {
+            const candidates = this.getBaseUrlCandidates();
+
+            for (const candidate of candidates) {
+                const healthy = await this.probeHealth(candidate);
+                if (healthy) {
+                    this.baseUrl = candidate;
+                    this.baseUrlChecked = true;
+                    return this.baseUrl;
+                }
+            }
+
+            this.baseUrlChecked = true;
+            return this.baseUrl;
+        })();
+
+        try {
+            return await this.baseUrlResolvePromise;
+        } finally {
+            this.baseUrlResolvePromise = null;
+        }
     }
 
     async checkHealth() {
@@ -124,11 +143,16 @@ class APIClient {
         const url = `${this.baseUrl}${endpoint}`;
         const requestOptions = {
             headers: {
-                'Content-Type': 'application/json',
                 ...options.headers
             },
             ...options
         };
+
+        const hasBody = Object.prototype.hasOwnProperty.call(requestOptions, 'body');
+        const isFormData = typeof FormData !== 'undefined' && requestOptions.body instanceof FormData;
+        if (hasBody && !isFormData && !requestOptions.headers['Content-Type']) {
+            requestOptions.headers['Content-Type'] = 'application/json';
+        }
 
         const method = String(requestOptions.method || 'GET').toUpperCase();
 

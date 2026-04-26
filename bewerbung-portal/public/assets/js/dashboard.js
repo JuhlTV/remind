@@ -7,6 +7,7 @@ let currentApplication = null;
 let currentAdmin = null;
 let availableRoles = [];
 let roleMatrix = null;
+let applicationsLoadSeq = 0;
 
 // Check if authenticated
 window.addEventListener('load', async () => {
@@ -27,14 +28,25 @@ window.addEventListener('load', async () => {
 
         setupRoleBasedUI();
 
-        await loadStats();
-        await loadApplications();
+        const startupTasks = [];
 
-        await loadRoles();
-
-        if (hasPermission('admins.read')) {
-            await loadAdmins();
+        if (hasPermission('stats.read')) {
+            startupTasks.push(loadStats());
         }
+
+        if (hasPermission('applications.read')) {
+            startupTasks.push(loadApplications());
+        }
+
+        startupTasks.push(
+            loadRoles().then(async () => {
+                if (hasPermission('admins.read')) {
+                    await loadAdmins();
+                }
+            })
+        );
+
+        await Promise.all(startupTasks);
     } catch (error) {
         console.error('Initialisierungsfehler:', error);
         api.logout();
@@ -279,6 +291,8 @@ async function loadStats() {
  * Lade Bewerbungen
  */
 async function loadApplications() {
+    const loadSeq = ++applicationsLoadSeq;
+
     if (!hasPermission('applications.read')) {
         const tbody = document.getElementById('applicationsTableBody');
         const recent = document.getElementById('recentApplicationsContainer');
@@ -300,6 +314,10 @@ async function loadApplications() {
     try {
         const filters = currentFilter !== 'all' ? { status: currentFilter } : {};
         const response = await api.getApplications(filters);
+
+        if (loadSeq !== applicationsLoadSeq) {
+            return;
+        }
 
         if (!response.success) {
             console.error('Fehler beim Laden der Bewerbungen:', response);

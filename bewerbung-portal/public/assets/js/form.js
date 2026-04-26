@@ -50,7 +50,7 @@ function validateField(fieldName, value) {
             break;
 
         case 'age':
-            const ageNum = parseInt(value);
+            const ageNum = parseInt(value, 10);
             if (!value || isNaN(ageNum)) {
                 errors.push('Bitte gib dein Alter ein');
             }
@@ -123,8 +123,22 @@ Object.entries(formInputs).forEach(([fieldName, inputElement]) => {
  * Zeige Feedback Nachricht
  */
 function showFeedback(message, type = 'info') {
-    formFeedback.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+    formFeedback.innerHTML = `<div class="alert alert-${type}">${escapeHtml(message)}</div>`;
     formFeedback.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function escapeHtml(text) {
+    if (text === null || text === undefined) return '';
+    return String(text).replace(/[&<>"']/g, (char) => {
+        const map = {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#039;'
+        };
+        return map[char] || char;
+    });
 }
 
 /**
@@ -159,7 +173,7 @@ form.addEventListener('submit', async (e) => {
     const formData = {
         name: formInputs.name.value.trim(),
         discord: formInputs.discord.value.trim(),
-        age: parseInt(formInputs.age.value),
+        age: parseInt(formInputs.age.value, 10),
         experience: formInputs.experience.value.trim(),
         motivation: formInputs.motivation.value.trim()
     };

@@ -67,13 +67,28 @@ class APIClient {
 
     getBaseUrlCandidates() {
         const origin = window.location.origin;
-        const candidates = [
-            this.baseUrl,
-            `${origin}/api`,
-            `${origin}/bewerbung-portal/backend/api`
-        ];
+        const persistedBaseUrl = localStorage.getItem('apiBaseUrl') || '';
+        const configuredBaseUrl =
+            window.__API_BASE_URL__ ||
+            document.querySelector('meta[name="api-base-url"]')?.content ||
+            '';
 
-        return [...new Set(candidates.map((url) => url.replace(/\/+$/, '')))];
+        const baseRoots = [
+            configuredBaseUrl,
+            persistedBaseUrl,
+            this.baseUrl,
+            origin,
+            `${origin}/bewerbung-portal`,
+            `${origin}/backend`,
+            `${origin}/bewerbung-portal/backend`
+        ].filter(Boolean);
+
+        const toApiBase = (url) => {
+            const normalized = String(url).replace(/\/+$/, '');
+            return normalized.endsWith('/api') ? normalized : `${normalized}/api`;
+        };
+
+        return [...new Set(baseRoots.map(toApiBase))];
     }
 
     async probeHealth(baseUrl) {
@@ -113,6 +128,7 @@ class APIClient {
                 const healthy = await this.probeHealth(candidate);
                 if (healthy) {
                     this.baseUrl = candidate;
+                    localStorage.setItem('apiBaseUrl', candidate);
                     this.baseUrlChecked = true;
                     return this.baseUrl;
                 }

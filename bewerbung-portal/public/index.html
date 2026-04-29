@@ -17,23 +17,60 @@
 
     <main>
         <div class="container">
-            <div class="application-hero-grid">
-                <section>
+            <section class="portal-hero-shell">
+                <div class="portal-hero-copy">
+                    <span class="section-kicker">Whitelist Einstieg</span>
                     <h2 class="page-title">Bewerbung einreichen</h2>
                     <p class="page-subtitle">
-                        Du interessierst dich für einen Platz auf unserem Server? Dann fülle das Formular strukturiert aus. Unser Team prüft jede Bewerbung individuell und meldet sich nach Sichtung bei dir.
+                        Dein Einstieg in Remind beginnt hier. Das Formular ist klar aufgebaut, das Team prüft nachvollziehbar und du siehst sofort, welche Informationen wirklich relevant sind.
                     </p>
 
+                    <div class="portal-chip-row">
+                        <span class="portal-chip">Strukturierte Prüfung</span>
+                        <span class="portal-chip">Datenschutzkonform</span>
+                        <span class="portal-chip">Direkter Whitelist-Prozess</span>
+                    </div>
+                </div>
+
+                <aside class="portal-brand-panel">
+                    <div class="portal-brand-mark">
+                        <img src="../../remind/Remind_Server_Logo_512x512.png" alt="Remind Logo">
+                        <div>
+                            <strong>Remind</strong>
+                            <span>Premium Bewerbungsportal</span>
+                        </div>
+                    </div>
+                    <div class="portal-brand-shot">
+                        <img src="../../remind/Remind_Discord_Server_Banner.png" alt="Remind Server Branding">
+                    </div>
+                    <div class="portal-brand-stats">
+                        <div>
+                            <strong>3 Schritte</strong>
+                            <span>Formular, Prüfung, Rückmeldung</span>
+                        </div>
+                        <div>
+                            <strong>1 Portal</strong>
+                            <span>Bewerbung, Datenschutz und Support an einem Ort</span>
+                        </div>
+                    </div>
+                </aside>
+            </section>
+
+            <div class="application-hero-grid">
+                <section>
                     <div class="application-highlight-grid">
                         <article class="application-highlight-card">
+                            <span class="portal-card-icon">🧾</span>
                             <strong>Klare Prüfung</strong>
                             <span>Jede Bewerbung wird nachvollziehbar geprüft und intern dokumentiert.</span>
                         </article>
                         <article class="application-highlight-card">
+                            <span class="portal-card-icon">🔒</span>
                             <strong>Datenschutz</strong>
                             <span>Deine Angaben werden nur für den Bewerbungsprozess und die Teamentscheidung genutzt.</span>
                         </article>
                         <article class="application-highlight-card">
+                            <span class="portal-card-icon">🚀</span>
                             <strong>Direkter Einstieg</strong>
                             <span>Mit einer vollständigen Bewerbung verkürzt du den Weg in Fraktionen und Whitelist-Prozesse.</span>
                         </article>
@@ -51,10 +88,33 @@
                     <p class="application-side-note">
                         Bitte gib ehrliche Angaben an. Unvollständige oder offensichtlich falsche Bewerbungen verzögern den Prozess.
                     </p>
+                    <div class="application-side-meta">
+                        <div>
+                            <strong>Qualität vor Tempo</strong>
+                            <span>Lieber sauber und vollständig als schnell und ungenau.</span>
+                        </div>
+                        <div>
+                            <strong>Klare Rückmeldung</strong>
+                            <span>Das Team bewertet intern und meldet sich mit dem nächsten Schritt.</span>
+                        </div>
+                    </div>
                 </aside>
             </div>
 
-            <div class="form-wrapper application-form-shell">
+            <div class="form-wrapper application-form-shell premium-form-shell">
+                <div class="form-shell-header">
+                    <div>
+                        <span class="section-kicker">Bewerbungsdaten</span>
+                        <h3>Erzähl uns, wer du bist</h3>
+                    </div>
+                    <div class="form-progress-panel">
+                        <span class="form-progress-label">Vollständigkeit</span>
+                        <div class="form-progress-track" aria-hidden="true">
+                            <span id="formProgressBar"></span>
+                        </div>
+                        <strong id="formProgressValue">0%</strong>
+                    </div>
+                </div>
                 <div id="formFeedback"></div>
 
                 <form id="applicationForm">
@@ -70,6 +130,10 @@
                             placeholder="z.B. Max Mustermann"
                             required
                         >
+                        <div class="field-meta-row">
+                            <span class="field-status-text">Vollständiger Vor- und Nachname</span>
+                            <span class="field-counter" id="nameCounter">0/100</span>
+                        </div>
                         <div class="form-error" id="nameError"></div>
                     </div>
 
@@ -88,6 +152,10 @@
                         <p class="form-hint">
                             Dein Discord Name mit Tag oder dein Nutzername
                         </p>
+                        <div class="field-meta-row">
+                            <span class="field-status-text">Damit wir dich eindeutig kontaktieren können</span>
+                            <span class="field-counter" id="discordCounter">0/100</span>
+                        </div>
                         <div class="form-error" id="discordError"></div>
                     </div>
 
@@ -108,6 +176,10 @@
                         <p class="form-hint">
                             Du musst mindestens 13 Jahre alt sein
                         </p>
+                        <div class="field-meta-row compact">
+                            <span class="field-status-text">Nur echte Angaben</span>
+                            <span class="field-counter" id="ageCounter">0/3</span>
+                        </div>
                         <div class="form-error" id="ageError"></div>
                     </div>
 
@@ -125,6 +197,10 @@
                         <p class="form-hint">
                             Mindestens 10 Zeichen | Maximal 500 Zeichen
                         </p>
+                        <div class="field-meta-row">
+                            <span class="field-status-text">Zeig uns kurz dein RP-Niveau</span>
+                            <span class="field-counter" id="experienceCounter">0/500</span>
+                        </div>
                         <div class="form-error" id="experienceError"></div>
                     </div>
 
@@ -142,14 +218,23 @@
                         <p class="form-hint">
                             Mindestens 20 Zeichen | Maximal 2000 Zeichen
                         </p>
+                        <div class="field-meta-row">
+                            <span class="field-status-text">Warum passt Remind zu dir?</span>
+                            <span class="field-counter" id="motivationCounter">0/2000</span>
+                        </div>
                         <div class="form-error" id="motivationError"></div>
                     </div>
 
-                    <!-- Submit Button -->
-                    <button type="submit" class="btn btn-primary" id="submitBtn">
-                        <span id="submitBtnText">Bewerbung einreichen</span>
-                        <span class="loading" id="submitBtnLoader" style="display: none;"></span>
-                    </button>
+                    <div class="form-actions-panel">
+                        <div class="form-actions-copy">
+                            <strong>Bereit zum Absenden?</strong>
+                            <span>Prüfe vor dem Absenden noch einmal Discord, Erfahrung und Motivation.</span>
+                        </div>
+                        <button type="submit" class="btn btn-primary" id="submitBtn">
+                            <span id="submitBtnText">Bewerbung einreichen</span>
+                            <span class="loading" id="submitBtnLoader" style="display: none;"></span>
+                        </button>
+                    </div>
                 </form>
 
                 <div id="successMessage" style="display: none; margin-top: 24px;">

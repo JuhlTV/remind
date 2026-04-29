@@ -16,60 +16,100 @@
 
     <main>
         <div class="container">
-            <h2 class="page-title">Admin Login</h2>
-            <p class="page-subtitle">
-                Melde dich mit deinen Zugangsdaten an, um Bewerbungen zu verwalten.
-            </p>
-
-            <div class="form-wrapper" style="max-width: 450px;">
-                <div id="loginFeedback"></div>
-
-                <form id="loginForm">
-                    <!-- Username -->
-                    <div class="form-group">
-                        <label for="username">
-                            Username <span class="required">*</span>
-                        </label>
-                        <input 
-                            type="text" 
-                            id="username" 
-                            name="username" 
-                            placeholder="Admin Username"
-                            required
-                            autocomplete="username"
-                        >
-                        <div class="form-error" id="usernameError"></div>
-                    </div>
-
-                    <!-- Passwort -->
-                    <div class="form-group">
-                        <label for="password">
-                            Passwort <span class="required">*</span>
-                        </label>
-                        <input 
-                            type="password" 
-                            id="password" 
-                            name="password" 
-                            placeholder="Dein Passwort"
-                            required
-                            autocomplete="current-password"
-                        >
-                        <div class="form-error" id="passwordError"></div>
-                    </div>
-
-                    <!-- Login Button -->
-                    <button type="submit" class="btn btn-primary" id="loginBtn">
-                        <span id="loginBtnText">Anmelden</span>
-                        <span class="loading" id="loginBtnLoader" style="display: none;"></span>
-                    </button>
-                </form>
-
-                <div style="margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--border-color);">
-                    <p style="font-size: 0.85rem; color: var(--text-muted);">
-                        🔐 Nur für autorisierte Administratoren
+            <section class="portal-login-shell">
+                <aside class="portal-login-aside">
+                    <span class="section-kicker">Admin Zugriff</span>
+                    <h2 class="page-title">Kontrollzentrum für Bewerbungen</h2>
+                    <p class="page-subtitle">
+                        Melde dich mit deinen Zugangsdaten an, um Bewerbungen, Rollen und Review-Prozesse sicher zu verwalten.
                     </p>
+
+                    <div class="portal-brand-shot admin-brand-shot">
+                        <img src="../../../remind/Remind_Discord_Server_Banner.png" alt="Remind Admin Branding">
+                    </div>
+
+                    <div class="portal-login-points">
+                        <div>
+                            <strong>Geschützter Zugang</strong>
+                            <span>Nur autorisierte Accounts mit Rollen- und Rechteprüfung.</span>
+                        </div>
+                        <div>
+                            <strong>Klare Sichtung</strong>
+                            <span>Bewerbungen, Status und Admin-Verwaltung an einer Stelle.</span>
+                        </div>
+                        <div>
+                            <strong>Direkter Status</strong>
+                            <span id="loginHealthLabel">Systemstatus wird geprüft...</span>
+                        </div>
+                    </div>
+                </aside>
+
+                <div class="form-wrapper portal-login-card">
+                    <div class="portal-login-card-header">
+                        <div>
+                            <span class="section-kicker">Sicher anmelden</span>
+                            <h3>Admin Login</h3>
+                        </div>
+                        <span class="portal-status-pill" id="loginStatusPill">Offline</span>
+                    </div>
+
+                    <div id="loginFeedback"></div>
+
+                    <form id="loginForm">
+                        <div class="form-group">
+                            <label for="username">
+                                Username <span class="required">*</span>
+                            </label>
+                            <input 
+                                type="text" 
+                                id="username" 
+                                name="username" 
+                                placeholder="Admin Username"
+                                required
+                                autocomplete="username"
+                            >
+                            <div class="field-meta-row compact">
+                                <span class="field-status-text">Dein interner Admin-Account</span>
+                            </div>
+                            <div class="form-error" id="usernameError"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="password">
+                                Passwort <span class="required">*</span>
+                            </label>
+                            <div class="password-field-shell">
+                                <input 
+                                    type="password" 
+                                    id="password" 
+                                    name="password" 
+                                    placeholder="Dein Passwort"
+                                    required
+                                    autocomplete="current-password"
+                                >
+                                <button type="button" class="password-toggle" id="passwordToggle" aria-label="Passwort anzeigen">
+                                    Anzeigen
+                                </button>
+                            </div>
+                            <div class="field-meta-row compact">
+                                <span class="field-status-text">Passwort bleibt lokal verborgen, bis du es aktiv einblendest</span>
+                            </div>
+                            <div class="form-error" id="passwordError"></div>
+                        </div>
+
+                        <div class="form-actions-panel form-actions-panel-inline">
+                            <div class="form-actions-copy">
+                                <strong>Nur für autorisierte Administratoren</strong>
+                                <span>Rollen und Berechtigungen werden nach dem Login automatisch geprüft.</span>
+                            </div>
+                            <button type="submit" class="btn btn-primary" id="loginBtn">
+                                <span id="loginBtnText">Anmelden</span>
+                                <span class="loading" id="loginBtnLoader" style="display: none;"></span>
+                            </button>
+                        </div>
+                    </form>
                 </div>
-            </div>
+            </section>
         </div>
     </main>
 

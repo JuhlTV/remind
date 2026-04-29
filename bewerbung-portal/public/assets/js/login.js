@@ -7,6 +7,9 @@ const loginFeedback = document.getElementById('loginFeedback');
 const loginBtn = document.getElementById('loginBtn');
 const loginBtnText = document.getElementById('loginBtnText');
 const loginBtnLoader = document.getElementById('loginBtnLoader');
+const passwordToggle = document.getElementById('passwordToggle');
+const loginStatusPill = document.getElementById('loginStatusPill');
+const loginHealthLabel = document.getElementById('loginHealthLabel');
 
 // Form Inputs
 const usernameInput = document.getElementById('username');
@@ -39,6 +42,13 @@ function showFieldError(fieldName, message) {
  */
 usernameInput.addEventListener('input', () => showFieldError('username', ''));
 passwordInput.addEventListener('input', () => showFieldError('password', ''));
+
+passwordToggle?.addEventListener('click', () => {
+    const isPassword = passwordInput.type === 'password';
+    passwordInput.type = isPassword ? 'text' : 'password';
+    passwordToggle.textContent = isPassword ? 'Verbergen' : 'Anzeigen';
+    passwordToggle.setAttribute('aria-label', isPassword ? 'Passwort verbergen' : 'Passwort anzeigen');
+});
 
 /**
  * Zeige Feedback Nachricht
@@ -150,14 +160,37 @@ window.addEventListener('load', async () => {
     try {
         const isHealthy = await api.checkHealth();
         if (!isHealthy) {
+            if (loginStatusPill) {
+                loginStatusPill.textContent = 'Offline';
+                loginStatusPill.classList.remove('online');
+            }
+            if (loginHealthLabel) {
+                loginHealthLabel.textContent = 'Backend nicht erreichbar. Bitte Server prüfen.';
+            }
             showFeedback(
                 '⚠️ Der Server antwortet nicht. Stelle sicher, dass der Backend Server läuft.',
                 'danger'
             );
             loginBtn.disabled = true;
+            return;
+        }
+
+        if (loginStatusPill) {
+            loginStatusPill.textContent = 'Online';
+            loginStatusPill.classList.add('online');
+        }
+        if (loginHealthLabel) {
+            loginHealthLabel.textContent = 'Backend erreichbar. Login und Dashboard sind bereit.';
         }
     } catch (error) {
         console.error('API Check Fehler:', error);
+        if (loginStatusPill) {
+            loginStatusPill.textContent = 'Offline';
+            loginStatusPill.classList.remove('online');
+        }
+        if (loginHealthLabel) {
+            loginHealthLabel.textContent = 'Backend nicht erreichbar. Bitte Server prüfen.';
+        }
         showFeedback(
             '⚠️ Der Server antwortet nicht. Stelle sicher, dass der Backend Server läuft.',
             'danger'

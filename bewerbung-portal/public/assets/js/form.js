@@ -8,6 +8,24 @@ const successMessage = document.getElementById('successMessage');
 const submitBtn = document.getElementById('submitBtn');
 const submitBtnText = document.getElementById('submitBtnText');
 const submitBtnLoader = document.getElementById('submitBtnLoader');
+const formProgressBar = document.getElementById('formProgressBar');
+const formProgressValue = document.getElementById('formProgressValue');
+
+const fieldCounters = {
+    name: document.getElementById('nameCounter'),
+    discord: document.getElementById('discordCounter'),
+    age: document.getElementById('ageCounter'),
+    experience: document.getElementById('experienceCounter'),
+    motivation: document.getElementById('motivationCounter')
+};
+
+const fieldLimits = {
+    name: 100,
+    discord: 100,
+    age: 3,
+    experience: 500,
+    motivation: 2000
+};
 
 // Form Feld Elemente
 const formInputs = {
@@ -102,6 +120,34 @@ function showFieldError(fieldName, errors) {
     }
 }
 
+function updateCounter(fieldName, value) {
+    const counter = fieldCounters[fieldName];
+    if (!counter) return;
+
+    const currentLength = String(value || '').length;
+    const limit = fieldLimits[fieldName];
+    counter.textContent = `${currentLength}/${limit}`;
+    counter.style.color = currentLength > limit ? 'var(--danger-color)' : 'var(--text-muted)';
+}
+
+function updateFormProgress() {
+    const totalFields = Object.keys(formInputs).length;
+    const completedFields = Object.entries(formInputs).filter(([, inputElement]) => {
+        const value = inputElement.value?.trim() || '';
+        return value.length > 0;
+    }).length;
+
+    const progress = Math.round((completedFields / totalFields) * 100);
+
+    if (formProgressBar) {
+        formProgressBar.style.width = `${progress}%`;
+    }
+
+    if (formProgressValue) {
+        formProgressValue.textContent = `${progress}%`;
+    }
+}
+
 /**
  * Real-time Validierung bei Input
  */
@@ -116,8 +162,14 @@ Object.entries(formInputs).forEach(([fieldName, inputElement]) => {
     inputElement.addEventListener('input', () => {
         const errors = validateField(fieldName, inputElement.value);
         showFieldError(fieldName, errors);
+        updateCounter(fieldName, inputElement.value);
+        updateFormProgress();
     });
+
+    updateCounter(fieldName, inputElement.value);
 });
+
+updateFormProgress();
 
 /**
  * Zeige Feedback Nachricht

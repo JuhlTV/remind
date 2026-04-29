@@ -8,6 +8,8 @@ let currentAdmin = null;
 let availableRoles = [];
 let roleMatrix = null;
 let applicationsLoadSeq = 0;
+let currentSearchTerm = '';
+let allApplications = [];
 
 // Check if authenticated
 window.addEventListener('load', async () => {
@@ -24,6 +26,11 @@ window.addEventListener('load', async () => {
         const badge = document.getElementById('adminBadge');
         if (badge) {
             badge.textContent = `Angemeldet als ${currentAdmin.username} (${currentAdmin.role})`;
+        }
+
+        const dashboardAccountStatus = document.getElementById('dashboardAccountStatus');
+        if (dashboardAccountStatus) {
+            dashboardAccountStatus.textContent = `${currentAdmin.username} ist mit Rolle ${currentAdmin.role} angemeldet.`;
         }
 
         setupRoleBasedUI();
@@ -90,6 +97,19 @@ document.getElementById('createAdminForm')?.addEventListener('submit', async (ev
     } catch (error) {
         feedback.innerHTML = `<div class="alert alert-danger">❌ ${escapeHtml(error.message || 'Fehler beim Erstellen des Admins')}</div>`;
     }
+});
+
+document.getElementById('refreshDashboardBtn')?.addEventListener('click', async () => {
+    await Promise.all([loadStats(), loadApplications(), loadAdmins()]);
+});
+
+document.getElementById('refreshApplicationsBtn')?.addEventListener('click', async () => {
+    await loadApplications();
+});
+
+document.getElementById('applicationSearch')?.addEventListener('input', (event) => {
+    currentSearchTerm = event.target.value.trim().toLowerCase();
+    renderApplications();
 });
 
 function hasPermission(permission) {
@@ -324,12 +344,26 @@ async function loadApplications() {
             return;
         }
 
-        const { applications } = response;
-        updateApplicationsTable(applications);
-        updateRecentApplications(applications);
+        allApplications = response.applications || [];
+        renderApplications();
     } catch (error) {
         console.error('Applications Fehler:', error);
     }
+}
+
+function getVisibleApplications() {
+    if (!Array.isArray(allApplications)) return [];
+
+    return allApplications.filter((app) => {
+        const haystack = `${app.name || ''} ${app.discord || ''}`.toLowerCase();
+        return !currentSearchTerm || haystack.includes(currentSearchTerm);
+    });
+}
+
+function renderApplications() {
+    const visibleApplications = getVisibleApplications();
+    updateApplicationsTable(visibleApplications);
+    updateRecentApplications(visibleApplications);
 }
 
 /**
@@ -341,8 +375,8 @@ function updateApplicationsTable(applications) {
     if (!applications || applications.length === 0) {
         tbody.innerHTML = `
             <tr>
-                <td colspan="6" style="text-align: center; color: var(--text-muted); padding: 40px;">
-                    Keine Bewerbungen gefunden
+                <td colspan="6" class="empty-state">
+                    Keine Bewerbungen für den aktuellen Filter oder die aktuelle Suche gefunden.
                 </td>
             </tr>
         `;
@@ -380,7 +414,7 @@ function updateRecentApplications(applications) {
     if (!recent || recent.length === 0) {
         container.innerHTML = `
             <div class="card">
-                <p style="text-align: center; color: var(--text-muted);">Noch keine Bewerbungen</p>
+                <p style="text-align: center; color: var(--text-muted);">Noch keine passenden Bewerbungen</p>
             </div>
         `;
         return;
@@ -499,8 +533,8 @@ async function reviewApplication(status) {
         return;
     }
 
-    const notes = prompt('Notizen für diese Bewerbung (optional):');
-    if (notes === null) return; // User cancelled
+    const notesField = document.getElementById('reviewNotes');
+    const notes = notesField ? notesField.value.trim() : '';
 
     try {
         const response = await api.reviewApplication(
@@ -529,6 +563,10 @@ async function reviewApplication(status) {
 function closeModal() {
     const modal = document.getElementById('detailModal');
     modal.classList.remove('active');
+    const notesField = document.getElementById('reviewNotes');
+    if (notesField) {
+        notesField.value = '';
+    }
     currentApplication = null;
 }
 
@@ -550,7 +588,7 @@ function filterByStatus(status, event) {
     // Update aktive Nav Items
     document.querySelectorAll('.nav-item').forEach(item => {
         item.classList.remove('active');
-        if (item.textContent.includes(status) || (status === 'all' && item.textContent.includes('Alle'))) {
+        if (item.dataset.filter === status) {
             item.classList.add('active');
         }
     });
@@ -569,9 +607,8 @@ function showSection(section, event) {
     document.querySelectorAll('.nav-item').forEach(item => {
         item.classList.remove('active');
     });
-    if (event?.target) {
-        event.target.classList.add('active');
-    }
+    const activeItem = event?.target || document.querySelector(`.nav-item[data-section="${section}"]`);
+    activeItem?.classList.add('active');
 
     // Reset Filter
     currentFilter = 'all';
@@ -696,6 +733,12 @@ function escapeHtml(text) {
 // Close Modal on Escape
 document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
+        closeModal();
+    }
+});
+
+document.getElementById('detailModal')?.addEventListener('click', (event) => {
+    if (event.target.id === 'detailModal') {
         closeModal();
     }
 });

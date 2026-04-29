@@ -4,19 +4,33 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Remind FiveM Server</title>
-    <link rel="stylesheet" href="site-theme.css">
+    <meta name="description" content="Remind Roleplay ist ein professionell aufgebauter FiveM-Server mit klaren Fraktionsstrukturen, langfristigen Storylines und sauberem Community-Onboarding.">
+    <link rel="icon" type="image/png" href="remind/Remind_Server_Logo_512x512.png">
+    <link rel="stylesheet" href="remind/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body class="body-bg">
+    <div class="announcement-bar">
+        <div class="announcement-inner">
+            <span class="announcement-pill">Live Community</span>
+            <p>Remind verbindet City- und County-Roleplay mit klaren Fraktionswegen, stabilen Systemen und einem professionellen Einstieg fuer neue Spieler.</p>
+        </div>
+    </div>
     <header class="main-header">
         <div class="nav-container">
             <div class="nav-logo">
                 <img src="remind/Remind_Server_Logo_512x512.png" alt="Remind Logo" />
             </div>
-            <nav class="main-nav">
+            <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="mainNavigation" aria-label="Navigation öffnen">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <nav class="main-nav" id="mainNavigation">
                 <ul class="main-nav">
                     <li><a href="#">Startseite</a></li>
                     <li><a href="#features">Features</a></li>
+                    <li><a href="#factions">Fraktionen</a></li>
                     <li><a href="#community">Community</a></li>
                     <li><a href="remind/regeln/index.html" class="nav-highlight">Serverregeln</a></li>
                     <li class="dropdown">
@@ -61,6 +75,7 @@
                     <span>Aktive Community</span>
                 </div>
                 <div class="hero-actions-row">
+                    <a href="bewerbung-portal/public/index.html" class="forum-btn hero-btn">Zum Bewerbungsportal</a>
                     <a href="#discord" class="forum-btn secondary-hero-btn">Discord ansehen</a>
                 </div>
                 <div class="hero-stats">
@@ -78,7 +93,7 @@
                     </article>
                 </div>
             </section>
-            <div class="faction-showcase" aria-label="Fraktionskarten">
+            <div class="faction-showcase" id="factions" aria-label="Fraktionskarten">
                 <article class="pulse-card">
                     <span class="pulse-label">Server Pulse</span>
                     <h2>Ein Einstiegspunkt, zwei komplett ausgebaute Sicherheitswelten</h2>
@@ -107,6 +122,20 @@
                     <a href="sheriff/index.html" class="forum-btn sheriff-btn faction-btn">Zur Sheriff-Seite</a>
                 </article>
             </div>
+        </section>
+        <section class="trust-strip" aria-label="Server-Vorteile">
+            <article class="trust-item">
+                <strong>Professionelle Struktur</strong>
+                <span>Klare Fraktionsseiten, feste Regeln, definierte Laufbahnen und sichtbare Ansprechpartner.</span>
+            </article>
+            <article class="trust-item">
+                <strong>Stabile Organisation</strong>
+                <span>Discord, Bewerbungsportal und Sicherheitsfraktionen greifen direkt ineinander statt nebeneinander zu laufen.</span>
+            </article>
+            <article class="trust-item">
+                <strong>Langfristiges RP</strong>
+                <span>Storylines, Ermittlungen und County-Lagen entwickeln sich ueber Sessions und nicht nur fuer einen Abend.</span>
+            </article>
         </section>
         <section class="features-section" id="features">
             <div class="section-headline">
@@ -199,22 +228,52 @@
                 <span class="section-kicker">Team</span>
                 <h2>Interessiert, Teil des Teams zu werden?</h2>
                 <p>Wir suchen nach engagierten Admin, Moderator und Developer. Wenn du die Community unterstützen möchtest, bewirb dich jetzt!</p>
-                <a href="bewerbung-portal/public/index.html" class="forum-btn cta-btn">Jetzt bewerben</a>
+                <div class="cta-actions">
+                    <a href="bewerbung-portal/public/index.html" class="forum-btn cta-btn">Jetzt bewerben</a>
+                    <a href="remind/regeln/index.html" class="forum-btn secondary-hero-btn">Regelwerk ansehen</a>
+                </div>
             </div>
         </section>
     </main>
     <footer class="main-footer">
-        <div class="footer-content">
-            &copy; 2026 Remind FiveM Server &ndash; Community &amp; Roleplay
+        <div class="footer-content footer-layout">
+            <div>
+                <strong>Remind Roleplay</strong>
+                <p>Professionell strukturierter FiveM-Server fuer langfristiges City- und County-Roleplay.</p>
+            </div>
+            <div class="footer-link-group">
+                <a href="#features">Features</a>
+                <a href="#community">Community</a>
+                <a href="bewerbung-portal/public/index.html">Bewerbungsportal</a>
+            </div>
+            <div class="footer-link-group">
+                <a href="bewerbung-portal/public/impressum.html">Impressum</a>
+                <a href="bewerbung-portal/public/datenschutz.html">Datenschutzerklärung</a>
+                <a href="https://discord.gg/FvaTa369bd">Discord</a>
+            </div>
         </div>
+        <div class="footer-meta">&copy; 2026 Remind FiveM Server &ndash; Community &amp; Roleplay</div>
     </footer>
 
     <script>
-    // Dropdown-Menü für Klick/Touch auf der Startseite
+    // Navigation und Dropdown-Menü für Klick/Touch auf der Startseite
     document.addEventListener('DOMContentLoaded', function() {
+        const navToggle = document.querySelector('.nav-toggle');
+        const mainNavigation = document.getElementById('mainNavigation');
+
+        if (navToggle && mainNavigation) {
+            navToggle.addEventListener('click', function() {
+                const isOpen = mainNavigation.classList.toggle('is-open');
+                navToggle.classList.toggle('is-open', isOpen);
+                navToggle.setAttribute('aria-expanded', String(isOpen));
+            });
+        }
+
         document.querySelectorAll('nav ul.main-nav > li.dropdown > a').forEach(function(dropTrigger) {
             dropTrigger.addEventListener('click', function(e) {
-                e.preventDefault();
+                if (window.innerWidth <= 900) {
+                    e.preventDefault();
+                }
                 // Schließe andere Dropdowns
                 document.querySelectorAll('nav ul.main-nav > li.dropdown').forEach(function(li) {
                     if (li !== dropTrigger.parentElement) {
@@ -232,6 +291,16 @@
                     li.classList.remove('open');
                 });
             }
+        });
+
+        document.querySelectorAll('#mainNavigation a').forEach(function(link) {
+            link.addEventListener('click', function() {
+                if (mainNavigation && mainNavigation.classList.contains('is-open') && !link.closest('.dropdown')) {
+                    mainNavigation.classList.remove('is-open');
+                    navToggle?.classList.remove('is-open');
+                    navToggle?.setAttribute('aria-expanded', 'false');
+                }
+            });
         });
     });
     </script>

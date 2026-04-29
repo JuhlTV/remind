@@ -4,9 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LSPD Roleplay</title>
+    <meta name="description" content="Professionelle Uebersichtsseite des Los Santos Police Department auf Remind Roleplay mit Department-Struktur, Karrierewegen und direktem Recruiting-Einstieg.">
+    <link rel="icon" type="image/webp" href="LSPD.webp">
     <link rel="stylesheet" href="lspd-style.css">
 </head>
 <body>
+    <div class="page-banner">
+        <div class="page-banner-inner">
+            <span class="page-banner-pill">LSPD Command</span>
+            <p>Metropolitan policing mit klaren Bureau-Strukturen, sichtbarer Street Presence und einem professionellen Einstieg für neue Recruits.</p>
+        </div>
+    </div>
     <header class="site-header">
         <div class="site-header-inner">
             <div class="brand-wrap">
@@ -18,7 +26,12 @@
                     <span class="site-subtitle">Serving and Protecting Los Santos with structure, training and presence</span>
                 </div>
             </div>
-            <nav class="site-nav">
+            <button class="subnav-toggle" type="button" aria-expanded="false" aria-controls="lspdNavigation" aria-label="Navigation öffnen">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <nav class="site-nav" id="lspdNavigation">
                 <ul>
                     <li><a class="is-active" href="lspd.html">Startseite</a></li>
                     <li><a href="organigramm/index.html">Organigramm</a></li>
@@ -124,6 +137,21 @@
             </aside>
         </section>
 
+        <section class="service-strip">
+            <article class="service-item">
+                <strong>Recruiting mit Struktur</strong>
+                <span>Vom ersten Interesse bis zur Academy ist der Einstieg in das Department nachvollziehbar und sauber organisiert.</span>
+            </article>
+            <article class="service-item">
+                <strong>Operational Depth</strong>
+                <span>Patrol, Traffic, Detectives und Special Operations greifen sichtbar ineinander und schaffen echtes City-Roleplay.</span>
+            </article>
+            <article class="service-item">
+                <strong>Command Transparency</strong>
+                <span>Organigramm, Aufgaben und Karrierepfade sind direkt erreichbar und professionell aufbereitet.</span>
+            </article>
+        </section>
+
         <section class="info-grid home-grid">
             <article class="info-card">
                 <h3>Organigramm und Dienstgrade</h3>
@@ -207,11 +235,26 @@
                 E-Mail: info@lspd.ls
             </div>
             <div class="footer-copy">
-                <a href="abteilungen/index.html">Abteilungen</a> | <a href="bewerbung/bewerbungsformular.html">Bewerbungsformular</a>
+                <a href="abteilungen/index.html">Abteilungen</a> | <a href="bewerbung/bewerbungsformular.html">Bewerbungsformular</a><br>
+                <a href="../bewerbung-portal/public/impressum.html">Impressum</a> | <a href="../bewerbung-portal/public/datenschutz.html">Datenschutz</a>
             </div>
             <div class="footer-copy">&copy; 2026 Los Santos Police Department</div>
         </div>
     </footer>
     <script src="reveal.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const toggle = document.querySelector('.subnav-toggle');
+        const nav = document.getElementById('lspdNavigation');
+
+        if (toggle && nav) {
+            toggle.addEventListener('click', function() {
+                const isOpen = nav.classList.toggle('is-open');
+                toggle.classList.toggle('is-open', isOpen);
+                toggle.setAttribute('aria-expanded', String(isOpen));
+            });
+        }
+    });
+    </script>
 </body>
 </html>

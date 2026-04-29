@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bewerbung - Remind Server</title>
+    <meta name="description" content="Professionelles Bewerbungsportal fuer den Remind Server. Reiche deine Bewerbung strukturiert ein und informiere dich direkt über Datenschutz und Ablauf.">
     <link rel="stylesheet" href="assets/css/main.css">
 </head>
 <body>
@@ -16,13 +17,44 @@
 
     <main>
         <div class="container">
-            <h2 class="page-title">Bewerbung einreichen</h2>
-            <p class="page-subtitle">
-                Du interessierst dich für einen Platz auf unserem Server? 
-                Dann fülle einfach das Formular aus und unser Team wird sich deine Bewerbung ansehen.
-            </p>
+            <div class="application-hero-grid">
+                <section>
+                    <h2 class="page-title">Bewerbung einreichen</h2>
+                    <p class="page-subtitle">
+                        Du interessierst dich für einen Platz auf unserem Server? Dann fülle das Formular strukturiert aus. Unser Team prüft jede Bewerbung individuell und meldet sich nach Sichtung bei dir.
+                    </p>
 
-            <div class="form-wrapper">
+                    <div class="application-highlight-grid">
+                        <article class="application-highlight-card">
+                            <strong>Klare Prüfung</strong>
+                            <span>Jede Bewerbung wird nachvollziehbar geprüft und intern dokumentiert.</span>
+                        </article>
+                        <article class="application-highlight-card">
+                            <strong>Datenschutz</strong>
+                            <span>Deine Angaben werden nur für den Bewerbungsprozess und die Teamentscheidung genutzt.</span>
+                        </article>
+                        <article class="application-highlight-card">
+                            <strong>Direkter Einstieg</strong>
+                            <span>Mit einer vollständigen Bewerbung verkürzt du den Weg in Fraktionen und Whitelist-Prozesse.</span>
+                        </article>
+                    </div>
+                </section>
+
+                <aside class="application-side-panel">
+                    <span class="section-kicker">Ablauf</span>
+                    <h3>So läuft die Bewerbung ab</h3>
+                    <ol class="application-steps-list">
+                        <li>Formular vollständig ausfüllen</li>
+                        <li>Interne Sichtung durch das Team</li>
+                        <li>Rückmeldung oder weiterer Auswahlprozess</li>
+                    </ol>
+                    <p class="application-side-note">
+                        Bitte gib ehrliche Angaben an. Unvollständige oder offensichtlich falsche Bewerbungen verzögern den Prozess.
+                    </p>
+                </aside>
+            </div>
+
+            <div class="form-wrapper application-form-shell">
                 <div id="formFeedback"></div>
 
                 <form id="applicationForm">
@@ -128,6 +160,10 @@
                     <button onclick="location.reload()" class="btn btn-secondary">
                         Weitere Bewerbung einreichen
                     </button>
+                </div>
+
+                <div class="application-privacy-note">
+                    Mit dem Absenden bestätigst du, dass deine Angaben zur Bearbeitung deiner Bewerbung gespeichert und intern verarbeitet werden dürfen. Details findest du in der <a href="datenschutz.html">Datenschutzerklärung</a>.
                 </div>
             </div>
         </div>

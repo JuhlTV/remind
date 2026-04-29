@@ -143,6 +143,78 @@ main {
     margin-bottom: 32px;
 }
 
+.section-kicker {
+    display: inline-block;
+    margin-bottom: 10px;
+    color: var(--primary-color);
+    font-size: 0.78rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+}
+
+.application-hero-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
+    gap: 24px;
+    align-items: start;
+    margin-bottom: 28px;
+}
+
+.application-highlight-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.application-highlight-card,
+.application-side-panel {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.22);
+}
+
+.application-highlight-card strong,
+.application-side-panel h3 {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--text-primary);
+}
+
+.application-highlight-card span,
+.application-side-panel p,
+.application-side-panel li,
+.application-privacy-note {
+    color: var(--text-secondary);
+    line-height: 1.7;
+}
+
+.application-steps-list {
+    margin: 0;
+    padding-left: 18px;
+}
+
+.application-steps-list li + li {
+    margin-top: 10px;
+}
+
+.application-side-note {
+    margin-top: 16px;
+}
+
+.application-form-shell {
+    max-width: 100%;
+}
+
+.application-privacy-note {
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color);
+    font-size: 0.92rem;
+}
+
 /* Forms */
 .form-wrapper {
     max-width: 600px;
@@ -530,6 +602,11 @@ main {
 @media (max-width: 768px) {
     .container {
         padding: 0 16px;
+    }
+
+    .application-hero-grid,
+    .application-highlight-grid {
+        grid-template-columns: 1fr;
     }
 
     .form-wrapper {

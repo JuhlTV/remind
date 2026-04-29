@@ -4,9 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LSCSO Roleplay</title>
+    <meta name="description" content="Professionelle Uebersichtsseite des Los Santos County Sheriff Department mit County-Patrol, Air Unit, Detective und direktem Karriereeinstieg auf Remind Roleplay.">
+    <link rel="icon" type="image/png" href="LSCSO.png">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div class="page-banner">
+        <div class="page-banner-inner">
+            <span class="page-banner-pill">County Command</span>
+            <p>Countywide policing mit klaren Dienstwegen, sichtbarer Patrol-Arbeit und einer professionell praesentierten Sheriff-Struktur.</p>
+        </div>
+    </div>
     <header class="site-header">
         <div class="site-header-inner">
             <div class="brand-wrap">
@@ -16,7 +24,12 @@
                     <span class="site-subtitle">Honor, service and countywide protection across Blaine County</span>
                 </div>
             </div>
-            <nav class="site-nav">
+            <button class="subnav-toggle" type="button" aria-expanded="false" aria-controls="sheriffNavigation" aria-label="Navigation öffnen">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <nav class="site-nav" id="sheriffNavigation">
                 <ul>
                     <li><a class="is-active" href="index.html">Startseite</a></li>
                     <li><a href="organigramm/index.html">Dienstgrade</a></li>
@@ -145,6 +158,21 @@
             </aside>
         </section>
 
+        <section class="service-strip">
+            <article class="service-item">
+                <strong>County Identity</strong>
+                <span>Eigene Sheriff-DNA statt City-Kopie: breitere Einsatzräume, ruhigere Lagearbeit und eigenständige Führungslogik.</span>
+            </article>
+            <article class="service-item">
+                <strong>Department Depth</strong>
+                <span>Patrol, Air Unit, Detective, Training Operations und Internal Affairs sind sichtbar strukturiert und sauber verknüpft.</span>
+            </article>
+            <article class="service-item">
+                <strong>Professioneller Einstieg</strong>
+                <span>Die Seite führt neue Bewerber direkt von der Übersicht zu Karriereweg, Rangtafel und Bewerbungsformular.</span>
+            </article>
+        </section>
+
         <section class="info-grid home-grid">
             <article class="info-card">
                 <h3>Struktur und Command</h3>
@@ -266,10 +294,24 @@
                 Telefon: (555) 987-4400<br>
                 E-Mail: command@lscso.ls
             </div>
-            <div class="footer-copy"><a href="abteilungen/index.html">Abteilungen</a> | <a href="bewerbung/bewerbungsformular.html">Bewerbungsformular</a></div>
+            <div class="footer-copy"><a href="abteilungen/index.html">Abteilungen</a> | <a href="bewerbung/bewerbungsformular.html">Bewerbungsformular</a><br><a href="../bewerbung-portal/public/impressum.html">Impressum</a> | <a href="../bewerbung-portal/public/datenschutz.html">Datenschutz</a></div>
             <div class="footer-copy">&copy; 2026 Los Santos County Sheriff Department</div>
         </div>
     </footer>
     <script src="reveal.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const toggle = document.querySelector('.subnav-toggle');
+        const nav = document.getElementById('sheriffNavigation');
+
+        if (toggle && nav) {
+            toggle.addEventListener('click', function() {
+                const isOpen = nav.classList.toggle('is-open');
+                toggle.classList.toggle('is-open', isOpen);
+                toggle.setAttribute('aria-expanded', String(isOpen));
+            });
+        }
+    });
+    </script>
 </body>
 </html>

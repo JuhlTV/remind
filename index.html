@@ -161,6 +161,27 @@
                 </article>
             </div>
         </section>
+        <section class="media-gallery-section" aria-label="Media Gallery">
+            <div class="section-headline">
+                <span class="section-kicker">Media Gallery</span>
+                <h2>Screenshots und Server-Eindrücke</h2>
+                <p>Klicke auf ein Bild für die Lightbox-Ansicht.</p>
+            </div>
+            <div class="media-gallery-grid">
+                <button type="button" class="gallery-item" data-lightbox-src="remind/Remind_Discord_Server_Banner.png" data-lightbox-alt="Remind Discord Server Banner">
+                    <img src="remind/Remind_Discord_Server_Banner.png" alt="Remind Discord Server Banner">
+                </button>
+                <button type="button" class="gallery-item" data-lightbox-src="remind/Remind_Server_Logo_512x512.png" data-lightbox-alt="Remind Logo">
+                    <img src="remind/Remind_Server_Logo_512x512.png" alt="Remind Logo">
+                </button>
+                <button type="button" class="gallery-item" data-lightbox-src="remind/Remind_Discord_Server_Banner.png" data-lightbox-alt="Remind Banner Detailansicht">
+                    <img src="remind/Remind_Discord_Server_Banner.png" alt="Remind Banner Detailansicht">
+                </button>
+                <button type="button" class="gallery-item" data-lightbox-src="remind/Remind_Server_Logo_512x512.png" data-lightbox-alt="Remind Logo Variante">
+                    <img src="remind/Remind_Server_Logo_512x512.png" alt="Remind Logo Variante">
+                </button>
+            </div>
+        </section>
         <div class="section-transition section-transition-soft" aria-hidden="true"></div>
         <section class="features-section" id="features">
             <div class="section-headline">
@@ -270,6 +291,11 @@
             </div>
         </section>
     </main>
+    <div class="lightbox" id="mediaLightbox" aria-hidden="true">
+        <button type="button" class="lightbox-close" id="lightboxCloseBtn" aria-label="Lightbox schließen">×</button>
+        <img id="lightboxImage" src="" alt="">
+    </div>
+
     <footer class="main-footer">
         <div class="footer-content footer-layout">
             <div>
@@ -337,6 +363,51 @@
                     navToggle?.setAttribute('aria-expanded', 'false');
                 }
             });
+        });
+
+        const lightbox = document.getElementById('mediaLightbox');
+        const lightboxImage = document.getElementById('lightboxImage');
+        const lightboxCloseBtn = document.getElementById('lightboxCloseBtn');
+
+        document.querySelectorAll('.gallery-item').forEach(function(item) {
+            item.addEventListener('click', function() {
+                if (!lightbox || !lightboxImage) {
+                    return;
+                }
+
+                const src = item.getAttribute('data-lightbox-src') || '';
+                const alt = item.getAttribute('data-lightbox-alt') || 'Gallery Image';
+                lightboxImage.setAttribute('src', src);
+                lightboxImage.setAttribute('alt', alt);
+                lightbox.classList.add('active');
+                lightbox.setAttribute('aria-hidden', 'false');
+                document.body.classList.add('lightbox-open');
+            });
+        });
+
+        function closeLightbox() {
+            if (!lightbox || !lightboxImage) {
+                return;
+            }
+
+            lightbox.classList.remove('active');
+            lightbox.setAttribute('aria-hidden', 'true');
+            document.body.classList.remove('lightbox-open');
+            lightboxImage.setAttribute('src', '');
+        }
+
+        lightboxCloseBtn?.addEventListener('click', closeLightbox);
+
+        lightbox?.addEventListener('click', function(event) {
+            if (event.target === lightbox) {
+                closeLightbox();
+            }
+        });
+
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeLightbox();
+            }
         });
     });
     </script>

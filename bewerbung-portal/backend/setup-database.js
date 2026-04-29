@@ -75,6 +75,10 @@ async function setupDatabase() {
                 age INT NOT NULL,
                 experience VARCHAR(255) NOT NULL,
                 motivation LONGTEXT NOT NULL,
+                evidence_original_name VARCHAR(255) NULL,
+                evidence_stored_name VARCHAR(255) NULL,
+                evidence_mime_type VARCHAR(120) NULL,
+                evidence_size INT NULL,
                 status ENUM('pending', 'accepted', 'rejected') DEFAULT 'pending',
                 admin_notes LONGTEXT,
                 reviewed_at TIMESTAMP NULL,
@@ -87,6 +91,68 @@ async function setupDatabase() {
             )
         `);
         console.log('✅ Tabelle "applications" erstellt/existiert');
+
+        const applicationExtraColumns = [
+            ['evidence_original_name', 'VARCHAR(255) NULL'],
+            ['evidence_stored_name', 'VARCHAR(255) NULL'],
+            ['evidence_mime_type', 'VARCHAR(120) NULL'],
+            ['evidence_size', 'INT NULL']
+        ];
+
+        for (const [columnName, columnDefinition] of applicationExtraColumns) {
+            const [columnRows] = await connection.execute(`
+                SELECT COLUMN_NAME
+                FROM INFORMATION_SCHEMA.COLUMNS
+                WHERE TABLE_SCHEMA = ?
+                  AND TABLE_NAME = 'applications'
+                  AND COLUMN_NAME = ?
+                LIMIT 1
+            `, [process.env.DB_NAME, columnName]);
+
+            if (columnRows.length === 0) {
+                await connection.execute(`ALTER TABLE applications ADD COLUMN ${columnName} ${columnDefinition}`);
+                console.log(`✅ Spalte "${columnName}" zu "applications" hinzugefügt`);
+            }
+        }
+
+        await connection.execute(`
+            CREATE TABLE IF NOT EXISTS application_review_history (
+                id INT PRIMARY KEY AUTO_INCREMENT,
+                application_id INT NOT NULL,
+                old_status ENUM('pending', 'accepted', 'rejected') NOT NULL,
+                new_status ENUM('pending', 'accepted', 'rejected') NOT NULL,
+                old_admin_notes LONGTEXT,
+                new_admin_notes LONGTEXT,
+                action_type ENUM('review', 'undo', 'bulk_review') NOT NULL DEFAULT 'review',
+                changed_by INT NULL,
+                changed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                undone_by INT NULL,
+                undone_at TIMESTAMP NULL,
+                FOREIGN KEY (application_id) REFERENCES applications(id) ON DELETE CASCADE,
+                FOREIGN KEY (changed_by) REFERENCES admins(id) ON DELETE SET NULL,
+                FOREIGN KEY (undone_by) REFERENCES admins(id) ON DELETE SET NULL,
+                INDEX idx_history_application (application_id),
+                INDEX idx_history_changed_at (changed_at)
+            )
+        `);
+        console.log('✅ Tabelle "application_review_history" erstellt/existiert');
+
+        await connection.execute(`
+            CREATE TABLE IF NOT EXISTS application_activity_log (
+                id INT PRIMARY KEY AUTO_INCREMENT,
+                application_id INT NULL,
+                activity_type VARCHAR(80) NOT NULL,
+                message VARCHAR(255) NOT NULL,
+                details LONGTEXT NULL,
+                actor_id INT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (application_id) REFERENCES applications(id) ON DELETE SET NULL,
+                FOREIGN KEY (actor_id) REFERENCES admins(id) ON DELETE SET NULL,
+                INDEX idx_activity_created_at (created_at),
+                INDEX idx_activity_application (application_id)
+            )
+        `);
+        console.log('✅ Tabelle "application_activity_log" erstellt/existiert');
 
         // Check if admin exists and print onboarding
         const [admins] = await connection.execute(

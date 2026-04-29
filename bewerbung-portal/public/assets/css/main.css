@@ -559,6 +559,27 @@ main {
     font-size: 0.92rem;
 }
 
+.draft-autosave-status {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    padding: 6px 10px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.draft-autosave-status.pending {
+    color: #ffd67d;
+    border-color: rgba(255, 214, 125, 0.4);
+    background: rgba(255, 214, 125, 0.1);
+}
+
+.draft-autosave-status.saved {
+    color: #a8f3bc;
+    border-color: rgba(88, 214, 141, 0.35);
+    background: rgba(88, 214, 141, 0.12);
+}
+
 .form-progress-panel {
     min-width: 180px;
     padding: 16px;
@@ -634,6 +655,77 @@ main {
 
 .form-actions-copy {
     max-width: 420px;
+}
+
+.wizard-steps {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.wizard-step-chip {
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--text-secondary);
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-weight: 700;
+    font-size: 0.84rem;
+}
+
+.wizard-step-chip.active {
+    color: var(--text-primary);
+    border-color: rgba(161, 143, 255, 0.5);
+    background: rgba(161, 143, 255, 0.14);
+}
+
+.wizard-step-panel {
+    animation: fadeIn 240ms ease;
+}
+
+.wizard-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.wizard-review-box {
+    padding: 18px;
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.wizard-review-box h4 {
+    margin-bottom: 14px;
+}
+
+.wizard-review-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.wizard-review-item {
+    padding: 12px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.wizard-review-item strong {
+    display: block;
+    margin-bottom: 5px;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.wizard-review-item span {
+    color: var(--text-primary);
+    line-height: 1.5;
 }
 
 .success-message-shell {

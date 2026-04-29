@@ -336,6 +336,60 @@ class APIClient {
         });
     }
 
+    async bulkReviewApplications(payload) {
+        return this.request('/applications/bulk/review', {
+            method: 'POST',
+            body: JSON.stringify(payload)
+        });
+    }
+
+    async getApplicationHistory(applicationId) {
+        return this.request(`/applications/${applicationId}/history`, {
+            method: 'GET'
+        });
+    }
+
+    async undoApplicationReview(applicationId) {
+        return this.request(`/applications/${applicationId}/undo`, {
+            method: 'POST'
+        });
+    }
+
+    async getActivityLog(filters = {}) {
+        const params = new URLSearchParams(filters);
+        return this.request(`/applications/activity?${params.toString()}`, {
+            method: 'GET'
+        });
+    }
+
+    async exportApplicationsCsv(filters = {}) {
+        await this.ensureBaseUrl();
+        const params = new URLSearchParams(
+            Object.fromEntries(Object.entries(filters).filter(([, value]) => value !== undefined && value !== null && value !== ''))
+        );
+        const url = `${this.baseUrl}/applications/export/csv?${params.toString()}`;
+
+        const headers = {};
+        if (this.token) {
+            headers.Authorization = `Bearer ${this.token}`;
+        }
+
+        const response = await fetch(url, {
+            method: 'GET',
+            headers
+        });
+
+        if (!response.ok) {
+            throw new Error('CSV Export fehlgeschlagen');
+        }
+
+        const blob = await response.blob();
+        return {
+            blob,
+            filename: `applications-${Date.now()}.csv`
+        };
+    }
+
     /**
      * GET /api/applications/:id
      * Einzelne Bewerbung abrufen (nur Admin)

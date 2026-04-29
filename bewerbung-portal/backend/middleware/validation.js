@@ -7,6 +7,7 @@ export function validateApplication(req, res, next) {
     const experience = typeof req.body.experience === 'string' ? req.body.experience.trim() : '';
     const motivation = typeof req.body.motivation === 'string' ? req.body.motivation.trim() : '';
     const ageRaw = req.body.age;
+    const evidence = req.body.evidence;
     const errors = [];
 
     // Name validieren
@@ -21,9 +22,8 @@ export function validateApplication(req, res, next) {
     if (!discord || discord.length < 3) {
         errors.push('Discord Tag muss mindestens 3 Zeichen lang sein');
     }
-    if (discord && !/^.+#\d{4}$/.test(discord) && !/^[a-zA-Z0-9_]{3,32}$/.test(discord)) {
-        // Erlaubt sowohl altes Format (Name#1234) als auch neues Format (Nutzername)
-        console.warn(`Discord Format: ${discord} - wird akzeptiert`);
+    if (discord && !/^.{2,32}#\d{4}$/.test(discord) && !/^[a-z0-9._]{2,32}$/i.test(discord)) {
+        errors.push('Bitte gib einen gültigen Discord-Namen oder Tag ein');
     }
 
     // Alter validieren
@@ -51,6 +51,35 @@ export function validateApplication(req, res, next) {
         errors.push('Motivation darf maximal 2000 Zeichen lang sein');
     }
 
+    if (evidence) {
+        const allowedMimeTypes = ['application/pdf', 'image/png', 'image/jpeg', 'image/webp'];
+
+        if (typeof evidence !== 'object' || evidence === null) {
+            errors.push('Ungültiges Nachweis-Format');
+        } else {
+            const safeName = typeof evidence.name === 'string' ? evidence.name.trim() : '';
+            const safeType = typeof evidence.type === 'string' ? evidence.type.trim().toLowerCase() : '';
+            const safeData = typeof evidence.data === 'string' ? evidence.data.trim() : '';
+            const safeSize = Number(evidence.size || 0);
+
+            if (!safeName || safeName.length > 255) {
+                errors.push('Dateiname für den Nachweis ist ungültig');
+            }
+
+            if (!allowedMimeTypes.includes(safeType)) {
+                errors.push('Nachweis muss PDF, PNG, JPG oder WEBP sein');
+            }
+
+            if (!safeData || !/^[A-Za-z0-9+/=]+$/.test(safeData)) {
+                errors.push('Nachweis-Daten konnten nicht gelesen werden');
+            }
+
+            if (!Number.isFinite(safeSize) || safeSize <= 0 || safeSize > 5 * 1024 * 1024) {
+                errors.push('Nachweis darf maximal 5 MB groß sein');
+            }
+        }
+    }
+
     if (errors.length > 0) {
         return res.status(400).json({
             success: false,
@@ -65,6 +94,7 @@ export function validateApplication(req, res, next) {
     req.body.age = ageNum;
     req.body.experience = experience;
     req.body.motivation = motivation;
+    req.body.evidence = evidence || null;
 
     next();
 }

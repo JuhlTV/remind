@@ -479,6 +479,34 @@
             font-size: 0.84rem;
         }
 
+        .review-history-list {
+            max-height: 220px;
+            overflow-y: auto;
+            display: grid;
+            gap: 10px;
+            margin-top: 8px;
+            padding-right: 4px;
+        }
+
+        .review-history-item {
+            padding: 12px 14px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .review-history-item strong {
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .review-history-item span {
+            display: block;
+            color: var(--text-secondary);
+            font-size: 0.86rem;
+            line-height: 1.5;
+        }
+
         .empty-state {
             padding: 30px 22px;
             text-align: center;
@@ -591,6 +619,9 @@
                         <a class="nav-item" data-section="applications" onclick="showSection('applications', event)">
                             📋 Bewerbungen
                         </a>
+                        <a class="nav-item" data-section="activity" onclick="showSection('activity', event)">
+                            🧭 Activity Log
+                        </a>
                         <a class="nav-item" id="adminManagementNav" data-section="admins" onclick="showSection('admins', event)" style="display: none;">
                             🛡️ Admin Verwaltung
                         </a>
@@ -688,6 +719,12 @@
                                     <option value="age_asc">Alter aufsteigend</option>
                                     <option value="status_asc">Status A-Z</option>
                                 </select>
+                                <select id="applicationPageSize" class="toolbar-select" aria-label="Seitenlänge auswählen">
+                                    <option value="10">10 / Seite</option>
+                                    <option value="25">25 / Seite</option>
+                                    <option value="50">50 / Seite</option>
+                                </select>
+                                <button class="btn btn-secondary btn-sm" id="exportCsvBtn" type="button">CSV Export</button>
                                 <button class="btn btn-secondary btn-sm" id="refreshApplicationsBtn" type="button">Liste aktualisieren</button>
                             </div>
                         </div>
@@ -741,6 +778,36 @@
                                 <button class="pagination-btn" id="paginationPrevBtn" type="button">Zurück</button>
                                 <button class="pagination-btn" id="paginationNextBtn" type="button">Weiter</button>
                             </div>
+                        </div>
+                    </div>
+
+                    <div id="activity" class="section" style="display: none;">
+                        <h2 class="page-title">Activity Log</h2>
+                        <p class="page-subtitle" style="margin-bottom: 18px;">
+                            Chronologischer Verlauf von Reviews, Bulk-Aktionen, CSV-Exporten und Undo-Events.
+                        </p>
+                        <div class="dashboard-toolbar">
+                            <div class="toolbar-group">
+                                <button class="btn btn-secondary btn-sm" id="refreshActivityBtn" type="button">Activity neu laden</button>
+                            </div>
+                        </div>
+                        <div class="table-scroll">
+                            <table class="applications-table">
+                                <thead>
+                                    <tr>
+                                        <th>Zeitpunkt</th>
+                                        <th>Typ</th>
+                                        <th>Nachricht</th>
+                                        <th>Actor</th>
+                                        <th>Details</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="activityTableBody">
+                                    <tr>
+                                        <td colspan="5" class="empty-state">Wird geladen...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
 
@@ -819,6 +886,16 @@
                 <label for="reviewNotes">Interne Notizen</label>
                 <textarea id="reviewNotes" placeholder="Optional: Begründung, Hinweise oder nächster Schritt für das Team..."></textarea>
                 <div class="review-note-meta">Diese Notiz wird zusammen mit der Review gespeichert.</div>
+            </div>
+
+            <div class="review-notes-shell">
+                <label for="reviewHistoryList">Review-Historie</label>
+                <div id="reviewHistoryList" class="review-history-list">
+                    <p class="review-note-meta">Historie wird geladen...</p>
+                </div>
+                <div class="toolbar-group" style="margin-top: 12px;">
+                    <button class="btn btn-secondary btn-sm" id="undoReviewBtn" onclick="undoReview()">Letzte Änderung rückgängig</button>
+                </div>
             </div>
 
             <div id="modalActions" class="modal-actions">

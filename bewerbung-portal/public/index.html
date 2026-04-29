@@ -120,127 +120,150 @@
                         <strong>Entwurf</strong>
                         <span id="draftStatusText">Noch kein Entwurf gespeichert</span>
                     </div>
+                    <span class="draft-autosave-status" id="autosaveStatusText">Keine ausstehenden Änderungen</span>
                     <button type="button" class="btn btn-secondary btn-sm" id="clearDraftBtn">Entwurf löschen</button>
                 </div>
                 <div id="formFeedback"></div>
 
                 <form id="applicationForm">
-                    <!-- Name -->
-                    <div class="form-group">
-                        <label for="name">
-                            Dein Name <span class="required">*</span>
-                        </label>
-                        <input 
-                            type="text" 
-                            id="name" 
-                            name="name" 
-                            placeholder="z.B. Max Mustermann"
-                            required
-                        >
-                        <div class="field-meta-row">
-                            <span class="field-status-text">Vollständiger Vor- und Nachname</span>
-                            <span class="field-counter" id="nameCounter">0/100</span>
-                        </div>
-                        <div class="form-error" id="nameError"></div>
+                    <div class="wizard-steps" id="wizardSteps">
+                        <button type="button" class="wizard-step-chip active" data-step-chip="1">1. Basisdaten</button>
+                        <button type="button" class="wizard-step-chip" data-step-chip="2">2. RP Profil</button>
+                        <button type="button" class="wizard-step-chip" data-step-chip="3">3. Review</button>
                     </div>
 
-                    <!-- Discord -->
-                    <div class="form-group">
-                        <label for="discord">
-                            Discord Tag <span class="required">*</span>
-                        </label>
-                        <input 
-                            type="text" 
-                            id="discord" 
-                            name="discord" 
-                            placeholder="z.B. MaxMustermann#1234 oder Nutzername"
-                            required
-                        >
-                        <p class="form-hint">
-                            Erlaubt sind moderne Discord-Nutzernamen oder klassische Tags wie Name#1234
-                        </p>
-                        <div class="field-meta-row">
-                            <span class="field-status-text">Damit wir dich eindeutig kontaktieren können</span>
-                            <span class="field-counter" id="discordCounter">0/100</span>
+                    <section class="wizard-step-panel" data-step="1">
+                        <div class="form-group">
+                            <label for="name">
+                                Dein Name <span class="required">*</span>
+                            </label>
+                            <input 
+                                type="text" 
+                                id="name" 
+                                name="name" 
+                                placeholder="z.B. Max Mustermann"
+                                required
+                            >
+                            <div class="field-meta-row">
+                                <span class="field-status-text">Vollständiger Vor- und Nachname</span>
+                                <span class="field-counter" id="nameCounter">0/100</span>
+                            </div>
+                            <div class="form-error" id="nameError"></div>
                         </div>
-                        <div class="form-error" id="discordError"></div>
-                    </div>
 
-                    <!-- Alter -->
-                    <div class="form-group">
-                        <label for="age">
-                            Alter <span class="required">*</span>
-                        </label>
-                        <input 
-                            type="number" 
-                            id="age" 
-                            name="age" 
-                            placeholder="z.B. 18"
-                            min="13"
-                            max="120"
-                            required
-                        >
-                        <p class="form-hint">
-                            Du musst mindestens 13 Jahre alt sein
-                        </p>
-                        <div class="field-meta-row compact">
-                            <span class="field-status-text">Nur echte Angaben</span>
-                            <span class="field-counter" id="ageCounter">0/3</span>
+                        <div class="form-group">
+                            <label for="discord">
+                                Discord Tag <span class="required">*</span>
+                            </label>
+                            <input 
+                                type="text" 
+                                id="discord" 
+                                name="discord" 
+                                placeholder="z.B. MaxMustermann#1234 oder Nutzername"
+                                required
+                            >
+                            <p class="form-hint">
+                                Erlaubt sind moderne Discord-Nutzernamen oder klassische Tags wie Name#1234
+                            </p>
+                            <div class="field-meta-row">
+                                <span class="field-status-text">Damit wir dich eindeutig kontaktieren können</span>
+                                <span class="field-counter" id="discordCounter">0/100</span>
+                            </div>
+                            <div class="form-error" id="discordError"></div>
                         </div>
-                        <div class="form-error" id="ageError"></div>
-                    </div>
 
-                    <!-- Erfahrung -->
-                    <div class="form-group">
-                        <label for="experience">
-                            Deine Erfahrung mit RP <span class="required">*</span>
-                        </label>
-                        <textarea 
-                            id="experience" 
-                            name="experience" 
-                            placeholder="Erzähle uns kurz von deiner Erfahrung mit Roleplay..."
-                            required
-                        ></textarea>
-                        <p class="form-hint">
-                            Mindestens 10 Zeichen | Maximal 500 Zeichen
-                        </p>
-                        <div class="field-meta-row">
-                            <span class="field-status-text">Zeig uns kurz dein RP-Niveau</span>
-                            <span class="field-counter" id="experienceCounter">0/500</span>
+                        <div class="form-group">
+                            <label for="age">
+                                Alter <span class="required">*</span>
+                            </label>
+                            <input 
+                                type="number" 
+                                id="age" 
+                                name="age" 
+                                placeholder="z.B. 18"
+                                min="13"
+                                max="120"
+                                required
+                            >
+                            <p class="form-hint">
+                                Du musst mindestens 13 Jahre alt sein
+                            </p>
+                            <div class="field-meta-row compact">
+                                <span class="field-status-text">Nur echte Angaben</span>
+                                <span class="field-counter" id="ageCounter">0/3</span>
+                            </div>
+                            <div class="form-error" id="ageError"></div>
                         </div>
-                        <div class="form-error" id="experienceError"></div>
-                    </div>
+                    </section>
 
-                    <!-- Motivation -->
-                    <div class="form-group">
-                        <label for="motivation">
-                            Warum möchtest du auf Remind spielen? <span class="required">*</span>
-                        </label>
-                        <textarea 
-                            id="motivation" 
-                            name="motivation" 
-                            placeholder="Erzähle uns, warum du gerade Remind Server interessant findest..."
-                            required
-                        ></textarea>
-                        <p class="form-hint">
-                            Mindestens 20 Zeichen | Maximal 2000 Zeichen
-                        </p>
-                        <div class="field-meta-row">
-                            <span class="field-status-text">Warum passt Remind zu dir?</span>
-                            <span class="field-counter" id="motivationCounter">0/2000</span>
+                    <section class="wizard-step-panel" data-step="2" hidden>
+                        <div class="form-group">
+                            <label for="experience">
+                                Deine Erfahrung mit RP <span class="required">*</span>
+                            </label>
+                            <textarea 
+                                id="experience" 
+                                name="experience" 
+                                placeholder="Erzähle uns kurz von deiner Erfahrung mit Roleplay..."
+                                required
+                            ></textarea>
+                            <p class="form-hint">
+                                Mindestens 10 Zeichen | Maximal 500 Zeichen
+                            </p>
+                            <div class="field-meta-row">
+                                <span class="field-status-text">Zeig uns kurz dein RP-Niveau</span>
+                                <span class="field-counter" id="experienceCounter">0/500</span>
+                            </div>
+                            <div class="form-error" id="experienceError"></div>
                         </div>
-                        <div class="form-error" id="motivationError"></div>
-                    </div>
+
+                        <div class="form-group">
+                            <label for="motivation">
+                                Warum möchtest du auf Remind spielen? <span class="required">*</span>
+                            </label>
+                            <textarea 
+                                id="motivation" 
+                                name="motivation" 
+                                placeholder="Erzähle uns, warum du gerade Remind Server interessant findest..."
+                                required
+                            ></textarea>
+                            <p class="form-hint">
+                                Mindestens 20 Zeichen | Maximal 2000 Zeichen
+                            </p>
+                            <div class="field-meta-row">
+                                <span class="field-status-text">Warum passt Remind zu dir?</span>
+                                <span class="field-counter" id="motivationCounter">0/2000</span>
+                            </div>
+                            <div class="form-error" id="motivationError"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="evidence">Optionaler Nachweis (PDF, PNG, JPG, WEBP bis 5MB)</label>
+                            <input type="file" id="evidence" name="evidence" accept=".pdf,image/png,image/jpeg,image/webp">
+                            <p class="form-hint">Optional, wenn du einen Beleg oder Zusatznachweis teilen möchtest.</p>
+                            <div class="form-error" id="evidenceError"></div>
+                        </div>
+                    </section>
+
+                    <section class="wizard-step-panel" data-step="3" hidden>
+                        <div class="wizard-review-box" id="wizardReviewBox">
+                            <p>Zusammenfassung wird geladen...</p>
+                        </div>
+                    </section>
 
                     <div class="form-actions-panel">
                         <div class="form-actions-copy">
-                            <strong>Bereit zum Absenden?</strong>
-                            <span>Prüfe vor dem Absenden noch einmal Discord, Erfahrung und Motivation.</span>
+                            <strong id="wizardStepTitle">Schritt 1 von 3: Basisdaten</strong>
+                            <span id="wizardStepHint">Starte mit deinen Grundangaben. Danach folgen RP-Erfahrung und Motivation.</span>
                         </div>
-                        <button type="submit" class="btn btn-primary" id="submitBtn">
-                            <span id="submitBtnText">Bewerbung einreichen</span>
-                            <span class="loading" id="submitBtnLoader" style="display: none;"></span>
-                        </button>
+                        <div class="wizard-actions">
+                            <button type="button" class="btn btn-secondary" id="wizardPrevBtn">Zurück</button>
+                            <button type="button" class="btn btn-primary" id="wizardNextBtn">Weiter</button>
+                            <button type="submit" class="btn btn-primary" id="submitBtn" style="display: none;">
+                                <span id="submitBtnText">Bewerbung einreichen</span>
+                                <span class="loading" id="submitBtnLoader" style="display: none;"></span>
+                            </button>
+                        </div>
                     </div>
                 </form>
 

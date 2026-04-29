@@ -1395,6 +1395,118 @@ nav ul.main-nav > li.dropdown > a {
     }
 }
 
+.media-gallery-section {
+    max-width: 1160px;
+    margin: 0 auto;
+    padding: 72px 24px;
+}
+
+.media-gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+    margin-top: 28px;
+}
+
+.gallery-item {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.02);
+    cursor: pointer;
+    transition: transform 280ms cubic-bezier(.22, 1, .36, 1), border-color 240ms ease;
+    padding: 0;
+}
+
+.gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    transition: scale 360ms ease;
+    display: block;
+}
+
+.gallery-item:hover {
+    border-color: rgba(161, 143, 255, 0.45);
+    transform: translateY(-4px);
+}
+
+.gallery-item:hover img {
+    scale: 1.06;
+}
+
+.lightbox {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 9000;
+    background: rgba(0, 0, 0, 0.88);
+    backdrop-filter: blur(14px);
+    align-items: center;
+    justify-content: center;
+}
+
+.lightbox.active {
+    display: flex;
+}
+
+body.lightbox-open {
+    overflow: hidden;
+}
+
+.lightbox img {
+    max-width: min(90vw, 1200px);
+    max-height: 88vh;
+    object-fit: contain;
+    border-radius: 12px;
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.6);
+}
+
+.lightbox-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: #fff;
+    cursor: pointer;
+    transition: background 220ms ease;
+}
+
+.lightbox-close:hover {
+    background: rgba(255, 255, 255, 0.22);
+}
+
+@media (max-width: 768px) {
+    .media-gallery-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 480px) {
+    .media-gallery-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 1024px) {
+    .media-gallery-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+
 @media (prefers-reduced-motion: reduce) {
     html {
         scroll-behavior: auto;

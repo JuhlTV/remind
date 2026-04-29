@@ -1,6 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import { initializePool, closePool } from './db.js';
 import authRoutes from './routes/auth.js';
 import applicationRoutes from './routes/applications.js';
@@ -9,6 +11,9 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const uploadsPath = path.join(__dirname, 'uploads');
 
 function createRequestId() {
     return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
@@ -23,8 +28,9 @@ app.use(cors({
     optionsSuccessStatus: 200
 }));
 
-app.use(express.json({ limit: '2mb' }));
-app.use(express.urlencoded({ limit: '2mb', extended: true }));
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ limit: '10mb', extended: true }));
+app.use('/uploads', express.static(uploadsPath));
 
 app.use((error, req, res, next) => {
     if (error?.type === 'entity.too.large') {

@@ -12,8 +12,16 @@ let currentSearchTerm = '';
 let allApplications = [];
 let currentSort = 'date_desc';
 let currentPage = 1;
-const pageSize = 10;
+let pageSize = 10;
 const selectedApplicationIds = new Set();
+let serverPagination = {
+    page: 1,
+    pageSize: 10,
+    totalPages: 1,
+    totalItems: 0,
+    hasNext: false,
+    hasPrev: false
+};
 
 // Check if authenticated
 window.addEventListener('load', async () => {
@@ -47,6 +55,7 @@ window.addEventListener('load', async () => {
 
         if (hasPermission('applications.read')) {
             startupTasks.push(loadApplications());
+            startupTasks.push(loadActivityLog());
         }
 
         startupTasks.push(
@@ -104,7 +113,7 @@ document.getElementById('createAdminForm')?.addEventListener('submit', async (ev
 });
 
 document.getElementById('refreshDashboardBtn')?.addEventListener('click', async () => {
-    await Promise.all([loadStats(), loadApplications(), loadAdmins()]);
+    await Promise.all([loadStats(), loadApplications(), loadAdmins(), loadActivityLog()]);
 });
 
 document.getElementById('refreshApplicationsBtn')?.addEventListener('click', async () => {
@@ -114,28 +123,60 @@ document.getElementById('refreshApplicationsBtn')?.addEventListener('click', asy
 document.getElementById('applicationSearch')?.addEventListener('input', (event) => {
     currentSearchTerm = event.target.value.trim().toLowerCase();
     currentPage = 1;
-    renderApplications();
+    loadApplications();
 });
 
 document.getElementById('applicationSort')?.addEventListener('change', (event) => {
     currentSort = event.target.value;
     currentPage = 1;
-    renderApplications();
+    loadApplications();
+});
+
+document.getElementById('applicationPageSize')?.addEventListener('change', (event) => {
+    pageSize = Number(event.target.value) || 10;
+    currentPage = 1;
+    loadApplications();
 });
 
 document.getElementById('paginationPrevBtn')?.addEventListener('click', () => {
     if (currentPage > 1) {
         currentPage -= 1;
-        renderApplications();
+        loadApplications();
     }
 });
 
 document.getElementById('paginationNextBtn')?.addEventListener('click', () => {
-    const totalPages = getTotalPages();
-    if (currentPage < totalPages) {
+    if (serverPagination.hasNext) {
         currentPage += 1;
-        renderApplications();
+        loadApplications();
     }
+});
+
+document.getElementById('exportCsvBtn')?.addEventListener('click', async () => {
+    try {
+        const sortParams = parseSortForApi();
+        const payload = await api.exportApplicationsCsv({
+            status: currentFilter === 'all' ? '' : currentFilter,
+            search: currentSearchTerm,
+            sortBy: sortParams.sortBy,
+            order: sortParams.order
+        });
+
+        const url = URL.createObjectURL(payload.blob);
+        const anchor = document.createElement('a');
+        anchor.href = url;
+        anchor.download = payload.filename;
+        document.body.appendChild(anchor);
+        anchor.click();
+        anchor.remove();
+        URL.revokeObjectURL(url);
+    } catch (error) {
+        alert(error.message || 'CSV Export fehlgeschlagen');
+    }
+});
+
+document.getElementById('refreshActivityBtn')?.addEventListener('click', async () => {
+    await loadActivityLog();
 });
 
 document.getElementById('selectAllApplications')?.addEventListener('change', (event) => {
@@ -169,8 +210,10 @@ function setupRoleBasedUI() {
     // Hide application controls for users without application visibility
     if (!hasPermission('applications.read')) {
         const appsNav = document.querySelector('[data-section="applications"]');
+        const activityNav = document.querySelector('[data-section="activity"]');
         const filterSection = document.querySelector('.sidebar-section:nth-of-type(2)');
         if (appsNav) appsNav.style.display = 'none';
+        if (activityNav) activityNav.style.display = 'none';
         if (filterSection) filterSection.style.display = 'none';
     }
 
@@ -372,7 +415,15 @@ async function loadApplications() {
     }
 
     try {
-        const filters = currentFilter !== 'all' ? { status: currentFilter } : {};
+        const sortParams = parseSortForApi();
+        const filters = {
+            status: currentFilter !== 'all' ? currentFilter : '',
+            search: currentSearchTerm,
+            sortBy: sortParams.sortBy,
+            order: sortParams.order,
+            page: currentPage,
+            pageSize
+        };
         const response = await api.getApplications(filters);
 
         if (loadSeq !== applicationsLoadSeq) {
@@ -385,6 +436,8 @@ async function loadApplications() {
         }
 
         allApplications = response.applications || [];
+        serverPagination = response.pagination || serverPagination;
+        currentPage = Number(serverPagination.page || currentPage);
         renderApplications();
     } catch (error) {
         console.error('Applications Fehler:', error);
@@ -393,11 +446,7 @@ async function loadApplications() {
 
 function getVisibleApplications() {
     if (!Array.isArray(allApplications)) return [];
-
-    return allApplications.filter((app) => {
-        const haystack = `${app.name || ''} ${app.discord || ''}`.toLowerCase();
-        return !currentSearchTerm || haystack.includes(currentSearchTerm);
-    });
+    return allApplications;
 }
 
 function sortApplications(applications) {
@@ -422,18 +471,11 @@ function getDerivedApplications() {
 }
 
 function getTotalPages() {
-    const total = getDerivedApplications().length;
-    return Math.max(1, Math.ceil(total / pageSize));
+    return Math.max(1, Number(serverPagination.totalPages || 1));
 }
 
 function getPaginatedApplications() {
-    const derived = getDerivedApplications();
-    const totalPages = getTotalPages();
-    if (currentPage > totalPages) {
-        currentPage = totalPages;
-    }
-    const startIndex = (currentPage - 1) * pageSize;
-    return derived.slice(startIndex, startIndex + pageSize);
+    return getDerivedApplications();
 }
 
 function renderApplications() {
@@ -442,7 +484,20 @@ function renderApplications() {
     updateApplicationsTable(paginatedApplications);
     updateRecentApplications(derivedApplications);
     updateBulkActionState(paginatedApplications, derivedApplications.length);
-    updatePaginationState(derivedApplications.length);
+    updatePaginationState();
+}
+
+function parseSortForApi() {
+    const map = {
+        date_desc: { sortBy: 'created_at', order: 'DESC' },
+        date_asc: { sortBy: 'created_at', order: 'ASC' },
+        name_asc: { sortBy: 'name', order: 'ASC' },
+        name_desc: { sortBy: 'name', order: 'DESC' },
+        age_desc: { sortBy: 'age', order: 'DESC' },
+        age_asc: { sortBy: 'age', order: 'ASC' },
+        status_asc: { sortBy: 'status', order: 'ASC' }
+    };
+    return map[currentSort] || map.date_desc;
 }
 
 /**
@@ -505,8 +560,9 @@ function updateBulkActionState(pageApplications, totalVisibleApplications) {
     }
 
     if (hintLabel) {
-        hintLabel.textContent = totalVisibleApplications > 0
-            ? `${totalVisibleApplications} sichtbare Bewerbungen nach Filter, Suche und Sortierung.`
+        const visibleCount = Number(serverPagination.totalItems || totalVisibleApplications || 0);
+        hintLabel.textContent = visibleCount > 0
+            ? `${visibleCount} Bewerbungen entsprechen dem aktuellen Filter.`
             : 'Aktuell sind keine sichtbaren Bewerbungen vorhanden.';
     }
 
@@ -525,13 +581,16 @@ function updateBulkActionState(pageApplications, totalVisibleApplications) {
     if (bulkDeleteBtn) bulkDeleteBtn.disabled = !canDelete;
 }
 
-function updatePaginationState(totalVisibleApplications) {
-    const totalPages = Math.max(1, Math.ceil(totalVisibleApplications / pageSize));
+function updatePaginationState() {
+    const totalVisibleApplications = Number(serverPagination.totalItems || 0);
+    const totalPages = Math.max(1, Number(serverPagination.totalPages || 1));
     const summary = document.getElementById('paginationSummary');
     const prevBtn = document.getElementById('paginationPrevBtn');
     const nextBtn = document.getElementById('paginationNextBtn');
     const start = totalVisibleApplications === 0 ? 0 : ((currentPage - 1) * pageSize) + 1;
-    const end = Math.min(currentPage * pageSize, totalVisibleApplications);
+    const end = totalVisibleApplications === 0
+        ? 0
+        : Math.min(start + allApplications.length - 1, totalVisibleApplications);
 
     if (summary) {
         summary.textContent = totalVisibleApplications === 0
@@ -539,8 +598,8 @@ function updatePaginationState(totalVisibleApplications) {
             : `${start}-${end} von ${totalVisibleApplications} · Seite ${currentPage} von ${totalPages}`;
     }
 
-    if (prevBtn) prevBtn.disabled = currentPage <= 1;
-    if (nextBtn) nextBtn.disabled = currentPage >= totalPages;
+    if (prevBtn) prevBtn.disabled = !serverPagination.hasPrev;
+    if (nextBtn) nextBtn.disabled = !serverPagination.hasNext;
 }
 
 function toggleApplicationSelection(applicationId, isSelected) {
@@ -565,17 +624,20 @@ async function performBulkReview(status) {
         return;
     }
 
-    const notesField = document.getElementById('reviewNotes');
-    const bulkNotes = notesField ? notesField.value.trim() : '';
+    const bulkNotes = prompt('Bulk-Notiz für diese Aktion (optional):') || '';
     const confirmed = confirm(`${ids.length} Bewerbungen wirklich ${status === 'accepted' ? 'akzeptieren' : 'ablehnen'}?`);
     if (!confirmed) return;
 
     try {
-        await Promise.all(ids.map((id) => api.reviewApplication(id, status, bulkNotes)));
+        await api.bulkReviewApplications({
+            ids,
+            status,
+            notes: bulkNotes
+        });
         selectedApplicationIds.clear();
-        if (notesField) notesField.value = '';
         await loadApplications();
         await loadStats();
+        await loadActivityLog();
         alert(`✅ ${ids.length} Bewerbungen wurden aktualisiert.`);
     } catch (error) {
         console.error('Bulk Review Fehler:', error);
@@ -603,6 +665,7 @@ async function performBulkDelete() {
         selectedApplicationIds.clear();
         await loadApplications();
         await loadStats();
+        await loadActivityLog();
         alert(`✅ ${ids.length} Bewerbungen wurden gelöscht.`);
     } catch (error) {
         console.error('Bulk Delete Fehler:', error);
@@ -616,7 +679,9 @@ async function performBulkDelete() {
 function updateRecentApplications(applications) {
     const container = document.getElementById('recentApplicationsContainer');
 
-    const recent = applications.slice(0, 5);
+    const recent = [...applications]
+        .sort((left, right) => new Date(right.created_at) - new Date(left.created_at))
+        .slice(0, 5);
 
     if (!recent || recent.length === 0) {
         container.innerHTML = `
@@ -668,6 +733,13 @@ async function openApplicationDetail(id) {
         if (notesField) {
             notesField.value = app.admin_notes || '';
         }
+
+        const undoBtn = document.getElementById('undoReviewBtn');
+        if (undoBtn) {
+            undoBtn.disabled = !hasPermission('applications.review');
+        }
+
+        await loadApplicationHistory(id);
 
         const modal = document.getElementById('detailModal');
         const modalInfo = document.getElementById('modalInfo');
@@ -759,12 +831,104 @@ async function reviewApplication(status) {
             closeModal();
             await loadApplications();
             await loadStats();
+            await loadActivityLog();
         } else {
             alert('Fehler beim Aktualisieren der Bewerbung');
         }
     } catch (error) {
         console.error('Review Fehler:', error);
         alert('Fehler beim Aktualisieren der Bewerbung');
+    }
+}
+
+async function loadApplicationHistory(applicationId) {
+    const historyContainer = document.getElementById('reviewHistoryList');
+    if (!historyContainer) return;
+
+    try {
+        const response = await api.getApplicationHistory(applicationId);
+        const entries = response.history || [];
+
+        if (entries.length === 0) {
+            historyContainer.innerHTML = '<p class="review-note-meta">Noch keine Historie vorhanden.</p>';
+            return;
+        }
+
+        historyContainer.innerHTML = entries.map((entry) => `
+            <div class="review-history-item">
+                <strong>${escapeHtml(entry.old_status)} → ${escapeHtml(entry.new_status)}</strong>
+                <span>${escapeHtml(entry.changed_by_admin)} · ${formatDateTime(entry.changed_at)}</span>
+                <span>Aktion: ${escapeHtml(entry.action_type)}</span>
+                ${entry.undone_at ? `<span>Rückgängig: ${formatDateTime(entry.undone_at)} (${escapeHtml(entry.undone_by_admin)})</span>` : ''}
+            </div>
+        `).join('');
+    } catch (error) {
+        historyContainer.innerHTML = '<p class="review-note-meta">Historie konnte nicht geladen werden.</p>';
+    }
+}
+
+async function undoReview() {
+    if (!currentApplication) {
+        alert('Keine aktive Bewerbung ausgewählt.');
+        return;
+    }
+
+    if (!hasPermission('applications.review')) {
+        alert('Keine Berechtigung für Undo.');
+        return;
+    }
+
+    const confirmed = confirm('Letzte Statusänderung wirklich rückgängig machen?');
+    if (!confirmed) return;
+
+    try {
+        const response = await api.undoApplicationReview(currentApplication.id);
+        if (response.success) {
+            alert(`✅ ${response.message}`);
+            closeModal();
+            await loadApplications();
+            await loadStats();
+            await loadActivityLog();
+        } else {
+            alert('Undo fehlgeschlagen');
+        }
+    } catch (error) {
+        alert(error.message || 'Undo fehlgeschlagen');
+    }
+}
+
+async function loadActivityLog() {
+    const tbody = document.getElementById('activityTableBody');
+    if (!tbody) return;
+
+    if (!hasPermission('applications.read')) {
+        tbody.innerHTML = '<tr><td colspan="5" class="empty-state">Keine Berechtigung für Activity-Log.</td></tr>';
+        return;
+    }
+
+    try {
+        const response = await api.getActivityLog({ page: 1, pageSize: 50 });
+        const entries = response.entries || [];
+
+        if (entries.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5" class="empty-state">Noch keine Activity-Einträge</td></tr>';
+            return;
+        }
+
+        tbody.innerHTML = entries.map((entry) => {
+            const details = entry.details ? escapeHtml(JSON.stringify(entry.details)) : '—';
+            return `
+                <tr>
+                    <td>${formatDateTime(entry.created_at)}</td>
+                    <td>${escapeHtml(entry.activity_type)}</td>
+                    <td>${escapeHtml(entry.message)}</td>
+                    <td>${escapeHtml(entry.actor_username || 'System')}</td>
+                    <td style="font-size: 0.8rem; color: var(--text-muted); max-width: 320px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${details}">${details}</td>
+                </tr>
+            `;
+        }).join('');
+    } catch (error) {
+        tbody.innerHTML = '<tr><td colspan="5" class="empty-state">Activity Log konnte nicht geladen werden.</td></tr>';
     }
 }
 
@@ -829,6 +993,10 @@ function showSection(section, event) {
     selectedApplicationIds.clear();
     if (section === 'overview' || section === 'applications') {
         loadApplications();
+    }
+
+    if (section === 'activity') {
+        loadActivityLog();
     }
 
     if (section === 'admins' && hasPermission('admins.read')) {

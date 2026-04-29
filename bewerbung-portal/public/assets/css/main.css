@@ -81,6 +81,26 @@ body::after {
     }
 }
 
+@keyframes successReveal {
+    from {
+        opacity: 0;
+        transform: translateY(24px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes successFloat {
+    0%, 100% {
+        transform: translate3d(0, 0, 0) scale(1);
+    }
+    50% {
+        transform: translate3d(12px, -12px, 0) scale(1.08);
+    }
+}
+
 /* Container */
 .container {
     max-width: 1200px;
@@ -516,6 +536,29 @@ main {
     font-size: 1.7rem;
 }
 
+.draft-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+    padding: 14px 16px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.draft-status-block strong {
+    display: block;
+    margin-bottom: 4px;
+}
+
+.draft-status-block span {
+    color: var(--text-secondary);
+    font-size: 0.92rem;
+}
+
 .form-progress-panel {
     min-width: 180px;
     padding: 16px;
@@ -591,6 +634,95 @@ main {
 
 .form-actions-copy {
     max-width: 420px;
+}
+
+.success-message-shell {
+    position: relative;
+    overflow: hidden;
+}
+
+.success-message-card {
+    position: relative;
+    z-index: 1;
+    padding: 30px 28px;
+    border-radius: 20px;
+    background: linear-gradient(180deg, rgba(52, 168, 83, 0.12) 0%, rgba(13, 17, 30, 0.96) 100%);
+    border: 1px solid rgba(52, 168, 83, 0.24);
+    box-shadow: 0 20px 48px rgba(0, 0, 0, 0.28);
+    animation: successReveal 700ms var(--motion) both;
+}
+
+.success-badge {
+    display: inline-flex;
+    align-items: center;
+    margin-bottom: 12px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    background: rgba(52, 168, 83, 0.16);
+    border: 1px solid rgba(52, 168, 83, 0.24);
+    color: #b5efc0;
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.success-message-card h3 {
+    margin-bottom: 12px;
+    font-size: 1.9rem;
+}
+
+.success-message-card p {
+    color: var(--text-secondary);
+    line-height: 1.75;
+}
+
+.success-highlight-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+    margin: 22px 0 24px;
+}
+
+.success-highlight-grid div {
+    padding: 16px;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.success-highlight-grid strong {
+    display: block;
+    margin-bottom: 6px;
+}
+
+.success-highlight-grid span {
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+.success-orb {
+    position: absolute;
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    filter: blur(24px);
+    opacity: 0.4;
+    pointer-events: none;
+    animation: successFloat 7s ease-in-out infinite;
+}
+
+.success-orb-left {
+    top: -40px;
+    left: -20px;
+    background: radial-gradient(circle, rgba(52, 168, 83, 0.26) 0%, rgba(52, 168, 83, 0) 70%);
+}
+
+.success-orb-right {
+    right: -30px;
+    bottom: -50px;
+    background: radial-gradient(circle, rgba(161, 143, 255, 0.22) 0%, rgba(161, 143, 255, 0) 70%);
+    animation-direction: reverse;
 }
 
 .application-privacy-note {
@@ -1178,6 +1310,11 @@ main {
     .portal-login-card-header {
         flex-direction: column;
         align-items: stretch;
+    }
+
+    .draft-toolbar,
+    .success-highlight-grid {
+        grid-template-columns: 1fr;
     }
 
     main {

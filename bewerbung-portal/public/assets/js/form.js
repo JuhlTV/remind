@@ -10,6 +10,9 @@ const submitBtnText = document.getElementById('submitBtnText');
 const submitBtnLoader = document.getElementById('submitBtnLoader');
 const formProgressBar = document.getElementById('formProgressBar');
 const formProgressValue = document.getElementById('formProgressValue');
+const draftStatusText = document.getElementById('draftStatusText');
+const clearDraftBtn = document.getElementById('clearDraftBtn');
+const DRAFT_STORAGE_KEY = 'remindApplicationDraft';
 
 const fieldCounters = {
     name: document.getElementById('nameCounter'),
@@ -64,6 +67,8 @@ function validateField(fieldName, value) {
         case 'discord':
             if (!value || value.trim().length < 3) {
                 errors.push('Discord Tag muss mindestens 3 Zeichen lang sein');
+            } else if (!isValidDiscord(value)) {
+                errors.push('Bitte gib einen gültigen Discord-Namen oder Tag ein');
             }
             break;
 
@@ -100,6 +105,13 @@ function validateField(fieldName, value) {
     }
 
     return errors;
+}
+
+function isValidDiscord(value) {
+    const normalizedValue = String(value || '').trim();
+    const modernUsernamePattern = /^[a-z0-9._]{2,32}$/i;
+    const legacyTagPattern = /^.{2,32}#\d{4}$/;
+    return modernUsernamePattern.test(normalizedValue) || legacyTagPattern.test(normalizedValue);
 }
 
 /**
@@ -148,6 +160,78 @@ function updateFormProgress() {
     }
 }
 
+function serializeDraft() {
+    return {
+        name: formInputs.name.value,
+        discord: formInputs.discord.value,
+        age: formInputs.age.value,
+        experience: formInputs.experience.value,
+        motivation: formInputs.motivation.value,
+        savedAt: new Date().toISOString()
+    };
+}
+
+function updateDraftStatus(message) {
+    if (draftStatusText) {
+        draftStatusText.textContent = message;
+    }
+}
+
+function saveDraft() {
+    const hasAnyValue = Object.values(formInputs).some((inputElement) => String(inputElement.value || '').trim().length > 0);
+
+    if (!hasAnyValue) {
+        localStorage.removeItem(DRAFT_STORAGE_KEY);
+        updateDraftStatus('Noch kein Entwurf gespeichert');
+        return;
+    }
+
+    const draft = serializeDraft();
+    localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify(draft));
+
+    const savedDate = new Date(draft.savedAt).toLocaleTimeString('de-DE', {
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+    updateDraftStatus(`Automatisch gespeichert um ${savedDate}`);
+}
+
+function restoreDraft() {
+    const rawDraft = localStorage.getItem(DRAFT_STORAGE_KEY);
+    if (!rawDraft) {
+        updateDraftStatus('Noch kein Entwurf gespeichert');
+        return;
+    }
+
+    try {
+        const draft = JSON.parse(rawDraft);
+        Object.entries(formInputs).forEach(([fieldName, inputElement]) => {
+            inputElement.value = draft[fieldName] || '';
+            updateCounter(fieldName, inputElement.value);
+        });
+        updateFormProgress();
+
+        const savedAt = draft.savedAt
+            ? new Date(draft.savedAt).toLocaleString('de-DE', {
+                day: '2-digit',
+                month: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit'
+            })
+            : 'unbekannt';
+        updateDraftStatus(`Entwurf geladen · zuletzt gespeichert ${savedAt}`);
+    } catch (error) {
+        console.error('Draft konnte nicht geladen werden:', error);
+        localStorage.removeItem(DRAFT_STORAGE_KEY);
+        updateDraftStatus('Entwurf war fehlerhaft und wurde zurückgesetzt');
+    }
+}
+
+function clearDraft() {
+    localStorage.removeItem(DRAFT_STORAGE_KEY);
+    updateDraftStatus('Entwurf gelöscht');
+}
+
 /**
  * Real-time Validierung bei Input
  */
@@ -164,12 +248,24 @@ Object.entries(formInputs).forEach(([fieldName, inputElement]) => {
         showFieldError(fieldName, errors);
         updateCounter(fieldName, inputElement.value);
         updateFormProgress();
+        saveDraft();
     });
 
     updateCounter(fieldName, inputElement.value);
 });
 
 updateFormProgress();
+restoreDraft();
+
+clearDraftBtn?.addEventListener('click', () => {
+    Object.entries(formInputs).forEach(([fieldName, inputElement]) => {
+        inputElement.value = '';
+        updateCounter(fieldName, inputElement.value);
+        showFieldError(fieldName, []);
+    });
+    updateFormProgress();
+    clearDraft();
+});
 
 /**
  * Zeige Feedback Nachricht
@@ -242,6 +338,8 @@ form.addEventListener('submit', async (e) => {
             form.style.display = 'none';
             formFeedback.innerHTML = '';
             successMessage.style.display = 'block';
+            localStorage.removeItem(DRAFT_STORAGE_KEY);
+            updateDraftStatus('Entwurf erfolgreich abgeschlossen');
 
             // Scrolle zu Success Nachricht
             successMessage.scrollIntoView({ behavior: 'smooth' });

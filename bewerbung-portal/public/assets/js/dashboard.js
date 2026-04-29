@@ -10,6 +10,10 @@ let roleMatrix = null;
 let applicationsLoadSeq = 0;
 let currentSearchTerm = '';
 let allApplications = [];
+let currentSort = 'date_desc';
+let currentPage = 1;
+const pageSize = 10;
+const selectedApplicationIds = new Set();
 
 // Check if authenticated
 window.addEventListener('load', async () => {
@@ -109,8 +113,44 @@ document.getElementById('refreshApplicationsBtn')?.addEventListener('click', asy
 
 document.getElementById('applicationSearch')?.addEventListener('input', (event) => {
     currentSearchTerm = event.target.value.trim().toLowerCase();
+    currentPage = 1;
     renderApplications();
 });
+
+document.getElementById('applicationSort')?.addEventListener('change', (event) => {
+    currentSort = event.target.value;
+    currentPage = 1;
+    renderApplications();
+});
+
+document.getElementById('paginationPrevBtn')?.addEventListener('click', () => {
+    if (currentPage > 1) {
+        currentPage -= 1;
+        renderApplications();
+    }
+});
+
+document.getElementById('paginationNextBtn')?.addEventListener('click', () => {
+    const totalPages = getTotalPages();
+    if (currentPage < totalPages) {
+        currentPage += 1;
+        renderApplications();
+    }
+});
+
+document.getElementById('selectAllApplications')?.addEventListener('change', (event) => {
+    const pageApplications = getPaginatedApplications();
+    if (event.target.checked) {
+        pageApplications.forEach((app) => selectedApplicationIds.add(String(app.id)));
+    } else {
+        pageApplications.forEach((app) => selectedApplicationIds.delete(String(app.id)));
+    }
+    renderApplications();
+});
+
+document.getElementById('bulkAcceptBtn')?.addEventListener('click', () => performBulkReview('accepted'));
+document.getElementById('bulkRejectBtn')?.addEventListener('click', () => performBulkReview('rejected'));
+document.getElementById('bulkDeleteBtn')?.addEventListener('click', () => performBulkDelete());
 
 function hasPermission(permission) {
     return currentAdmin?.permissions?.includes(permission);
@@ -360,10 +400,49 @@ function getVisibleApplications() {
     });
 }
 
+function sortApplications(applications) {
+    const items = [...applications];
+
+    const sorters = {
+        date_desc: (left, right) => new Date(right.created_at) - new Date(left.created_at),
+        date_asc: (left, right) => new Date(left.created_at) - new Date(right.created_at),
+        name_asc: (left, right) => String(left.name || '').localeCompare(String(right.name || ''), 'de'),
+        name_desc: (left, right) => String(right.name || '').localeCompare(String(left.name || ''), 'de'),
+        age_desc: (left, right) => Number(right.age || 0) - Number(left.age || 0),
+        age_asc: (left, right) => Number(left.age || 0) - Number(right.age || 0),
+        status_asc: (left, right) => String(left.status || '').localeCompare(String(right.status || ''), 'de')
+    };
+
+    const sorter = sorters[currentSort] || sorters.date_desc;
+    return items.sort(sorter);
+}
+
+function getDerivedApplications() {
+    return sortApplications(getVisibleApplications());
+}
+
+function getTotalPages() {
+    const total = getDerivedApplications().length;
+    return Math.max(1, Math.ceil(total / pageSize));
+}
+
+function getPaginatedApplications() {
+    const derived = getDerivedApplications();
+    const totalPages = getTotalPages();
+    if (currentPage > totalPages) {
+        currentPage = totalPages;
+    }
+    const startIndex = (currentPage - 1) * pageSize;
+    return derived.slice(startIndex, startIndex + pageSize);
+}
+
 function renderApplications() {
-    const visibleApplications = getVisibleApplications();
-    updateApplicationsTable(visibleApplications);
-    updateRecentApplications(visibleApplications);
+    const derivedApplications = getDerivedApplications();
+    const paginatedApplications = getPaginatedApplications();
+    updateApplicationsTable(paginatedApplications);
+    updateRecentApplications(derivedApplications);
+    updateBulkActionState(paginatedApplications, derivedApplications.length);
+    updatePaginationState(derivedApplications.length);
 }
 
 /**
@@ -375,7 +454,7 @@ function updateApplicationsTable(applications) {
     if (!applications || applications.length === 0) {
         tbody.innerHTML = `
             <tr>
-                <td colspan="6" class="empty-state">
+                <td colspan="7" class="empty-state">
                     Keine Bewerbungen für den aktuellen Filter oder die aktuelle Suche gefunden.
                 </td>
             </tr>
@@ -384,7 +463,16 @@ function updateApplicationsTable(applications) {
     }
 
     tbody.innerHTML = applications.map(app => `
-        <tr onclick="openApplicationDetail('${app.id}')">
+        <tr class="${selectedApplicationIds.has(String(app.id)) ? 'is-selected' : ''}" onclick="openApplicationDetail('${app.id}')">
+            <td class="checkbox-cell">
+                <input
+                    type="checkbox"
+                    class="table-checkbox"
+                    ${selectedApplicationIds.has(String(app.id)) ? 'checked' : ''}
+                    onclick="event.stopPropagation(); toggleApplicationSelection('${app.id}', this.checked)"
+                    aria-label="${escapeHtml(app.name)} auswählen"
+                >
+            </td>
             <td><strong>${escapeHtml(app.name)}</strong></td>
             <td>${escapeHtml(app.discord)}</td>
             <td>${app.age}</td>
@@ -401,6 +489,125 @@ function updateApplicationsTable(applications) {
             </td>
         </tr>
     `).join('');
+}
+
+function updateBulkActionState(pageApplications, totalVisibleApplications) {
+    const selectedCount = selectedApplicationIds.size;
+    const countLabel = document.getElementById('bulkSelectionCount');
+    const hintLabel = document.getElementById('bulkSelectionHint');
+    const selectAllCheckbox = document.getElementById('selectAllApplications');
+    const bulkAcceptBtn = document.getElementById('bulkAcceptBtn');
+    const bulkRejectBtn = document.getElementById('bulkRejectBtn');
+    const bulkDeleteBtn = document.getElementById('bulkDeleteBtn');
+
+    if (countLabel) {
+        countLabel.textContent = `${selectedCount} ausgewählt`;
+    }
+
+    if (hintLabel) {
+        hintLabel.textContent = totalVisibleApplications > 0
+            ? `${totalVisibleApplications} sichtbare Bewerbungen nach Filter, Suche und Sortierung.`
+            : 'Aktuell sind keine sichtbaren Bewerbungen vorhanden.';
+    }
+
+    const pageIds = pageApplications.map((app) => String(app.id));
+    const allSelectedOnPage = pageIds.length > 0 && pageIds.every((id) => selectedApplicationIds.has(id));
+    if (selectAllCheckbox) {
+        selectAllCheckbox.checked = allSelectedOnPage;
+        selectAllCheckbox.indeterminate = !allSelectedOnPage && pageIds.some((id) => selectedApplicationIds.has(id));
+    }
+
+    const canReview = hasPermission('applications.review') && selectedCount > 0;
+    const canDelete = hasPermission('applications.delete') && selectedCount > 0;
+
+    if (bulkAcceptBtn) bulkAcceptBtn.disabled = !canReview;
+    if (bulkRejectBtn) bulkRejectBtn.disabled = !canReview;
+    if (bulkDeleteBtn) bulkDeleteBtn.disabled = !canDelete;
+}
+
+function updatePaginationState(totalVisibleApplications) {
+    const totalPages = Math.max(1, Math.ceil(totalVisibleApplications / pageSize));
+    const summary = document.getElementById('paginationSummary');
+    const prevBtn = document.getElementById('paginationPrevBtn');
+    const nextBtn = document.getElementById('paginationNextBtn');
+    const start = totalVisibleApplications === 0 ? 0 : ((currentPage - 1) * pageSize) + 1;
+    const end = Math.min(currentPage * pageSize, totalVisibleApplications);
+
+    if (summary) {
+        summary.textContent = totalVisibleApplications === 0
+            ? 'Keine Einträge'
+            : `${start}-${end} von ${totalVisibleApplications} · Seite ${currentPage} von ${totalPages}`;
+    }
+
+    if (prevBtn) prevBtn.disabled = currentPage <= 1;
+    if (nextBtn) nextBtn.disabled = currentPage >= totalPages;
+}
+
+function toggleApplicationSelection(applicationId, isSelected) {
+    const normalizedId = String(applicationId);
+    if (isSelected) {
+        selectedApplicationIds.add(normalizedId);
+    } else {
+        selectedApplicationIds.delete(normalizedId);
+    }
+    renderApplications();
+}
+
+async function performBulkReview(status) {
+    if (!hasPermission('applications.review')) {
+        alert('Keine Berechtigung für Bulk-Bewertungen.');
+        return;
+    }
+
+    const ids = [...selectedApplicationIds];
+    if (ids.length === 0) {
+        alert('Bitte wähle zuerst mindestens eine Bewerbung aus.');
+        return;
+    }
+
+    const notesField = document.getElementById('reviewNotes');
+    const bulkNotes = notesField ? notesField.value.trim() : '';
+    const confirmed = confirm(`${ids.length} Bewerbungen wirklich ${status === 'accepted' ? 'akzeptieren' : 'ablehnen'}?`);
+    if (!confirmed) return;
+
+    try {
+        await Promise.all(ids.map((id) => api.reviewApplication(id, status, bulkNotes)));
+        selectedApplicationIds.clear();
+        if (notesField) notesField.value = '';
+        await loadApplications();
+        await loadStats();
+        alert(`✅ ${ids.length} Bewerbungen wurden aktualisiert.`);
+    } catch (error) {
+        console.error('Bulk Review Fehler:', error);
+        alert(error.message || 'Fehler bei der Bulk-Aktion');
+    }
+}
+
+async function performBulkDelete() {
+    if (!hasPermission('applications.delete')) {
+        alert('Keine Berechtigung zum Löschen von Bewerbungen.');
+        return;
+    }
+
+    const ids = [...selectedApplicationIds];
+    if (ids.length === 0) {
+        alert('Bitte wähle zuerst mindestens eine Bewerbung aus.');
+        return;
+    }
+
+    const confirmed = confirm(`${ids.length} Bewerbungen wirklich dauerhaft löschen?`);
+    if (!confirmed) return;
+
+    try {
+        await Promise.all(ids.map((id) => api.deleteApplication(id)));
+        selectedApplicationIds.clear();
+        await loadApplications();
+        await loadStats();
+        alert(`✅ ${ids.length} Bewerbungen wurden gelöscht.`);
+    } catch (error) {
+        console.error('Bulk Delete Fehler:', error);
+        alert(error.message || 'Fehler beim Löschen der Bewerbungen');
+    }
 }
 
 /**
@@ -457,6 +664,10 @@ async function openApplicationDetail(id) {
 
         const app = response.application;
         currentApplication = app;
+        const notesField = document.getElementById('reviewNotes');
+        if (notesField) {
+            notesField.value = app.admin_notes || '';
+        }
 
         const modal = document.getElementById('detailModal');
         const modalInfo = document.getElementById('modalInfo');
@@ -575,6 +786,8 @@ function closeModal() {
  */
 function filterByStatus(status, event) {
     currentFilter = status;
+    currentPage = 1;
+    selectedApplicationIds.clear();
     loadApplications();
 
     // Update aktive Filter Buttons
@@ -612,6 +825,8 @@ function showSection(section, event) {
 
     // Reset Filter
     currentFilter = 'all';
+    currentPage = 1;
+    selectedApplicationIds.clear();
     if (section === 'overview' || section === 'applications') {
         loadApplications();
     }

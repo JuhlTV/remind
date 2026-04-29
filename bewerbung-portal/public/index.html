@@ -115,6 +115,13 @@
                         <strong id="formProgressValue">0%</strong>
                     </div>
                 </div>
+                <div class="draft-toolbar">
+                    <div class="draft-status-block">
+                        <strong>Entwurf</strong>
+                        <span id="draftStatusText">Noch kein Entwurf gespeichert</span>
+                    </div>
+                    <button type="button" class="btn btn-secondary btn-sm" id="clearDraftBtn">Entwurf löschen</button>
+                </div>
                 <div id="formFeedback"></div>
 
                 <form id="applicationForm">
@@ -150,7 +157,7 @@
                             required
                         >
                         <p class="form-hint">
-                            Dein Discord Name mit Tag oder dein Nutzername
+                            Erlaubt sind moderne Discord-Nutzernamen oder klassische Tags wie Name#1234
                         </p>
                         <div class="field-meta-row">
                             <span class="field-status-text">Damit wir dich eindeutig kontaktieren können</span>
@@ -237,14 +244,29 @@
                     </div>
                 </form>
 
-                <div id="successMessage" style="display: none; margin-top: 24px;">
-                    <div class="alert alert-success">
-                        ✅ Deine Bewerbung wurde erfolgreich eingereicht!<br>
-                        Das Admin-Team wird sich deine Bewerbung ansehen und sich bei dir melden.
+                <div id="successMessage" class="success-message-shell" style="display: none; margin-top: 24px;">
+                    <div class="success-orb success-orb-left" aria-hidden="true"></div>
+                    <div class="success-orb success-orb-right" aria-hidden="true"></div>
+                    <div class="success-message-card">
+                        <span class="success-badge">Erfolgreich übermittelt</span>
+                        <h3>Deine Bewerbung ist eingegangen</h3>
+                        <p>
+                            Das Admin-Team sieht sich deine Angaben jetzt intern an. Wenn alles passt, erhältst du den nächsten Schritt über den üblichen Kontaktweg.
+                        </p>
+                        <div class="success-highlight-grid">
+                            <div>
+                                <strong>Gespeichert</strong>
+                                <span>Deine Angaben wurden sauber an das Portal übermittelt.</span>
+                            </div>
+                            <div>
+                                <strong>Nächster Schritt</strong>
+                                <span>Interne Sichtung, Rückmeldung und möglicher Auswahlprozess.</span>
+                            </div>
+                        </div>
+                        <button onclick="location.reload()" class="btn btn-secondary">
+                            Weitere Bewerbung einreichen
+                        </button>
                     </div>
-                    <button onclick="location.reload()" class="btn btn-secondary">
-                        Weitere Bewerbung einreichen
-                    </button>
                 </div>
 
                 <div class="application-privacy-note">

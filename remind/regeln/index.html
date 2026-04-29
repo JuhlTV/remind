@@ -38,9 +38,10 @@
                     <h3>Inhaltsverzeichnis</h3>
                     <ul>
                         <li><a href="#allgemein">Allgemeine Server-Regeln</a></li>
-                        <li><a href="#rp-regeln">Roleplay-Regeln</a></li>
+                        <li><a href="#rp-regeln">Roleplay-Regeln & Szenarien</a></li>
                         <li><a href="#verhaltensregeln">Community & Verhalten</a></li>
-                        <li><a href="#strafen">Strafen & Konsequenzen</a></li>
+                        <li><a href="#strafen">Eskalationsleiter</a></li>
+                        <li><a href="#ausnahmen">Ausnahmen & Sonderfälle</a></li>
                         <li><a href="#berufsgruppen">Berufsgruppen-Regeln</a></li>
                         <li><a href="#faq">FAQ</a></li>
                     </ul>
@@ -76,36 +77,77 @@
                 </div>
 
                 <div id="rp-regeln" class="rule-section">
-                    <h3>Roleplay-Regeln</h3>
+                    <h3>Roleplay-Regeln &amp; Szenarien</h3>
+                    <p class="rule-section-intro">Die folgenden Regeln werden anhand echter Situationen erklärt — so wird klar, was erlaubt ist und was nicht.</p>
 
-                    <div class="rule-box">
-                        <h4>RDM - Random Deathmatch</h4>
-                        <p>Jemanden ohne RP-Grund zu schießen ist verboten. Alle Konflikte müssen durch Roleplay gelöst werden. Erste Instanz = Warning, zweite = Suspension.</p>
+                    <div class="rule-box scenario-box">
+                        <span class="rule-tag violation">Verstoß: RDM</span>
+                        <h4>Random Deathmatch (RDM)</h4>
+                        <div class="scenario">
+                            <span class="scenario-label">🎭 Szenario</span>
+                            <p>Du siehst eine unbekannte Person auf der Straße. Du hast keinen Konflikt mit ihr, kein Roleplay vorher. Du schießt sie einfach nieder — ohne Wort, ohne Grund.</p>
+                        </div>
+                        <div class="rule-verdict forbidden">→ Das ist RDM. Kein Angriff ohne glaubwürdigen RP-Grund.</div>
+                        <div class="rule-verdict allowed">✓ Erlaubt: Du hast eine laufende Fehde im RP, hast Drohungen ausgesprochen, Konsequenzen angedroht — dann ist Gewalt als letztes Mittel zulässig.</div>
                     </div>
 
-                    <div class="rule-box">
-                        <h4>VDM - Vehicle Deathmatch</h4>
-                        <p>Ein Fahrzeug als Waffe gegen andere Spieler zu benutzen ist RDM. Unfälle im RP sind ok, absichtliches VDM nicht.</p>
+                    <div class="rule-box scenario-box">
+                        <span class="rule-tag violation">Verstoß: VDM</span>
+                        <h4>Vehicle Deathmatch (VDM)</h4>
+                        <div class="scenario">
+                            <span class="scenario-label">🎭 Szenario</span>
+                            <p>Ein Polizist verfolgt dich. Du drehst dein Auto um und ramst ihn gezielt, um ihn auszuschalten — obwohl kein anderer Ausweg nötig war.</p>
+                        </div>
+                        <div class="rule-verdict forbidden">→ Das ist VDM. Ein Fahrzeug ist keine Waffe zum gezielten Töten.</div>
+                        <div class="rule-verdict allowed">✓ Unfälle im RP-Kontext (z.B. Verfolgung mit ungewolltem Aufprall) sind kein VDM — solange sie nicht absichtlich sind.</div>
                     </div>
 
-                    <div class="rule-box">
+                    <div class="rule-box scenario-box">
+                        <span class="rule-tag violation">Verstoß: NLR</span>
+                        <h4>New Life Rule (NLR)</h4>
+                        <div class="scenario">
+                            <span class="scenario-label">🎭 Szenario</span>
+                            <p>Dein Charakter wird im RP angeschossen und stirbt. Du respawnst und fährst sofort zurück an denselben Ort um Rache zu nehmen — und erkennst die Personen, die dich getötet haben.</p>
+                        </div>
+                        <div class="rule-verdict forbidden">→ NLR-Verstoß. Nach dem Tod beginnt dein Charakter ein neues Leben und erinnert sich nicht mehr an die Umstände des Todes.</div>
+                        <div class="rule-verdict allowed">✓ Du darfst nach dem Respawn in die Welt einsteigen — aber nicht in laufende Situationen zurückkehren oder Akteure des eigenen Todes erkennen.</div>
+                    </div>
+
+                    <div class="rule-box scenario-box">
+                        <span class="rule-tag violation">Verstoß: Metagaming</span>
                         <h4>Metagaming verboten</h4>
-                        <p>Out-of-Character Informationen im In-Character Spiel nutzen ist verboten. (z.B. Discord-Infos im Game nutzen)</p>
+                        <div class="scenario">
+                            <span class="scenario-label">🎭 Szenario</span>
+                            <p>Jemand postet im Discord „Wir sind gerade in Sandy Shores — komm schnell!" und du nutzt diese Information, um im Spiel dorthin zu fahren — obwohl dein Charakter das nicht wissen kann.</p>
+                        </div>
+                        <div class="rule-verdict forbidden">→ Metagaming. Out-of-Character-Informationen dürfen nicht im Spiel genutzt werden.</div>
+                        <div class="rule-verdict allowed">✓ Was dein Charakter selbst erlebt, gesehen oder gehört hat — das darf er nutzen.</div>
                     </div>
 
-                    <div class="rule-box">
+                    <div class="rule-box scenario-box">
+                        <span class="rule-tag violation">Verstoß: Powergaming</span>
                         <h4>Powergaming nicht erlaubt</h4>
-                        <p>Dich als unbesiegbar darstellen oder unrealistische Fähigkeiten zeigen ist Powergaming. Sei realistisch in deinem RP.</p>
+                        <div class="scenario">
+                            <span class="scenario-label">🎭 Szenario</span>
+                            <p>Du wirst angeschossen und sagst: „Mein Charakter fühlt keinen Schmerz, er ist ausgebildeter Spezialkämpfer und kann das ignorieren" — obwohl du keine Fraktion mit entsprechender Ausbildung hast.</p>
+                        </div>
+                        <div class="rule-verdict forbidden">→ Powergaming. Kein Charakter ist unverwundbar oder allwissend.</div>
+                        <div class="rule-verdict allowed">✓ Stelle deinen Charakter realistisch dar — Stärken sind ok, aber mit nachvollziehbarem Hintergrund.</div>
                     </div>
 
-                    <div class="rule-box">
-                        <h4>Charakterkontinuität</h4>
-                        <p>Halte Informationen über deinen Charakter konsistent. Wechsel zwischen Charakteren nur mit guten Gründen.</p>
+                    <div class="rule-box scenario-box">
+                        <span class="rule-tag warning">Achtung: Fail-RP</span>
+                        <h4>Fail-Roleplay</h4>
+                        <div class="scenario">
+                            <span class="scenario-label">🎭 Szenario</span>
+                            <p>Du hast eine Waffe im Gesicht — trotzdem fängst du an, den Täter zu beleidigen, zu kämpfen oder dein Handy zu zücken um Fotos zu machen.</p>
+                        </div>
+                        <div class="rule-verdict forbidden">→ Fail-RP. Handle wie es dein Charakter in dieser Situation realistisch tun würde.</div>
                     </div>
                 </div>
 
                 <div id="verhaltensregeln" class="rule-section">
-                    <h3>Community & Verhalten</h3>
+                    <h3>Community &amp; Verhalten</h3>
 
                     <div class="rule-box">
                         <h4>Toxizität nicht erlaubt</h4>
@@ -113,7 +155,7 @@
                     </div>
 
                     <div class="rule-box">
-                        <h4>Keine Doxxing oder Harrassment</h4>
+                        <h4>Keine Doxxing oder Harassment</h4>
                         <p>Veröffentlichung von privaten Infos (Adresse, Name, etc.) oder kontinuierliche Belästigung führt zu permanentem Ban.</p>
                     </div>
 
@@ -123,33 +165,87 @@
                     </div>
 
                     <div class="rule-box">
-                        <h4>Glitch oder Bugs melden</h4>
+                        <h4>Bugs und Glitches melden</h4>
                         <p>Melde Bugs und Glitches sofort dem Admin-Team. Ausnutzen = Ban.</p>
                     </div>
 
                     <div class="rule-box">
-                        <h4>Hilf neuen Spielern</h4>
-                        <p>Neue Spieler sind willkommen. Hilf ihnen, den Server zu verstehen - sei nicht unhöflich zu ihnen.</p>
+                        <h4>Neue Spieler willkommen heißen</h4>
+                        <p>Neue Spieler sind ein Teil der Community. Hilf ihnen — sei nicht unhöflich oder weise sie aktiv ab.</p>
                     </div>
                 </div>
 
                 <div id="strafen" class="rule-section">
-                    <h3>Strafen & Konsequenzen</h3>
+                    <h3>Eskalationsleiter</h3>
+                    <p class="rule-section-intro">Verstöße werden nach Schwere und Wiederholung eskaliert. Die Stufen sind klar — kein Spielraum für Willkür.</p>
 
-                    <div class="rule-box">
-                        <h4>Straf-Stufen</h4>
-                        <ul>
-                            <li><strong>Warning:</strong> Erste Verwarnungen für kleine Verstöße</li>
-                            <li><strong>Mute:</strong> 1-24 Stunden im Chat stummschalten</li>
-                            <li><strong>Kick:</strong> Rauswurf aus dem Server</li>
-                            <li><strong>Ban (temporär):</strong> 3 Tage - 2 Wochen</li>
-                            <li><strong>Ban (permanent):</strong> Für ernsthafte/wiederholte Verstöße</li>
-                        </ul>
+                    <div class="escalation-ladder">
+                        <div class="escalation-step step-warn">
+                            <div class="escalation-icon">⚠️</div>
+                            <div class="escalation-body">
+                                <strong>Stufe 1 — Verwarnung</strong>
+                                <p>Erste oder leichte Verstöße. Admin spricht dich an, erklärt den Verstoß und dokumentiert ihn intern. <em>Kein Nachteil im Spiel.</em></p>
+                                <span class="escalation-example">Beispiel: Kleines Fail-RP, unbeabsichtigter Regelverstoß beim Einstieg</span>
+                            </div>
+                        </div>
+                        <div class="escalation-step step-kick">
+                            <div class="escalation-icon">🔴</div>
+                            <div class="escalation-body">
+                                <strong>Stufe 2 — Kick</strong>
+                                <p>Wiederholung von Verstößen aus Stufe 1, oder mittlere Regelverletzung. Du wirst aus dem Server entfernt — ohne Ban. <em>Reconnect ist möglich.</em></p>
+                                <span class="escalation-example">Beispiel: Zweites Fail-RP in kurzer Zeit, leichtes Metagaming</span>
+                            </div>
+                        </div>
+                        <div class="escalation-step step-tempban">
+                            <div class="escalation-icon">🚫</div>
+                            <div class="escalation-body">
+                                <strong>Stufe 3 — Temporärer Ban (1–14 Tage)</strong>
+                                <p>Schwere Verstöße oder Wiederholung trotz Warnung und Kick. Dauer je nach Verstoß. <em>Ban Appeal möglich.</em></p>
+                                <span class="escalation-example">Beispiel: RDM, VDM, Metagaming mit Absicht, Cheating-Verdacht (nicht bestätigt)</span>
+                            </div>
+                        </div>
+                        <div class="escalation-step step-permban">
+                            <div class="escalation-icon">☠️</div>
+                            <div class="escalation-body">
+                                <strong>Stufe 4 — Permanenter Ban</strong>
+                                <p>Bestätigtes Cheating, Hacking, Diskriminierung, Doxxing oder wiederholte schwere Verstöße ohne Einsicht. <em>Ban Appeal möglich, aber selten erfolgreich.</em></p>
+                                <span class="escalation-example">Beispiel: Aimbot, Exploit-Nutzung, rassistische Aussagen, wiederholter Perma-Regelbruch</span>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="rule-box">
                         <h4>Ban Appeal</h4>
-                        <p>Wenn du gebannt bist, kannst du im Discord einen Ban Appeal posten. Erkläre ruhig und respektvoll, warum du erneut spielen solltest. Das Admin-Team wird antworten.</p>
+                        <p>Wenn du gebannt bist, kannst du im Discord einen Ban Appeal posten. Erkläre ruhig und respektvoll, warum du erneut spielen solltest. Das Admin-Team antwortet zeitnah.</p>
+                    </div>
+                </div>
+
+                <div id="ausnahmen" class="rule-section">
+                    <h3>Ausnahmen &amp; Sonderfälle</h3>
+                    <p class="rule-section-intro">Manche Regeln haben Ausnahmen. Diese sind klar definiert und gelten nur unter bestimmten Bedingungen.</p>
+
+                    <div class="rule-box exception-box">
+                        <span class="rule-tag special">Sonderfall</span>
+                        <h4>Admin-entschiedene Situationen</h4>
+                        <p>In laufenden Storylines oder Events kann das Admin-Team aktiv eingreifen und bestimmte Regeln für den Zeitraum des Events anpassen. Diese Entscheidungen werden immer vorher kommuniziert und gelten nur für den definierten Kontext.</p>
+                    </div>
+
+                    <div class="rule-box exception-box">
+                        <span class="rule-tag special">Sonderfall</span>
+                        <h4>Force-RP bei Events</h4>
+                        <p>Bei geplanten Server-Events (z.B. Geiselnahme, Katastrophen-Szenario) können alle Beteiligten zu bestimmten RP-Handlungen verpflichtet werden — auch wenn das der üblichen Spielfreiheit widerspricht. Teilnahme ist freiwillig, wer mitmacht akzeptiert die Event-Regeln.</p>
+                    </div>
+
+                    <div class="rule-box exception-box">
+                        <span class="rule-tag special">Sonderfall</span>
+                        <h4>NLR bei Fraktions-Trainings</h4>
+                        <p>Interne Fraktions-Trainings (z.B. Schießübungen, Einsatztraining) sind ausdrücklich vom NLR ausgenommen — wenn das Training im dafür vorgesehenen Bereich stattfindet und alle Beteiligten informiert sind.</p>
+                    </div>
+
+                    <div class="rule-box exception-box">
+                        <span class="rule-tag special">Sonderfall</span>
+                        <h4>OOC-Kommunikation in Notfällen</h4>
+                        <p>Bei echten technischen Problemen (Disconnect, Bug, Crash) ist kurze OOC-Kommunikation erlaubt. Nutze <code>/ooc [Nachricht]</code> und halte es kurz. Kein Missbrauch für Spielvorteile.</p>
                     </div>
                 </div>
 

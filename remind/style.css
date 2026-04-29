@@ -56,7 +56,7 @@ body.body-bg::after {
 
 .announcement-bar {
     position: relative;
-    z-index: 110;
+    z-index: 1;
     padding: 10px 0;
     background: linear-gradient(90deg, rgba(12, 10, 20, 0.96) 0%, rgba(32, 24, 52, 0.96) 100%);
     border-bottom: 1px solid rgba(255, 255, 255, 0.06);
@@ -363,7 +363,7 @@ nav ul.main-nav > li.dropdown > a {
     z-index: 1;
     width: min(1180px, calc(100% - 26px));
     margin: 0 auto;
-    padding: 128px 0 56px;
+    padding: 172px 0 56px;
     display: grid;
     gap: 22px;
 }
@@ -1546,7 +1546,7 @@ body.lightbox-open {
     }
 
     .hero-main {
-        padding-top: 164px;
+        padding-top: 208px;
     }
 
     body.body-bg::before,
@@ -1572,11 +1572,11 @@ body.lightbox-open {
 
 @media (max-width: 900px) {
     .main-header {
-        top: 48px;
+        top: 0;
     }
 
     .hero-main {
-        padding-top: 196px;
+        padding-top: 172px;
     }
 
     .nav-toggle {
@@ -1666,5 +1666,340 @@ body.lightbox-open {
 
     .application-cta {
         padding: 38px 22px;
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   NEW SECTIONS — Timeline · Testimonials · Roadmap · Patches
+═══════════════════════════════════════════════════════════════ */
+
+/* ─── Shared layout for new sections ── */
+.timeline-section,
+.testimonials-section,
+.roadmap-section,
+.patches-section {
+    position: relative;
+    z-index: 1;
+    width: min(1180px, calc(100% - 26px));
+    margin: 0 auto;
+    padding: 72px 0 0;
+}
+
+/* ─── Hero stat loading spinner ── */
+.stat-loading {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgba(161, 143, 255, 0.3);
+    border-top-color: var(--theme-accent);
+    border-radius: 50%;
+    animation: spin 900ms linear infinite;
+    vertical-align: middle;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ─── Ein Tag auf Remind — Timeline ── */
+.timeline-wrap {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding-left: 44px;
+    margin-top: 40px;
+}
+
+.timeline-wrap::before {
+    content: '';
+    position: absolute;
+    left: 12px;
+    top: 8px;
+    bottom: 8px;
+    width: 2px;
+    background: linear-gradient(180deg, var(--theme-accent) 0%, rgba(161, 143, 255, 0) 100%);
+    opacity: 0.45;
+    border-radius: 999px;
+}
+
+.timeline-item {
+    position: relative;
+    padding: 20px 0 24px 12px;
+    border-bottom: 1px solid var(--theme-line);
+}
+
+.timeline-item:last-child {
+    border-bottom: none;
+}
+
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -38px;
+    top: 24px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--theme-accent);
+    box-shadow: 0 0 0 4px rgba(161, 143, 255, 0.18), 0 0 14px rgba(161, 143, 255, 0.5);
+}
+
+.timeline-time {
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    color: var(--theme-accent);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+}
+
+.timeline-item h4 {
+    margin: 0 0 6px;
+    color: var(--theme-accent-strong);
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.timeline-item p {
+    margin: 0;
+    color: var(--theme-muted);
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+/* ─── Community Testimonials ── */
+.testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 22px;
+    margin-top: 40px;
+}
+
+.testimonial-card {
+    background: var(--theme-panel);
+    border: 1px solid var(--theme-line);
+    border-radius: 20px;
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    transition: transform var(--motion-smooth), box-shadow var(--motion-smooth);
+}
+
+.testimonial-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.28), 0 0 20px rgba(161, 143, 255, 0.1);
+}
+
+.testimonial-quote {
+    font-size: 2.6rem;
+    color: var(--theme-accent);
+    opacity: 0.55;
+    line-height: 1;
+    margin-bottom: 10px;
+    font-family: Georgia, serif;
+}
+
+.testimonial-text {
+    color: var(--theme-muted);
+    font-size: 0.93rem;
+    line-height: 1.65;
+    margin: 0 0 20px;
+    flex: 1;
+}
+
+.testimonial-author {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-top: 16px;
+    border-top: 1px solid var(--theme-line);
+}
+
+.testimonial-avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--theme-accent) 0%, #53c5fb 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 1rem;
+    color: #fff;
+    flex-shrink: 0;
+}
+
+.testimonial-name {
+    font-weight: 700;
+    color: var(--theme-text);
+    font-size: 0.9rem;
+}
+
+.testimonial-role {
+    color: var(--theme-muted);
+    font-size: 0.78rem;
+    margin-top: 2px;
+}
+
+/* ─── Roadmap ── */
+.roadmap-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+    margin-top: 40px;
+}
+
+.roadmap-card {
+    background: var(--theme-panel);
+    border: 1px solid var(--theme-line);
+    border-radius: 20px;
+    padding: 24px;
+    transition: transform var(--motion-smooth);
+}
+
+.roadmap-card:hover {
+    transform: translateY(-2px);
+}
+
+.roadmap-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 0.73rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+}
+
+.roadmap-status.done {
+    background: rgba(72, 210, 150, 0.12);
+    color: #48d296;
+    border: 1px solid rgba(72, 210, 150, 0.24);
+}
+
+.roadmap-status.in-progress {
+    background: rgba(161, 143, 255, 0.12);
+    color: var(--theme-accent);
+    border: 1px solid var(--theme-line);
+}
+
+.roadmap-status.planned {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--theme-muted);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+}
+
+.roadmap-card h4 {
+    margin: 0 0 8px;
+    color: var(--theme-accent-strong);
+    font-size: 0.97rem;
+    font-weight: 700;
+}
+
+.roadmap-card p {
+    margin: 0;
+    color: var(--theme-muted);
+    font-size: 0.87rem;
+    line-height: 1.55;
+}
+
+/* ─── Patch Notes ── */
+.patches-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-top: 40px;
+}
+
+.patch-entry {
+    background: var(--theme-panel);
+    border: 1px solid var(--theme-line);
+    border-radius: 18px;
+    padding: 22px 26px;
+    display: grid;
+    grid-template-columns: 110px 1fr;
+    gap: 22px;
+    align-items: start;
+}
+
+.patch-version {
+    font-size: 0.8rem;
+    font-weight: 800;
+    color: var(--theme-accent);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding-top: 2px;
+}
+
+.patch-date {
+    font-size: 0.74rem;
+    color: var(--theme-muted);
+    margin-top: 5px;
+}
+
+.patch-title {
+    margin: 0 0 10px;
+    color: var(--theme-accent-strong);
+    font-size: 0.97rem;
+    font-weight: 700;
+}
+
+.patch-notes {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.patch-notes li {
+    color: var(--theme-muted);
+    font-size: 0.86rem;
+    line-height: 1.5;
+    padding-left: 16px;
+    position: relative;
+}
+
+.patch-notes li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--theme-accent);
+    opacity: 0.65;
+}
+
+/* ─── Responsive: new sections ── */
+@media (max-width: 1024px) {
+    .testimonials-grid,
+    .roadmap-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .testimonials-grid,
+    .roadmap-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .patch-entry {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .timeline-wrap {
+        padding-left: 34px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .stat-loading {
+        animation: none;
+        border: 2px solid var(--theme-accent);
+        border-radius: 50%;
     }
 }

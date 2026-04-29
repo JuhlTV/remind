@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Changelog – Remind Server</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../regeln/style.css">
+    <style>
+        .changelog-shell {
+            width: min(900px, calc(100% - 26px));
+            margin: 0 auto;
+            padding: 140px 13px 80px;
+            position: relative;
+            z-index: 1;
+        }
+        .changelog-hero {
+            text-align: center;
+            margin-bottom: 56px;
+        }
+        .changelog-hero .hero-eyebrow {
+            display: block;
+            font-size: 0.82rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--theme-accent);
+            margin-bottom: 14px;
+        }
+        .changelog-hero h1 {
+            font-size: clamp(2rem, 5vw, 3.2rem);
+            color: var(--theme-accent-strong);
+            margin: 0 0 14px;
+        }
+        .changelog-hero p {
+            color: var(--theme-muted);
+            font-size: 1rem;
+            max-width: 540px;
+            margin: 0 auto;
+        }
+        .changelog-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            position: relative;
+        }
+        .changelog-list::before {
+            content: '';
+            position: absolute;
+            left: 78px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(180deg, var(--theme-accent) 0%, rgba(161,143,255,0) 100%);
+            opacity: 0.3;
+        }
+        .changelog-entry {
+            display: grid;
+            grid-template-columns: 90px 1fr;
+            gap: 24px;
+            padding: 28px 0;
+            border-bottom: 1px solid var(--theme-line);
+        }
+        .changelog-entry:last-child {
+            border-bottom: none;
+        }
+        .cl-version-col {
+            text-align: right;
+            padding-top: 4px;
+            padding-right: 20px;
+        }
+        .cl-version {
+            font-size: 0.82rem;
+            font-weight: 800;
+            color: var(--theme-accent);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+        .cl-date {
+            font-size: 0.73rem;
+            color: var(--theme-muted);
+            margin-top: 5px;
+        }
+        .cl-content {
+            background: var(--theme-panel);
+            border: 1px solid var(--theme-line);
+            border-radius: 16px;
+            padding: 22px 24px;
+        }
+        .cl-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--theme-accent-strong);
+            margin: 0 0 4px;
+        }
+        .cl-subtitle {
+            font-size: 0.83rem;
+            color: var(--theme-muted);
+            margin: 0 0 16px;
+        }
+        .cl-section-label {
+            font-size: 0.72rem;
+            font-weight: 800;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--theme-accent);
+            margin: 14px 0 6px;
+        }
+        .cl-section-label:first-of-type {
+            margin-top: 0;
+        }
+        .cl-notes {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .cl-notes li {
+            display: flex;
+            gap: 10px;
+            font-size: 0.88rem;
+            color: var(--theme-muted);
+            line-height: 1.5;
+        }
+        .cl-notes li .cl-dot {
+            flex-shrink: 0;
+            margin-top: 4px;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--theme-accent);
+            opacity: 0.7;
+        }
+        .cl-notes li.new    .cl-dot { background: #48d296; }
+        .cl-notes li.fix    .cl-dot { background: #f87171; }
+        .cl-notes li.change .cl-dot { background: #fbbf24; }
+        @media (max-width: 600px) {
+            .changelog-list::before { display: none; }
+            .changelog-entry { grid-template-columns: 1fr; gap: 10px; }
+            .cl-version-col { text-align: left; padding-right: 0; }
+        }
+    </style>
+</head>
+<body class="body-bg">
+    <header class="main-header">
+        <div class="announcement-bar">
+            <div class="announcement-inner">
+                <span class="announcement-pill"><span class="live-dot"></span>Live</span>
+                <p>Kein Whitelist — sofort einsteigen &nbsp;·&nbsp; <a href="https://discord.gg/FvaTa369bd" style="color:var(--theme-accent);text-decoration:none;font-weight:700;">discord.gg/FvaTa369bd</a></p>
+            </div>
+        </div>
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="../../index.html"><img src="../Remind_Server_Logo_512x512.png" alt="Remind Logo"></a>
+            </div>
+            <nav class="main-nav">
+                <ul class="main-nav">
+                    <li><a href="../../index.html">Startseite</a></li>
+                    <li><a href="../../index.html#features">Features</a></li>
+                    <li><a href="../regeln/index.html">Serverregeln</a></li>
+                    <li><a href="./index.html" class="nav-highlight">Changelog</a></li>
+                    <li><a href="https://discord.gg/FvaTa369bd">Discord</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="changelog-shell">
+        <section class="changelog-hero">
+            <span class="hero-eyebrow">Server Updates</span>
+            <h1>Changelog</h1>
+            <p>Alle Änderungen, Fixes und neuen Features auf Remind — chronologisch und vollständig.</p>
+        </section>
+
+        <div class="changelog-list">
+
+            <div class="changelog-entry">
+                <div class="cl-version-col">
+                    <div class="cl-version">v1.3.0</div>
+                    <div class="cl-date">Juni 2025</div>
+                </div>
+                <div class="cl-content">
+                    <h3 class="cl-title">Bewerbungsportal: Vollausbau</h3>
+                    <p class="cl-subtitle">Komplette Überarbeitung des Portals mit Wizard-Formular, Dashboard und Admin-Features.</p>
+                    <div class="cl-section-label">Neu</div>
+                    <ul class="cl-notes">
+                        <li class="new"><span class="cl-dot"></span>3-Schritt Wizard-Formular mit Autosave (Debounce 650ms)</li>
+                        <li class="new"><span class="cl-dot"></span>Optionaler Beweis-Upload (PDF, PNG, JPG, WEBP bis 5MB)</li>
+                        <li class="new"><span class="cl-dot"></span>Admin-Dashboard: Server-seitige Paginierung, Suche, Sortierung</li>
+                        <li class="new"><span class="cl-dot"></span>CSV-Export aller Bewerbungen mit Filter-Support</li>
+                        <li class="new"><span class="cl-dot"></span>Aktivitätslog für alle Admin-Aktionen</li>
+                        <li class="new"><span class="cl-dot"></span>Bulk-Review Funktion für mehrere Bewerbungen</li>
+                        <li class="new"><span class="cl-dot"></span>Undo-Funktion für letzte Admin-Entscheidungen</li>
+                        <li class="new"><span class="cl-dot"></span>Review-History pro Bewerbung</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="changelog-entry">
+                <div class="cl-version-col">
+                    <div class="cl-version">v1.2.0</div>
+                    <div class="cl-date">Mai 2025</div>
+                </div>
+                <div class="cl-content">
+                    <h3 class="cl-title">Fraktionsseiten & Organigramme</h3>
+                    <p class="cl-subtitle">LSPD und Sheriff Department mit vollständiger Dokumentation online.</p>
+                    <div class="cl-section-label">Neu</div>
+                    <ul class="cl-notes">
+                        <li class="new"><span class="cl-dot"></span>LSPD Fraktionsseite mit Organigramm und Abteilungen</li>
+                        <li class="new"><span class="cl-dot"></span>Sheriff Department vollständig dokumentiert</li>
+                        <li class="new"><span class="cl-dot"></span>Karrieresystem und Rang-Struktur sichtbar</li>
+                        <li class="new"><span class="cl-dot"></span>Bewerbungsformular für Fraktionseinstieg</li>
+                    </ul>
+                    <div class="cl-section-label">Geändert</div>
+                    <ul class="cl-notes">
+                        <li class="change"><span class="cl-dot"></span>Navigation überarbeitet, Fraktionslinks hinzugefügt</li>
+                        <li class="change"><span class="cl-dot"></span>Bewerbungsportal: Pflichtfelder ergänzt</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="changelog-entry">
+                <div class="cl-version-col">
+                    <div class="cl-version">v1.1.0</div>
+                    <div class="cl-date">April 2025</div>
+                </div>
+                <div class="cl-content">
+                    <h3 class="cl-title">Regelwerk & Legal-Seiten</h3>
+                    <p class="cl-subtitle">Serverregeln, Impressum und Datenschutzerklärung.</p>
+                    <div class="cl-section-label">Neu</div>
+                    <ul class="cl-notes">
+                        <li class="new"><span class="cl-dot"></span>Serverregelwerk mit allen RP-Grundregeln</li>
+                        <li class="new"><span class="cl-dot"></span>Impressum und Datenschutzerklärung (DSGVO-konform)</li>
+                        <li class="new"><span class="cl-dot"></span>Admin Login-System für Bewerbungsportal</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="changelog-entry">
+                <div class="cl-version-col">
+                    <div class="cl-version">v1.0.0</div>
+                    <div class="cl-date">März 2025</div>
+                </div>
+                <div class="cl-content">
+                    <h3 class="cl-title">Initial Launch</h3>
+                    <p class="cl-subtitle">Remind FiveM Server und Website gehen online.</p>
+                    <div class="cl-section-label">Neu</div>
+                    <ul class="cl-notes">
+                        <li class="new"><span class="cl-dot"></span>Startseite mit Hero, Features und Community-Bereich</li>
+                        <li class="new"><span class="cl-dot"></span>Erstes Bewerbungsportal (einfaches Formular)</li>
+                        <li class="new"><span class="cl-dot"></span>Discord-Integration und Community-Server live</li>
+                        <li class="new"><span class="cl-dot"></span>Backend: Node.js/Express + MySQL Datenbankschema</li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="main-footer">
+        <div class="footer-content footer-layout">
+            <div>
+                <img src="../Remind_Server_Logo_512x512.png" alt="Remind Logo" class="footer-logo" />
+                <strong>Remind Roleplay</strong>
+                <p>FiveM Server — City &amp; County Roleplay.</p>
+            </div>
+            <div class="footer-link-group">
+                <a href="../../index.html">Startseite</a>
+                <a href="../regeln/index.html">Regelwerk</a>
+                <a href="../../bewerbung-portal/public/index.html">Bewerbung</a>
+            </div>
+            <div class="footer-link-group">
+                <a href="../../bewerbung-portal/public/impressum.html">Impressum</a>
+                <a href="../../bewerbung-portal/public/datenschutz.html">Datenschutz</a>
+                <a href="https://discord.gg/FvaTa369bd">Discord</a>
+            </div>
+        </div>
+        <div class="footer-meta">&copy; 2026 Remind FiveM Server</div>
+    </footer>
+</body>
+</html>

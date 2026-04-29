@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Events – Remind Server</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../regeln/style.css">
+    <style>
+        .events-shell {
+            width: min(1180px, calc(100% - 26px));
+            margin: 0 auto;
+            padding: 140px 13px 80px;
+            position: relative;
+            z-index: 1;
+        }
+        .events-hero {
+            text-align: center;
+            margin-bottom: 64px;
+        }
+        .events-hero .hero-eyebrow {
+            display: block;
+            font-size: 0.82rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--theme-accent);
+            margin-bottom: 14px;
+        }
+        .events-hero h1 {
+            font-size: clamp(2rem, 5vw, 3.4rem);
+            color: var(--theme-accent-strong);
+            margin: 0 0 14px;
+        }
+        .events-hero p {
+            color: var(--theme-muted);
+            font-size: 1.05rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .events-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 22px;
+            margin-bottom: 64px;
+        }
+        .event-card {
+            background: var(--theme-panel);
+            border: 1px solid var(--theme-line);
+            border-radius: 20px;
+            padding: 28px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            transition: transform var(--motion-smooth), box-shadow var(--motion-smooth);
+        }
+        .event-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 16px 36px rgba(0,0,0,0.3);
+        }
+        .event-date-badge {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 58px;
+            height: 58px;
+            border-radius: 14px;
+            background: rgba(161, 143, 255, 0.14);
+            border: 1px solid var(--theme-line);
+            flex-shrink: 0;
+        }
+        .event-date-badge .day {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--theme-accent-strong);
+            line-height: 1;
+        }
+        .event-date-badge .month {
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--theme-accent);
+        }
+        .event-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+        }
+        .event-title-block {
+            flex: 1;
+        }
+        .event-type-pill {
+            display: inline-flex;
+            align-items: center;
+            padding: 3px 9px;
+            border-radius: 999px;
+            font-size: 0.71rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+        .event-type-pill.roleplay {
+            background: rgba(161,143,255,0.13); color: var(--theme-accent);
+            border: 1px solid var(--theme-line);
+        }
+        .event-type-pill.community {
+            background: rgba(72,210,150,0.1); color: #48d296;
+            border: 1px solid rgba(72,210,150,0.22);
+        }
+        .event-type-pill.faction {
+            background: rgba(83,197,251,0.1); color: #53c5fb;
+            border: 1px solid rgba(83,197,251,0.22);
+        }
+        .event-type-pill.training {
+            background: rgba(245,158,11,0.1); color: #fbbf24;
+            border: 1px solid rgba(245,158,11,0.22);
+        }
+        .event-title {
+            margin: 0 0 4px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--theme-accent-strong);
+        }
+        .event-time {
+            font-size: 0.82rem;
+            color: var(--theme-muted);
+        }
+        .event-desc {
+            color: var(--theme-muted);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin: 0;
+        }
+        .event-status {
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 0.82rem;
+            font-weight: 600;
+        }
+        .event-status.upcoming {
+            background: rgba(161,143,255,0.1);
+            color: var(--theme-accent);
+        }
+        .event-status.open {
+            background: rgba(72,210,150,0.1);
+            color: #48d296;
+        }
+        .no-events-msg {
+            text-align: center;
+            padding: 60px 0;
+            color: var(--theme-muted);
+        }
+        .no-events-msg strong {
+            display: block;
+            font-size: 1.2rem;
+            color: var(--theme-text);
+            margin-bottom: 8px;
+        }
+        @media (max-width: 768px) {
+            .events-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body class="body-bg">
+    <header class="main-header">
+        <div class="announcement-bar">
+            <div class="announcement-inner">
+                <span class="announcement-pill"><span class="live-dot"></span>Live</span>
+                <p>Kein Whitelist — sofort einsteigen &nbsp;·&nbsp; <a href="https://discord.gg/FvaTa369bd" style="color:var(--theme-accent);text-decoration:none;font-weight:700;">discord.gg/FvaTa369bd</a></p>
+            </div>
+        </div>
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="../../index.html"><img src="../Remind_Server_Logo_512x512.png" alt="Remind Logo"></a>
+            </div>
+            <nav class="main-nav">
+                <ul class="main-nav">
+                    <li><a href="../../index.html">Startseite</a></li>
+                    <li><a href="../../index.html#features">Features</a></li>
+                    <li><a href="../regeln/index.html">Serverregeln</a></li>
+                    <li><a href="./index.html" class="nav-highlight">Events</a></li>
+                    <li><a href="https://discord.gg/FvaTa369bd">Discord</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="events-shell">
+        <section class="events-hero">
+            <span class="hero-eyebrow">Community & Roleplay</span>
+            <h1>Remind Events</h1>
+            <p>Geplante Server-Events, Storylines und Community-Aktionen. Bleib auf Discord auf dem Laufenden für kurzfristige Ankündigungen.</p>
+        </section>
+
+        <section>
+            <div class="section-headline" style="margin-bottom: 32px;">
+                <span class="section-kicker">Demnächst</span>
+                <h2>Kommende Events</h2>
+            </div>
+            <div class="events-grid">
+                <article class="event-card">
+                    <div class="event-header">
+                        <div class="event-date-badge">
+                            <span class="day">TBA</span>
+                            <span class="month">Juli</span>
+                        </div>
+                        <div class="event-title-block">
+                            <span class="event-type-pill roleplay">Roleplay-Event</span>
+                            <h3 class="event-title">Operation Nightfall</h3>
+                            <span class="event-time">Uhrzeit folgt via Discord</span>
+                        </div>
+                    </div>
+                    <p class="event-desc">Koordinierter Großeinsatz mit LSPD, BCSO und zivilen Beteiligten. Details werden kurz vorher auf Discord bekanntgegeben.</p>
+                    <div class="event-status upcoming">📅 Datum folgt</div>
+                </article>
+                <article class="event-card">
+                    <div class="event-header">
+                        <div class="event-date-badge">
+                            <span class="day">TBA</span>
+                            <span class="month">Juli</span>
+                        </div>
+                        <div class="event-title-block">
+                            <span class="event-type-pill training">Training</span>
+                            <h3 class="event-title">LSPD Academy – Aufnahmeprüfung</h3>
+                            <span class="event-time">Intern – nur für Bewerber</span>
+                        </div>
+                    </div>
+                    <p class="event-desc">Internes LSPD-Fraktionstraining für neue Academy-Mitglieder. Teilnahme nur nach erfolgreicher Bewerbung.</p>
+                    <div class="event-status upcoming">📅 Intern</div>
+                </article>
+                <article class="event-card">
+                    <div class="event-header">
+                        <div class="event-date-badge">
+                            <span class="day">TBA</span>
+                            <span class="month">Aug</span>
+                        </div>
+                        <div class="event-title-block">
+                            <span class="event-type-pill community">Community</span>
+                            <h3 class="event-title">Community Stammtisch</h3>
+                            <span class="event-time">Via Discord Voice</span>
+                        </div>
+                    </div>
+                    <p class="event-desc">Offener Discord-Call für alle Community-Mitglieder. Feedback, Vorschläge, Neuigkeiten und lockerer Austausch.</p>
+                    <div class="event-status open">🟢 Offen für alle</div>
+                </article>
+                <article class="event-card">
+                    <div class="event-header">
+                        <div class="event-date-badge">
+                            <span class="day">TBA</span>
+                            <span class="month">Aug</span>
+                        </div>
+                        <div class="event-title-block">
+                            <span class="event-type-pill faction">Fraktion</span>
+                            <h3 class="event-title">Storyline: Blaine County Krise</h3>
+                            <span class="event-time">Mehrteiliges Event</span>
+                        </div>
+                    </div>
+                    <p class="event-desc">Serverweite Storyline mit mehreren Spielabenden. Alle Fraktionen und Zivilisten können Teil der Geschichte sein.</p>
+                    <div class="event-status upcoming">📅 Mehrteilig</div>
+                </article>
+            </div>
+        </section>
+
+        <section style="background: var(--theme-panel-soft); border: 1px solid var(--theme-line); border-radius: 20px; padding: 36px; text-align: center;">
+            <span class="section-kicker">Aktuell</span>
+            <h2 style="margin: 8px 0 12px; color: var(--theme-accent-strong);">Keine weiteren Events geplant</h2>
+            <p style="color: var(--theme-muted); max-width: 500px; margin: 0 auto 22px;">Alle aktuellen Event-Ankündigungen findest du immer zuerst auf Discord. Tritt der Community bei um nichts zu verpassen.</p>
+            <a href="https://discord.gg/FvaTa369bd" class="forum-btn">Discord beitreten</a>
+        </section>
+    </main>
+
+    <footer class="main-footer">
+        <div class="footer-content footer-layout">
+            <div>
+                <img src="../Remind_Server_Logo_512x512.png" alt="Remind Logo" class="footer-logo" />
+                <strong>Remind Roleplay</strong>
+                <p>FiveM Server — City &amp; County Roleplay.</p>
+            </div>
+            <div class="footer-link-group">
+                <a href="../../index.html">Startseite</a>
+                <a href="../regeln/index.html">Regelwerk</a>
+                <a href="../../bewerbung-portal/public/index.html">Bewerbung</a>
+            </div>
+            <div class="footer-link-group">
+                <a href="../../bewerbung-portal/public/impressum.html">Impressum</a>
+                <a href="../../bewerbung-portal/public/datenschutz.html">Datenschutz</a>
+                <a href="https://discord.gg/FvaTa369bd">Discord</a>
+            </div>
+        </div>
+        <div class="footer-meta">&copy; 2026 Remind FiveM Server</div>
+    </footer>
+</body>
+</html>

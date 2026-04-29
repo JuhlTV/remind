@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Server Lore & Welt – Remind</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../regeln/style.css">
+    <style>
+        .lore-shell {
+            width: min(1100px, calc(100% - 26px));
+            margin: 0 auto;
+            padding: 140px 13px 80px;
+            position: relative;
+            z-index: 1;
+        }
+        .lore-hero {
+            text-align: center;
+            margin-bottom: 64px;
+        }
+        .lore-hero .hero-eyebrow {
+            display: block;
+            font-size: 0.82rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--theme-accent);
+            margin-bottom: 14px;
+        }
+        .lore-hero h1 {
+            font-size: clamp(2rem, 5vw, 3.4rem);
+            color: var(--theme-accent-strong);
+            margin: 0 0 14px;
+        }
+        .lore-hero p {
+            color: var(--theme-muted);
+            font-size: 1.05rem;
+            max-width: 620px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+        .lore-intro {
+            background: var(--theme-panel);
+            border: 1px solid var(--theme-line);
+            border-radius: 20px;
+            padding: 36px 40px;
+            margin-bottom: 48px;
+            border-left: 4px solid rgba(161,143,255,0.5);
+        }
+        .lore-intro p {
+            color: var(--theme-muted);
+            font-size: 1rem;
+            line-height: 1.8;
+            margin: 0;
+        }
+        .lore-intro strong {
+            color: var(--theme-accent-strong);
+        }
+        .lore-categories {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 22px;
+            margin-bottom: 48px;
+        }
+        .lore-card {
+            background: var(--theme-panel);
+            border: 1px solid var(--theme-line);
+            border-radius: 20px;
+            padding: 28px;
+            transition: transform var(--motion-smooth);
+        }
+        .lore-card:hover {
+            transform: translateY(-3px);
+        }
+        .lore-card-icon {
+            font-size: 2rem;
+            margin-bottom: 14px;
+            display: block;
+        }
+        .lore-card h3 {
+            color: var(--theme-accent-strong);
+            margin: 0 0 10px;
+            font-size: 1.05rem;
+        }
+        .lore-card p {
+            color: var(--theme-muted);
+            font-size: 0.9rem;
+            line-height: 1.65;
+            margin: 0 0 14px;
+        }
+        .lore-tag {
+            display: inline-flex;
+            align-items: center;
+            padding: 3px 9px;
+            border-radius: 999px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            background: rgba(161,143,255,0.1);
+            color: var(--theme-accent);
+            border: 1px solid var(--theme-line);
+        }
+        .lore-glossary {
+            background: var(--theme-panel-soft);
+            border: 1px solid var(--theme-line);
+            border-radius: 20px;
+            padding: 32px 36px;
+        }
+        .lore-glossary h2 {
+            color: var(--theme-accent-strong);
+            margin: 0 0 22px;
+        }
+        .glossary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+        }
+        .glossary-item {
+            padding: 14px 16px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--theme-line);
+            border-radius: 12px;
+        }
+        .glossary-term {
+            font-weight: 800;
+            font-size: 0.9rem;
+            color: var(--theme-accent);
+            margin-bottom: 4px;
+        }
+        .glossary-def {
+            color: var(--theme-muted);
+            font-size: 0.85rem;
+            line-height: 1.5;
+        }
+        @media (max-width: 768px) {
+            .lore-categories { grid-template-columns: 1fr; }
+            .glossary-grid { grid-template-columns: 1fr; }
+            .lore-intro { padding: 24px; }
+        }
+    </style>
+</head>
+<body class="body-bg">
+    <header class="main-header">
+        <div class="announcement-bar">
+            <div class="announcement-inner">
+                <span class="announcement-pill"><span class="live-dot"></span>Live</span>
+                <p>Kein Whitelist — sofort einsteigen &nbsp;·&nbsp; <a href="https://discord.gg/FvaTa369bd" style="color:var(--theme-accent);text-decoration:none;font-weight:700;">discord.gg/FvaTa369bd</a></p>
+            </div>
+        </div>
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="../../index.html"><img src="../Remind_Server_Logo_512x512.png" alt="Remind Logo"></a>
+            </div>
+            <nav class="main-nav">
+                <ul class="main-nav">
+                    <li><a href="../../index.html">Startseite</a></li>
+                    <li><a href="../../index.html#features">Features</a></li>
+                    <li><a href="../regeln/index.html">Serverregeln</a></li>
+                    <li><a href="./index.html" class="nav-highlight">Lore & Welt</a></li>
+                    <li><a href="https://discord.gg/FvaTa369bd">Discord</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="lore-shell">
+        <section class="lore-hero">
+            <span class="hero-eyebrow">Hintergrundwelt</span>
+            <h1>Remind Lore &amp; Welt</h1>
+            <p>Die Hintergrundgeschichte, der Aufbau der Welt und die wichtigsten Konzepte des Remind Servers — von der Stadt bis in den County.</p>
+        </section>
+
+        <div class="lore-intro">
+            <p>
+                <strong>Remind spielt in einer alternativen Gegenwart von Los Santos und Blaine County.</strong>
+                Die Stadt ist lebendig, das County rau. Fraktionen haben echten Einfluss, Storylines entwickeln sich über Wochen und Monate — und jeder Charakter hat das Potential, Teil von etwas Größerem zu werden.
+                <br><br>
+                Die Welt wird aktiv von Spielern und dem Team geformt. Nichts ist vordefiniert — eure Entscheidungen haben Konsequenzen. Wer heute Polizist ist, kann morgen in einer Ermittlung die entscheidende Rolle spielen. Wer als Zivilist einsteigt, kann durch konsequentes Roleplay zur bekanntesten Person der Stadt werden.
+            </p>
+        </div>
+
+        <section style="margin-bottom: 48px;">
+            <div class="section-headline" style="margin-bottom: 28px;">
+                <span class="section-kicker">Aufbau</span>
+                <h2>Die Welt von Remind</h2>
+            </div>
+            <div class="lore-categories">
+                <article class="lore-card">
+                    <span class="lore-card-icon">🏙️</span>
+                    <h3>Los Santos — Die Stadt</h3>
+                    <p>Das Herzstück. Hier laufen die LSPD-Einsätze, hier sind die Businesses angesiedelt, hier entstehen die größten Storylines. Die Stadt ist verdichtet, komplex und immer aktiv.</p>
+                    <span class="lore-tag">City RP</span>
+                </article>
+                <article class="lore-card">
+                    <span class="lore-card-icon">🏕️</span>
+                    <h3>Blaine County — Der County</h3>
+                    <p>Weites Land, andere Regeln. Der Sheriff hat hier das Wort. Ermittlungen laufen anders, Konflikte eskalieren langsamer aber härter. Ideal für ruhigeres, detailreiches Roleplay.</p>
+                    <span class="lore-tag">County RP</span>
+                </article>
+                <article class="lore-card">
+                    <span class="lore-card-icon">⚖️</span>
+                    <h3>Law Enforcement</h3>
+                    <p>LSPD und Sheriff Department sind die zwei zentralen Ordnungskräfte. Beide mit eigenem Karrieresystem, Abteilungen und klaren Zuständigkeiten. Koordination ist Pflicht, Rivalität ist Realität.</p>
+                    <span class="lore-tag">Fraktion</span>
+                </article>
+                <article class="lore-card">
+                    <span class="lore-card-icon">🕵️</span>
+                    <h3>Kriminelles Milieu</h3>
+                    <p>Organisiertes Verbrechen, Gangs und Einzeltäter bewegen sich in der Grauzone. Wer gut genug ist, bleibt unentdeckt. Die Beziehung zu Law Enforcement ist das Herzstück vieler Storylines.</p>
+                    <span class="lore-tag">Criminal RP</span>
+                </article>
+                <article class="lore-card">
+                    <span class="lore-card-icon">💼</span>
+                    <h3>Zivile Rollen & Wirtschaft</h3>
+                    <p>Businesses, Mechaniker, Ärzte, Journalist:innen — das zivile Leben ist das Fundament der Welt. Ohne Zivilisten keine Geschichten, keine Wirtschaft, keine Stadt.</p>
+                    <span class="lore-tag">Civ RP</span>
+                </article>
+                <article class="lore-card">
+                    <span class="lore-card-icon">📰</span>
+                    <h3>Laufende Storylines</h3>
+                    <p>Kein Spielabend ist isoliert. Was heute passiert, hat morgen Konsequenzen. Storylines verbinden Fraktionen, überbrücken Sessions und schaffen bleibende Erinnerungen.</p>
+                    <span class="lore-tag">Story</span>
+                </article>
+            </div>
+        </section>
+
+        <section class="lore-glossary">
+            <h2>📖 Server-Lexikon</h2>
+            <p style="color: var(--theme-muted); margin: 0 0 22px; font-size: 0.9rem;">Die wichtigsten Begriffe kurz erklärt — besonders nützlich für Einsteiger.</p>
+            <div class="glossary-grid">
+                <div class="glossary-item">
+                    <div class="glossary-term">NLR — New Life Rule</div>
+                    <div class="glossary-def">Nach dem Tod des Charakters beginnt ein neues Leben. Erinnerungen an den eigenen Tod und die Beteiligten sind gelöscht.</div>
+                </div>
+                <div class="glossary-item">
+                    <div class="glossary-term">Metagaming</div>
+                    <div class="glossary-def">Nutzung von Informationen aus dem echten Leben (OOC) im Spiel (IC). Z.B. Discord-Koordination im aktiven Einsatz nutzen.</div>
+                </div>
+                <div class="glossary-item">
+                    <div class="glossary-term">RDM — Random Deathmatch</div>
+                    <div class="glossary-def">Angriff auf andere Spieler ohne RP-Grund. Kein Wort, kein Konflikt, einfach draufschießen — verboten.</div>
+                </div>
+                <div class="glossary-item">
+                    <div class="glossary-term">Powergaming</div>
+                    <div class="glossary-def">Sich selbst unrealistische Fähigkeiten oder Unverwundbarkeit zuschreiben. "Mein Charakter fühlt keinen Schmerz" ohne Grundlage.</div>
+                </div>
+                <div class="glossary-item">
+                    <div class="glossary-term">IC — In Character</div>
+                    <div class="glossary-def">Alles, was dein Charakter erlebt, sagt oder tut. Gespräche, Handlungen und Entscheidungen im Spiel.</div>
+                </div>
+                <div class="glossary-item">
+                    <div class="glossary-term">OOC — Out of Character</div>
+                    <div class="glossary-def">Kommunikation außerhalb der Spielwelt. Discord-Gespräche, Regelabsprachen, technische Probleme.</div>
+                </div>
+                <div class="glossary-item">
+                    <div class="glossary-term">Fail-RP</div>
+                    <div class="glossary-def">Handlungen, die keinen Sinn ergeben würden, wenn dein Charakter wirklich in der Situation wäre. Z.B. Witze machen bei Schussgewalt im Gesicht.</div>
+                </div>
+                <div class="glossary-item">
+                    <div class="glossary-term">CL — Character Lore</div>
+                    <div class="glossary-def">Die persönliche Geschichte deines Charakters. Hintergrund, Motivation, Beziehungen — alles was ihn lebendig macht.</div>
+                </div>
+                <div class="glossary-item">
+                    <div class="glossary-term">VDM — Vehicle Deathmatch</div>
+                    <div class="glossary-def">Fahrzeug absichtlich als Waffe benutzen um andere zu töten. Unfälle im RP-Kontext sind ok, gezieltes Rammen nicht.</div>
+                </div>
+                <div class="glossary-item">
+                    <div class="glossary-term">EMS / Sanitäter</div>
+                    <div class="glossary-def">Medizinische Fachkräfte im Spiel. Versorgen Verletzte, können Charaktere vom Tod „zurückbringen".</div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="main-footer">
+        <div class="footer-content footer-layout">
+            <div>
+                <img src="../Remind_Server_Logo_512x512.png" alt="Remind Logo" class="footer-logo" />
+                <strong>Remind Roleplay</strong>
+                <p>FiveM Server — City &amp; County Roleplay.</p>
+            </div>
+            <div class="footer-link-group">
+                <a href="../../index.html">Startseite</a>
+                <a href="../regeln/index.html">Regelwerk</a>
+                <a href="../../bewerbung-portal/public/index.html">Bewerbung</a>
+            </div>
+            <div class="footer-link-group">
+                <a href="../../bewerbung-portal/public/impressum.html">Impressum</a>
+                <a href="../../bewerbung-portal/public/datenschutz.html">Datenschutz</a>
+                <a href="https://discord.gg/FvaTa369bd">Discord</a>
+            </div>
+        </div>
+        <div class="footer-meta">&copy; 2026 Remind FiveM Server</div>
+    </footer>
+</body>
+</html>

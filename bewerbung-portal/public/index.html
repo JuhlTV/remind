@@ -19,7 +19,7 @@
         <div class="container">
             <section class="portal-hero-shell">
                 <div class="portal-hero-copy">
-                    <span class="section-kicker">Whitelist Einstieg</span>
+                    <span class="section-kicker">Direkt einsteigen</span>
                     <h2 class="page-title">Bewerbung einreichen</h2>
                     <p class="page-subtitle">
                         Dein Einstieg in Remind beginnt hier. Das Formular ist klar aufgebaut, das Team prüft nachvollziehbar und du siehst sofort, welche Informationen wirklich relevant sind.
@@ -28,7 +28,7 @@
                     <div class="portal-chip-row">
                         <span class="portal-chip">Strukturierte Prüfung</span>
                         <span class="portal-chip">Datenschutzkonform</span>
-                        <span class="portal-chip">Direkter Whitelist-Prozess</span>
+                        <span class="portal-chip">Kein Whitelist-Stress</span>
                     </div>
                 </div>
 
@@ -102,6 +102,34 @@
             </div>
 
             <div class="form-wrapper application-form-shell premium-form-shell">
+
+                <!-- Bewerbungstipps accordion -->
+                <details class="tips-accordion">
+                    <summary>📝 Bewerbungstipps — So erhöhst du deine Chancen <span class="tips-toggle-hint">aufklappen</span></summary>
+                    <div class="tips-body">
+                        <ul>
+                            <li><strong>Schreib echte Sätze</strong> — keine Stichpunkte, keine Copy-Paste-Texte. Das Team liest alles.</li>
+                            <li><strong>Zeig RP-Wissen</strong> — erwähne konkret, was du über NLR, Metagaming oder Powergaming weißt.</li>
+                            <li><strong>Motivation = Warum Remind</strong> — erklär, was dich an diesem Server speziell interessiert.</li>
+                            <li><strong>Kein Mindestalter-Drama</strong> — mach ehrliche Angaben, das Team ist fair.</li>
+                            <li><strong>Optionaler Nachweis</strong> — Clips, Screenshots oder Referenzen können deinen Einstieg beschleunigen.</li>
+                        </ul>
+                    </div>
+                </details>
+
+                <!-- Ablehnung FAQ accordion -->
+                <details class="tips-accordion rejection-faq">
+                    <summary>❓ Warum wird eine Bewerbung abgelehnt? <span class="tips-toggle-hint">aufklappen</span></summary>
+                    <div class="tips-body">
+                        <ul>
+                            <li><strong>Zu kurze Antworten</strong> — Ein-Satz-Motivationen oder leere Felder führen fast immer zur Ablehnung.</li>
+                            <li><strong>Unbekannte RP-Konzepte</strong> — Wer NLR, Metagaming oder Fail-RP nicht erklären kann, wird gebeten sich später nochmal zu bewerben.</li>
+                            <li><strong>Falscher Discord-Tag</strong> — Wenn das Team dich nicht erreichen kann, gilt die Bewerbung als nicht zustellbar.</li>
+                            <li><strong>Kein Fit zur Community</strong> — Wer erkennbar eine andere Spielrichtung sucht, wird freundlich weitergeleitet.</li>
+                            <li><em>Eine Ablehnung ist kein permanentes Nein</em> — du kannst dich nach 14 Tagen erneut bewerben.</li>
+                        </ul>
+                    </div>
+                </details>
                 <div class="form-shell-header">
                     <div>
                         <span class="section-kicker">Bewerbungsdaten</span>
@@ -144,6 +172,7 @@
                                 placeholder="z.B. Max Mustermann"
                                 required
                             >
+                            <p class="form-hint form-hint-why">👤 Wir brauchen deinen echten Namen für interne Kommunikation und Einladungen.</p>
                             <div class="field-meta-row">
                                 <span class="field-status-text">Vollständiger Vor- und Nachname</span>
                                 <span class="field-counter" id="nameCounter">0/100</span>
@@ -165,6 +194,7 @@
                             <p class="form-hint">
                                 Erlaubt sind moderne Discord-Nutzernamen oder klassische Tags wie Name#1234
                             </p>
+                            <p class="form-hint form-hint-why">📬 Die Rückmeldung vom Team kommt über Discord. Stell sicher, dass der Tag aktuell ist.</p>
                             <div class="field-meta-row">
                                 <span class="field-status-text">Damit wir dich eindeutig kontaktieren können</span>
                                 <span class="field-counter" id="discordCounter">0/100</span>
@@ -210,6 +240,7 @@
                             <p class="form-hint">
                                 Mindestens 10 Zeichen | Maximal 500 Zeichen
                             </p>
+                            <p class="form-hint form-hint-why">🎮 Wir möchten wissen ob du Grundkonzepte wie NLR, Metagaming und Powergaming kennst — du musst kein Profi sein.</p>
                             <div class="field-meta-row">
                                 <span class="field-status-text">Zeig uns kurz dein RP-Niveau</span>
                                 <span class="field-counter" id="experienceCounter">0/500</span>
@@ -230,6 +261,7 @@
                             <p class="form-hint">
                                 Mindestens 20 Zeichen | Maximal 2000 Zeichen
                             </p>
+                            <p class="form-hint form-hint-why">🎯 Je konkreter desto besser — erklär was dich an diesem Server speziell interessiert, nicht an FiveM allgemein.</p>
                             <div class="field-meta-row">
                                 <span class="field-status-text">Warum passt Remind zu dir?</span>
                                 <span class="field-counter" id="motivationCounter">0/2000</span>
@@ -272,18 +304,32 @@
                     <div class="success-orb success-orb-right" aria-hidden="true"></div>
                     <div class="success-message-card">
                         <span class="success-badge">Erfolgreich übermittelt</span>
-                        <h3>Deine Bewerbung ist eingegangen</h3>
+                        <h3>Deine Bewerbung ist eingegangen ✔️</h3>
                         <p>
-                            Das Admin-Team sieht sich deine Angaben jetzt intern an. Wenn alles passt, erhältst du den nächsten Schritt über den üblichen Kontaktweg.
+                            Das Admin-Team sieht sich deine Angaben intern an und meldet sich innerhalb von <strong>48–72 Stunden</strong> bei dir über Discord zurück.
                         </p>
+                        <div class="success-timeline">
+                            <div class="success-timeline-step">
+                                <span class="success-step-dot done"></span>
+                                <div><strong>Bewerbung eingegangen</strong><span>Sofort gespeichert und an das Team weitergeleitet</span></div>
+                            </div>
+                            <div class="success-timeline-step">
+                                <span class="success-step-dot pending"></span>
+                                <div><strong>Interne Sichtung</strong><span>Das Team prüft deine Angaben — dauert bis zu 72h</span></div>
+                            </div>
+                            <div class="success-timeline-step">
+                                <span class="success-step-dot future"></span>
+                                <div><strong>Rückmeldung via Discord</strong><span>Zulassung oder Rückfrage direkt auf deinen Discord-Tag</span></div>
+                            </div>
+                        </div>
                         <div class="success-highlight-grid">
                             <div>
-                                <strong>Gespeichert</strong>
-                                <span>Deine Angaben wurden sauber an das Portal übermittelt.</span>
+                                <strong>Keine weiteren Schritte nötig</strong>
+                                <span>Warte einfach auf die Discord-Nachricht.</span>
                             </div>
                             <div>
-                                <strong>Nächster Schritt</strong>
-                                <span>Interne Sichtung, Rückmeldung und möglicher Auswahlprozess.</span>
+                                <strong>Keine Antwort nach 72h?</strong>
+                                <span>Wende dich über <a href="https://discord.gg/FvaTa369bd" target="_blank">Discord</a> an das Team.</span>
                             </div>
                         </div>
                         <button onclick="location.reload()" class="btn btn-secondary">

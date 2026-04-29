@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ban Appeal – Remind Server</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../regeln/style.css">
+    <style>
+        .appeal-shell {
+            width: min(820px, calc(100% - 26px));
+            margin: 0 auto;
+            padding: 140px 13px 80px;
+            position: relative;
+            z-index: 1;
+        }
+        .appeal-hero {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+        .appeal-hero .hero-eyebrow {
+            display: block;
+            font-size: 0.82rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--theme-accent);
+            margin-bottom: 14px;
+        }
+        .appeal-hero h1 {
+            font-size: clamp(1.8rem, 4.5vw, 3rem);
+            color: var(--theme-accent-strong);
+            margin: 0 0 14px;
+        }
+        .appeal-hero p {
+            color: var(--theme-muted);
+            font-size: 1rem;
+            line-height: 1.7;
+            max-width: 560px;
+            margin: 0 auto;
+        }
+        .appeal-info-box {
+            background: rgba(245, 158, 11, 0.07);
+            border: 1px solid rgba(245, 158, 11, 0.22);
+            border-radius: 16px;
+            padding: 20px 22px;
+            margin-bottom: 30px;
+            display: flex;
+            gap: 14px;
+            align-items: flex-start;
+        }
+        .appeal-info-box .icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+        .appeal-info-box p {
+            margin: 0;
+            color: #fbbf24;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        .appeal-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-bottom: 40px;
+        }
+        .appeal-step {
+            display: flex;
+            gap: 18px;
+            align-items: flex-start;
+            background: var(--theme-panel);
+            border: 1px solid var(--theme-line);
+            border-radius: 16px;
+            padding: 20px 22px;
+        }
+        .appeal-step-num {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(161,143,255,0.14);
+            border: 1px solid var(--theme-line);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 0.95rem;
+            color: var(--theme-accent);
+            flex-shrink: 0;
+        }
+        .appeal-step-body strong {
+            display: block;
+            color: var(--theme-accent-strong);
+            font-size: 0.97rem;
+            margin-bottom: 4px;
+        }
+        .appeal-step-body p {
+            color: var(--theme-muted);
+            font-size: 0.88rem;
+            line-height: 1.6;
+            margin: 0;
+        }
+        .appeal-template {
+            background: var(--theme-panel);
+            border: 1px solid var(--theme-line);
+            border-radius: 20px;
+            padding: 28px 30px;
+            margin-bottom: 30px;
+        }
+        .appeal-template h3 {
+            color: var(--theme-accent-strong);
+            margin: 0 0 16px;
+        }
+        .appeal-template-box {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 12px;
+            padding: 18px 20px;
+            font-family: 'Montserrat', monospace;
+            font-size: 0.87rem;
+            color: var(--theme-muted);
+            line-height: 1.8;
+            white-space: pre-wrap;
+        }
+        .appeal-template-box strong {
+            color: var(--theme-accent);
+        }
+        .copy-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 14px;
+            padding: 9px 18px;
+            border-radius: 10px;
+            background: rgba(161,143,255,0.12);
+            border: 1px solid var(--theme-line);
+            color: var(--theme-accent);
+            font-size: 0.84rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 200ms ease, transform 150ms ease;
+        }
+        .copy-btn:hover {
+            background: rgba(161,143,255,0.2);
+            transform: translateY(-1px);
+        }
+        .appeal-rules {
+            background: rgba(239, 68, 68, 0.05);
+            border: 1px solid rgba(239, 68, 68, 0.18);
+            border-radius: 16px;
+            padding: 22px 24px;
+            margin-bottom: 30px;
+        }
+        .appeal-rules h4 {
+            color: #f87171;
+            margin: 0 0 12px;
+        }
+        .appeal-rules ul {
+            margin: 0;
+            padding: 0 0 0 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+        .appeal-rules li {
+            color: var(--theme-muted);
+            font-size: 0.88rem;
+            line-height: 1.55;
+        }
+        .appeal-cta {
+            text-align: center;
+            padding: 36px;
+            background: var(--theme-panel);
+            border: 1px solid var(--theme-line);
+            border-radius: 20px;
+        }
+        .appeal-cta h3 { color: var(--theme-accent-strong); margin: 8px 0 12px; }
+        .appeal-cta p { color: var(--theme-muted); max-width: 440px; margin: 0 auto 22px; }
+    </style>
+</head>
+<body class="body-bg">
+    <header class="main-header">
+        <div class="announcement-bar">
+            <div class="announcement-inner">
+                <span class="announcement-pill"><span class="live-dot"></span>Live</span>
+                <p>Kein Whitelist — sofort einsteigen &nbsp;·&nbsp; <a href="https://discord.gg/FvaTa369bd" style="color:var(--theme-accent);text-decoration:none;font-weight:700;">discord.gg/FvaTa369bd</a></p>
+            </div>
+        </div>
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="../../index.html"><img src="../Remind_Server_Logo_512x512.png" alt="Remind Logo"></a>
+            </div>
+            <nav class="main-nav">
+                <ul class="main-nav">
+                    <li><a href="../../index.html">Startseite</a></li>
+                    <li><a href="../regeln/index.html">Serverregeln</a></li>
+                    <li><a href="../../bewerbung-portal/public/index.html">Bewerbung</a></li>
+                    <li><a href="./index.html" class="nav-highlight">Ban Appeal</a></li>
+                    <li><a href="https://discord.gg/FvaTa369bd">Discord</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="appeal-shell">
+        <section class="appeal-hero">
+            <span class="hero-eyebrow">Gebannt?</span>
+            <h1>Ban Appeal einreichen</h1>
+            <p>Wenn du gesperrt wurdest und glaubst, dass die Entscheidung falsch war oder du dich geändert hast — reiche hier einen Appeal ein. Das Team liest jeden Appeal.</p>
+        </section>
+
+        <div class="appeal-info-box">
+            <span class="icon">⚠️</span>
+            <p>Ban Appeals werden ausschließlich über Discord bearbeitet. Stell sicher, dass du Mitglied des Discord-Servers bist, auch wenn du gebannt bist — nutze einen zweiten Account oder bitte jemanden zu posten, falls nötig.</p>
+        </div>
+
+        <section class="appeal-steps">
+            <div class="appeal-step">
+                <div class="appeal-step-num">1</div>
+                <div class="appeal-step-body">
+                    <strong>Discord öffnen</strong>
+                    <p>Gehe auf den Remind Discord (<a href="https://discord.gg/FvaTa369bd" target="_blank" style="color:var(--theme-accent);">discord.gg/FvaTa369bd</a>) und navigiere zum <strong>#ban-appeal</strong> Kanal.</p>
+                </div>
+            </div>
+            <div class="appeal-step">
+                <div class="appeal-step-num">2</div>
+                <div class="appeal-step-body">
+                    <strong>Template ausfüllen</strong>
+                    <p>Nutze das untenstehende Template vollständig. Unvollständige Appeals werden ohne Antwort archiviert.</p>
+                </div>
+            </div>
+            <div class="appeal-step">
+                <div class="appeal-step-num">3</div>
+                <div class="appeal-step-body">
+                    <strong>Ruhig und sachlich bleiben</strong>
+                    <p>Erkläre klar, was passiert ist und warum du eine zweite Chance verdienst. Emotionale Ausbrüche oder Beleidigungen führen zu automatischer Ablehnung.</p>
+                </div>
+            </div>
+            <div class="appeal-step">
+                <div class="appeal-step-num">4</div>
+                <div class="appeal-step-body">
+                    <strong>Auf Antwort warten</strong>
+                    <p>Das Team antwortet innerhalb von 72 Stunden. Keine mehrfachen Nachrichten oder DMs an Admins — das verlängert die Bearbeitungszeit.</p>
+                </div>
+            </div>
+        </section>
+
+        <div class="appeal-template">
+            <h3>📋 Appeal Template</h3>
+            <p style="color: var(--theme-muted); font-size: 0.85rem; margin: 0 0 16px;">Kopiere das Template und fülle alle Felder aus:</p>
+            <div class="appeal-template-box" id="appealTemplate"><strong>[ BAN APPEAL ]</strong>
+
+Discord Tag: 
+Ingame Name:
+Datum des Bans (ungefähr):
+Dauer des Bans:
+Angegebener Ban-Grund:
+
+Was ist passiert?
+(Beschreibe kurz die Situation aus deiner Sicht)
+
+Warum sollte der Ban aufgehoben werden?
+(Was hast du gelernt? Warum verdienst du eine zweite Chance?)
+
+Sonstiges:
+(Links, Screenshots, Beweise — alles was relevant ist)</div>
+            <button class="copy-btn" id="copyTemplateBtn" onclick="copyAppealTemplate()">
+                📋 Template kopieren
+            </button>
+        </div>
+
+        <div class="appeal-rules">
+            <h4>🚫 Was einen Appeal sofort ablehnt</h4>
+            <ul>
+                <li>Beleidigungen oder Drohungen gegen das Admin-Team</li>
+                <li>Unvollständiges Template (fehlende Pflichtfelder)</li>
+                <li>Mehrfach-Appeals für denselben Ban innerhalb von 7 Tagen</li>
+                <li>Appeals für bestätigte Cheater oder Doxxing-Täter</li>
+                <li>DMs an Admins außerhalb des offiziellen Kanals</li>
+            </ul>
+        </div>
+
+        <div class="appeal-cta">
+            <span class="section-kicker">Bereit?</span>
+            <h3>Direkt zum Discord Appeal-Kanal</h3>
+            <p>Klicke unten und reiche deinen Appeal im richtigen Kanal ein. Lies vorher die Regeln oben.</p>
+            <a href="https://discord.gg/FvaTa369bd" class="forum-btn" target="_blank">Discord öffnen → #ban-appeal</a>
+        </div>
+    </main>
+
+    <footer class="main-footer">
+        <div class="footer-content footer-layout">
+            <div>
+                <img src="../Remind_Server_Logo_512x512.png" alt="Remind Logo" class="footer-logo" />
+                <strong>Remind Roleplay</strong>
+                <p>FiveM Server — City &amp; County Roleplay.</p>
+            </div>
+            <div class="footer-link-group">
+                <a href="../../index.html">Startseite</a>
+                <a href="../regeln/index.html">Regelwerk</a>
+                <a href="../../bewerbung-portal/public/index.html">Bewerbung</a>
+            </div>
+            <div class="footer-link-group">
+                <a href="../../bewerbung-portal/public/impressum.html">Impressum</a>
+                <a href="../../bewerbung-portal/public/datenschutz.html">Datenschutz</a>
+                <a href="https://discord.gg/FvaTa369bd">Discord</a>
+            </div>
+        </div>
+        <div class="footer-meta">&copy; 2026 Remind FiveM Server</div>
+    </footer>
+
+    <script>
+    function copyAppealTemplate() {
+        const text = document.getElementById('appealTemplate').innerText;
+        navigator.clipboard.writeText(text).then(function() {
+            const btn = document.getElementById('copyTemplateBtn');
+            btn.textContent = '✓ Kopiert!';
+            setTimeout(function() { btn.innerHTML = '📋 Template kopieren'; }, 2000);
+        }).catch(function() {
+            // fallback: select all text
+            const el = document.getElementById('appealTemplate');
+            const range = document.createRange();
+            range.selectNodeContents(el);
+            window.getSelection().removeAllRanges();
+            window.getSelection().addRange(range);
+        });
+    }
+    </script>
+</body>
+</html>

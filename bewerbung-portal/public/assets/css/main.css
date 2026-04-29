@@ -143,6 +143,17 @@ main {
     margin-bottom: 32px;
 }
 
+.legal-hero-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.35fr) minmax(260px, 0.85fr);
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.legal-hero-grid-privacy {
+    margin-bottom: 24px;
+}
+
 .section-kicker {
     display: inline-block;
     margin-bottom: 10px;
@@ -513,6 +524,158 @@ main {
     backdrop-filter: blur(12px);
 }
 
+.legal-card-featured {
+    position: relative;
+    overflow: hidden;
+    background:
+        radial-gradient(circle at top right, rgba(161, 143, 255, 0.16) 0%, transparent 32%),
+        linear-gradient(135deg, rgba(22, 28, 46, 0.98) 0%, rgba(18, 22, 36, 0.96) 100%);
+}
+
+.legal-card-aside {
+    background:
+        linear-gradient(180deg, rgba(161, 143, 255, 0.1) 0%, rgba(13, 17, 30, 0.92) 100%);
+}
+
+.legal-badge {
+    display: inline-flex;
+    align-items: center;
+    margin-bottom: 16px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    background: rgba(161, 143, 255, 0.14);
+    border: 1px solid rgba(161, 143, 255, 0.24);
+    color: #f1ecff;
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.legal-badge-muted {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: var(--border-light);
+    color: var(--text-secondary);
+}
+
+.legal-summary-stack {
+    display: grid;
+    gap: 12px;
+}
+
+.legal-summary-card,
+.legal-meta-item {
+    padding: 14px 16px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.legal-summary-card p,
+.legal-meta-item p {
+    margin: 0;
+}
+
+.legal-detail-list {
+    display: grid;
+    gap: 14px;
+}
+
+.legal-detail-item,
+.legal-info-block {
+    padding: 16px 18px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.legal-label {
+    display: inline-block;
+    margin-bottom: 8px;
+    color: var(--primary-color);
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.legal-detail-item strong {
+    color: var(--text-primary);
+    line-height: 1.7;
+    font-size: 1.02rem;
+}
+
+.legal-checklist {
+    margin: 0;
+    padding-left: 18px;
+    color: var(--text-secondary);
+}
+
+.legal-checklist li + li {
+    margin-top: 10px;
+}
+
+.legal-info-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.legal-info-grid-single {
+    grid-template-columns: 1fr;
+}
+
+.legal-anchor-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.legal-anchor-nav a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
+    padding: 10px 14px;
+    border-radius: 999px;
+    background: rgba(161, 143, 255, 0.1);
+    border: 1px solid rgba(161, 143, 255, 0.16);
+    color: var(--text-primary);
+    text-decoration: none;
+    font-size: 0.92rem;
+    font-weight: 600;
+    transition: all var(--motion);
+}
+
+.legal-anchor-nav a:hover {
+    background: rgba(161, 143, 255, 0.18);
+    border-color: rgba(161, 143, 255, 0.3);
+    transform: translateY(-1px);
+}
+
+.legal-inline-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    list-style: none;
+    padding-left: 0;
+    margin-top: 16px;
+}
+
+.legal-inline-list li {
+    padding: 14px 16px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.legal-meta-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+    margin-top: 18px;
+}
+
 .legal-card + .legal-card {
     margin-top: 20px;
 }
@@ -528,6 +691,15 @@ main {
     line-height: 1.75;
 }
 
+.legal-card a {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+.legal-card a:hover {
+    text-decoration: underline;
+}
+
 .legal-card ul {
     padding-left: 18px;
 }
@@ -539,6 +711,11 @@ main {
     background: rgba(249, 171, 0, 0.08);
     border-radius: 8px;
     color: var(--text-secondary);
+}
+
+.legal-note-soft {
+    border-left-color: var(--primary-color);
+    background: rgba(161, 143, 255, 0.08);
 }
 
 .table-scroll {
@@ -602,6 +779,13 @@ main {
 @media (max-width: 768px) {
     .container {
         padding: 0 16px;
+    }
+
+    .legal-hero-grid,
+    .legal-info-grid,
+    .legal-inline-list,
+    .legal-meta-row {
+        grid-template-columns: 1fr;
     }
 
     .application-hero-grid,

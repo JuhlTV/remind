@@ -88,6 +88,10 @@ body::after {
     padding: 0 20px;
 }
 
+.content-narrow {
+    max-width: 900px;
+}
+
 /* Header */
 .site-header {
     background: rgba(13, 17, 30, 0.8);
@@ -130,6 +134,13 @@ main {
     color: var(--text-secondary);
     margin-bottom: 40px;
     max-width: 600px;
+}
+
+.page-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 32px;
 }
 
 /* Forms */
@@ -406,6 +417,68 @@ main {
     text-decoration: underline;
 }
 
+.footer-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.footer-links {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.legal-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 36px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.22);
+    backdrop-filter: blur(12px);
+}
+
+.legal-card + .legal-card {
+    margin-top: 20px;
+}
+
+.legal-card h2,
+.legal-card h3 {
+    margin-bottom: 14px;
+}
+
+.legal-card p,
+.legal-card li {
+    color: var(--text-secondary);
+    line-height: 1.75;
+}
+
+.legal-card ul {
+    padding-left: 18px;
+}
+
+.legal-note {
+    margin-top: 24px;
+    padding: 14px 16px;
+    border-left: 3px solid var(--warning-color);
+    background: rgba(249, 171, 0, 0.08);
+    border-radius: 8px;
+    color: var(--text-secondary);
+}
+
+.table-scroll {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.table-scroll table {
+    min-width: 720px;
+}
+
 /* Alerts */
 .alert {
     padding: 16px 20px;
@@ -455,6 +528,10 @@ main {
 
 /* Responsive */
 @media (max-width: 768px) {
+    .container {
+        padding: 0 16px;
+    }
+
     .form-wrapper {
         padding: 32px 24px;
     }
@@ -470,6 +547,23 @@ main {
     .grid {
         grid-template-columns: 1fr;
     }
+
+    .footer-row {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .page-actions {
+        flex-direction: column;
+    }
+
+    .page-actions .btn {
+        width: 100%;
+    }
+
+    .legal-card {
+        padding: 24px;
+    }
 }
 
 @media (max-width: 480px) {
@@ -484,5 +578,19 @@ main {
 
     main {
         padding: 30px 0;
+    }
+
+    .site-header h1 {
+        font-size: 1.45rem;
+    }
+
+    .page-subtitle {
+        font-size: 1rem;
+        margin-bottom: 28px;
+    }
+
+    .legal-card {
+        padding: 20px 16px;
+        border-radius: 12px;
     }
 }

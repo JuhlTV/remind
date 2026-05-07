@@ -2,6 +2,21 @@
 
 @import url('../style.css');
 
+body {
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+}
+
+a:focus-visible,
+button:focus-visible,
+.btn-link:focus-visible,
+.copy-btn:focus-visible,
+.forum-btn:focus-visible,
+.main-nav ul.main-nav li a:focus-visible {
+    outline: 2px solid var(--theme-accent-strong);
+    outline-offset: 3px;
+}
+
 /* Override and enhance specific sections for rules page */
 
 .main-header {
@@ -552,6 +567,10 @@
 
 /* Reduced Motion Support */
 @media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
     *,
     *::before,
     *::after {

@@ -44,6 +44,13 @@
     </header>
     <div class="banner-bg"></div>
     <main class="hero-main">
+        <section class="cinematic-strip reveal-target" aria-label="Server Trailer Hinweis">
+            <div class="cinematic-inner">
+                <span class="cinematic-badge">Cinematic Mode</span>
+                <p class="cinematic-text"><strong>Prime Time auf Remind:</strong> Law, Crime und Civil RP laufen parallel als eine zusammenhängende Story-Welt.</p>
+                <div class="cinematic-dots" aria-hidden="true"><span></span><span></span><span></span></div>
+            </div>
+        </section>
         <section class="hero-stage reveal-target">
             <section class="hero-card">
                 <span class="hero-kicker">City Nights, County Stories, clean Roleplay</span>
@@ -64,22 +71,22 @@
                     <a href="#discord" class="forum-btn secondary-hero-btn">Discord ansehen</a>
                 </div>
                 <div class="hero-stats">
-                    <article class="hero-stat">
+                    <article class="hero-stat parallax-target" data-depth="0.5">
                         <strong id="fivemOnline"><span class="stat-loading"></span></strong>
                         <span>Spieler online</span>
                     </article>
-                    <article class="hero-stat">
+                    <article class="hero-stat parallax-target" data-depth="0.65">
                         <strong>FiveM</strong>
                         <span>GTA V Multiplayer</span>
                     </article>
-                    <article class="hero-stat">
+                    <article class="hero-stat parallax-target" data-depth="0.8">
                         <strong>Offen</strong>
                         <span>Kein Whitelist</span>
                     </article>
                 </div>
             </section>
-            <div class="faction-showcase" id="factions" aria-label="Fraktionskarten">
-                <article class="pulse-card">
+            <div class="faction-showcase parallax-target" data-depth="0.45" id="factions" aria-label="Fraktionskarten">
+                <article class="pulse-card parallax-target" data-depth="0.6">
                     <span class="pulse-label">Server Pulse</span>
                     <h2>Professionelle Sicherheitsfraktionen im Aufbau</h2>
                     <p>Auf Remind entstehen strukturierte Law-Enforcement-Fraktionen mit vollständigem Karrieresystem, transparenten Rängen und klaren Einstiegswegen. Die Fraktionsseiten folgen in Kürze.</p>
@@ -94,13 +101,13 @@
                         </div>
                     </div>
                 </article>
-                <article class="faction-card faction-card-lspd">
+                <article class="faction-card faction-card-lspd parallax-target" data-depth="1.1">
                     <span class="faction-badge">Bewerbung</span>
                     <h2>Jetzt bewerben</h2>
                     <p>Starte deinen Einstieg über das Bewerbungsportal. Unser Team prüft jede Bewerbung individuell und meldet sich nach Sichtung bei dir.</p>
                     <a href="bewerbung-portal/public/index.html" class="forum-btn faction-btn">Zum Bewerbungsportal</a>
                 </article>
-                <article class="faction-card faction-card-sheriff">
+                <article class="faction-card faction-card-sheriff parallax-target" data-depth="1.25">
                     <span class="faction-badge">Discord</span>
                     <h2>Community beitreten</h2>
                     <p>Folge Ankündigungen, lerne andere Spieler kennen und bleibe über Server-Events und Fraktionsnews auf dem Laufenden.</p>
@@ -532,6 +539,51 @@
         } else {
             revealTargets.forEach(function(target) {
                 target.classList.add('in-view');
+            });
+        }
+
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const isDesktop = window.matchMedia('(min-width: 1025px)').matches;
+        const parallaxTargets = Array.from(document.querySelectorAll('.parallax-target'));
+
+        if (!prefersReducedMotion && isDesktop && parallaxTargets.length) {
+            let rafId = null;
+            let pointerX = 0;
+            let pointerY = 0;
+
+            function applyParallax() {
+                document.documentElement.style.setProperty('--parallax-x', String(pointerX));
+                document.documentElement.style.setProperty('--parallax-y', String(pointerY));
+
+                parallaxTargets.forEach(function(el) {
+                    const depth = Number(el.getAttribute('data-depth') || '1');
+                    const moveX = pointerX * (8 * depth);
+                    const moveY = pointerY * (6 * depth);
+                    el.style.setProperty('--mx', moveX.toFixed(2) + 'px');
+                    el.style.setProperty('--my', moveY.toFixed(2) + 'px');
+                });
+
+                rafId = null;
+            }
+
+            function queueParallax(event) {
+                const w = window.innerWidth || 1;
+                const h = window.innerHeight || 1;
+                pointerX = ((event.clientX / w) - 0.5) * 2;
+                pointerY = ((event.clientY / h) - 0.5) * 2;
+                if (!rafId) {
+                    rafId = window.requestAnimationFrame(applyParallax);
+                }
+            }
+
+            window.addEventListener('mousemove', queueParallax, { passive: true });
+
+            window.addEventListener('mouseleave', function() {
+                pointerX = 0;
+                pointerY = 0;
+                if (!rafId) {
+                    rafId = window.requestAnimationFrame(applyParallax);
+                }
             });
         }
 

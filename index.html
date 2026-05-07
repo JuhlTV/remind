@@ -70,6 +70,20 @@
                     <span>Story-Continuity</span>
                     <div class="hero-signal-meter"><span></span></div>
                 </div>
+                <div class="hero-visualizer" aria-hidden="true">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
                 <div class="hero-info">Eine klare Fraktionsstruktur, starke Einsatzrollen und eine Community, die auf ruhiges, sauberes und langfristiges Roleplay ausgelegt ist.</div>
                 <div class="hero-meta">
                     <span>Kein Whitelist</span>
@@ -598,6 +612,22 @@
                 if (!rafId) {
                     rafId = window.requestAnimationFrame(applyParallax);
                 }
+            });
+        }
+
+        if (!prefersReducedMotion && isDesktop) {
+            const tiltSelector = '.feature-card, .trust-item, .testimonial-card, .roadmap-card, .patch-entry, .faction-card, .pulse-card, .discord-card';
+            document.querySelectorAll(tiltSelector).forEach(function(card) {
+                card.addEventListener('mousemove', function(event) {
+                    const rect = card.getBoundingClientRect();
+                    const rx = ((event.clientY - rect.top) / rect.height - 0.5) * -8;
+                    const ry = ((event.clientX - rect.left) / rect.width - 0.5) * 10;
+                    card.style.transform = 'perspective(900px) rotateX(' + rx.toFixed(2) + 'deg) rotateY(' + ry.toFixed(2) + 'deg) translateY(-4px)';
+                }, { passive: true });
+
+                card.addEventListener('mouseleave', function() {
+                    card.style.transform = '';
+                });
             });
         }
 

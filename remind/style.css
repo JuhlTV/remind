@@ -1747,6 +1747,27 @@ nav ul.main-nav > li.dropdown > a {
     font-size: 0.92rem;
 }
 
+.footer-meta-btn {
+    border: none;
+    background: transparent;
+    color: var(--theme-muted);
+    font: inherit;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    cursor: pointer;
+    padding: 0;
+}
+
+.footer-meta-btn:hover {
+    color: var(--theme-accent-strong);
+}
+
+.footer-meta-btn:focus-visible {
+    outline: 2px solid var(--theme-accent-strong);
+    outline-offset: 3px;
+    border-radius: 4px;
+}
+
 .icon-paperplane {
     display: inline-block;
     width: 18px;

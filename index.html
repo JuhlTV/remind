@@ -548,7 +548,7 @@
                 <a href="https://discord.gg/GpJuY665z9">Discord</a>
             </div>
         </div>
-        <div class="footer-meta">&copy; 2026 Remind FiveM Server &ndash; Community &amp; Roleplay</div>
+        <div class="footer-meta">&copy; 2026 Remind FiveM Server &ndash; Community &amp; Roleplay &nbsp;·&nbsp; <button type="button" id="resetIntroBtn" class="footer-meta-btn">Intro erneut ansehen</button></div>
     </footer>
 
     <script>
@@ -556,6 +556,7 @@
     document.addEventListener('DOMContentLoaded', function() {
         const introOverlay = document.getElementById('cinematicIntro');
         const introSkipBtn = document.getElementById('cinematicIntroSkip');
+        const resetIntroBtn = document.getElementById('resetIntroBtn');
         const introSeenKey = 'remind-cinematic-intro-seen-v1';
 
         function closeIntroOverlay() {
@@ -595,6 +596,11 @@
                 introOverlay.setAttribute('aria-hidden', 'true');
             }
         }
+
+        resetIntroBtn?.addEventListener('click', function() {
+            localStorage.removeItem(introSeenKey);
+            window.location.reload();
+        });
 
         const revealTargets = document.querySelectorAll('.reveal-target');
         revealTargets.forEach(function(target, index) {

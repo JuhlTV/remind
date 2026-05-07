@@ -44,7 +44,7 @@
     </header>
     <div class="banner-bg"></div>
     <main class="hero-main">
-        <section class="hero-stage">
+        <section class="hero-stage reveal-target">
             <section class="hero-card">
                 <span class="hero-kicker">City Nights, County Stories, clean Roleplay</span>
                 <h1 class="hero-title">
@@ -108,7 +108,7 @@
                 </article>
             </div>
         </section>
-        <section class="trust-strip" aria-label="Server-Vorteile">
+        <section class="trust-strip reveal-target" aria-label="Server-Vorteile">
             <article class="trust-item">
                 <span class="card-icon">🏛️</span>
                 <strong>Professionelle Struktur</strong>
@@ -126,7 +126,7 @@
             </article>
         </section>
         <div class="section-transition" aria-hidden="true"></div>
-        <section class="visual-story-section" aria-label="Server Branding und Einblicke">
+        <section class="visual-story-section reveal-target" aria-label="Server Branding und Einblicke">
             <div class="section-headline visual-story-headline">
                 <span class="section-kicker">Server Branding</span>
                 <h2>Ein klarer Auftritt mit echten Remind-Assets</h2>
@@ -165,7 +165,7 @@
                 </article>
             </div>
         </section>
-        <section class="media-gallery-section" aria-label="Media Gallery">
+        <section class="media-gallery-section reveal-target" aria-label="Media Gallery">
             <div class="section-headline">
                 <span class="section-kicker">Media Gallery</span>
                 <h2>Screenshots und Server-Eindrücke</h2>
@@ -187,7 +187,7 @@
             </div>
         </section>
         <div class="section-transition section-transition-soft" aria-hidden="true"></div>
-        <section class="features-section" id="features">
+        <section class="features-section reveal-target" id="features">
             <div class="section-headline">
                 <span class="section-kicker">Server-Features</span>
                 <h2>Roleplay mit klaren Systemen statt leerer Versprechen</h2>
@@ -226,7 +226,7 @@
             </div>
         </section>
         <div class="section-transition" aria-hidden="true"></div>
-        <section class="community-stage" id="community">
+        <section class="community-stage reveal-target" id="community">
             <section class="community-section">
                 <div class="section-headline">
                     <span class="section-kicker">Community</span>
@@ -260,7 +260,7 @@
         </section>
         <!-- ── Ein Tag auf Remind ── -->
         <div class="section-transition" aria-hidden="true"></div>
-        <section class="timeline-section" aria-label="Ein Tag auf Remind">
+        <section class="timeline-section reveal-target" aria-label="Ein Tag auf Remind">
             <div class="section-headline">
                 <span class="section-kicker">Typischer Abend</span>
                 <h2>Ein Tag auf Remind</h2>
@@ -297,7 +297,7 @@
 
         <!-- ── Community Stimmen ── -->
         <div class="section-transition section-transition-soft" aria-hidden="true"></div>
-        <section class="testimonials-section" aria-label="Stimmen aus der Community">
+        <section class="testimonials-section reveal-target" aria-label="Stimmen aus der Community">
             <div class="section-headline">
                 <span class="section-kicker">Community Stimmen</span>
                 <h2>Was Spieler über Remind sagen</h2>
@@ -342,7 +342,7 @@
 
         <!-- ── Roadmap ── -->
         <div class="section-transition" aria-hidden="true"></div>
-        <section class="roadmap-section" aria-label="Server Roadmap">
+        <section class="roadmap-section reveal-target" aria-label="Server Roadmap">
             <div class="section-headline">
                 <span class="section-kicker">Was kommt</span>
                 <h2>Roadmap & nächste Schritte</h2>
@@ -384,7 +384,7 @@
 
         <!-- ── Patch Notes ── -->
         <div class="section-transition section-transition-soft" aria-hidden="true"></div>
-        <section class="patches-section" aria-label="Letzte Updates">
+        <section class="patches-section reveal-target" aria-label="Letzte Updates">
             <div class="section-headline">
                 <span class="section-kicker">Updates</span>
                 <h2>Letzte Änderungen & Patches</h2>
@@ -438,7 +438,7 @@
         </section>
 
         <div class="section-transition" aria-hidden="true"></div>
-        <section class="discord-section" id="discord">
+        <section class="discord-section reveal-target" id="discord">
             <div class="section-headline">
                 <span class="section-kicker">Discord</span>
                 <h2>Der schnellste Weg in Events, Support und neue Storylines</h2>
@@ -463,7 +463,7 @@
             </div>
             <a href="https://discord.gg/GpJuY665z9" class="forum-btn">Discord beitreten</a>
         </section>
-        <section class="application-cta-section">
+        <section class="application-cta-section reveal-target">
             <div class="application-cta">
                 <span class="section-kicker">Team</span>
                 <h2>Interessiert, Teil des Teams zu werden?</h2>
@@ -510,6 +510,31 @@
     <script>
     // Navigation und Dropdown-Menü für Klick/Touch auf der Startseite
     document.addEventListener('DOMContentLoaded', function() {
+        const revealTargets = document.querySelectorAll('.reveal-target');
+
+        if (revealTargets.length && 'IntersectionObserver' in window) {
+            const revealObserver = new IntersectionObserver(function(entries, observer) {
+                entries.forEach(function(entry) {
+                    if (!entry.isIntersecting) {
+                        return;
+                    }
+                    entry.target.classList.add('in-view');
+                    observer.unobserve(entry.target);
+                });
+            }, {
+                threshold: 0.16,
+                rootMargin: '0px 0px -8% 0px'
+            });
+
+            revealTargets.forEach(function(target) {
+                revealObserver.observe(target);
+            });
+        } else {
+            revealTargets.forEach(function(target) {
+                target.classList.add('in-view');
+            });
+        }
+
         const navToggle = document.querySelector('.nav-toggle');
         const mainNavigation = document.getElementById('mainNavigation');
 

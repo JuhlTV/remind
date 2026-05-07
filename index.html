@@ -53,12 +53,23 @@
         </section>
         <section class="hero-stage reveal-target">
             <section class="hero-card">
+                <div class="hero-orbit" aria-hidden="true">
+                    <span class="orbit-ring orbit-ring-a"></span>
+                    <span class="orbit-ring orbit-ring-b"></span>
+                    <span class="orbit-core"></span>
+                </div>
                 <span class="hero-kicker">City Nights, County Stories, clean Roleplay</span>
                 <h1 class="hero-title">
                     <span class="hero-title-main">REMIND</span><br>
                     <span class="hero-title-gradient">ROLEPLAY</span>
                 </h1>
                 <div class="hero-sub">FIVEM SERVER</div>
+                <div class="hero-signal-strip" aria-label="Server Intensitaet">
+                    <span>Prime RP</span>
+                    <span>Fraktionsdichte</span>
+                    <span>Story-Continuity</span>
+                    <div class="hero-signal-meter"><span></span></div>
+                </div>
                 <div class="hero-info">Eine klare Fraktionsstruktur, starke Einsatzrollen und eine Community, die auf ruhiges, sauberes und langfristiges Roleplay ausgelegt ist.</div>
                 <div class="hero-meta">
                     <span>Kein Whitelist</span>
@@ -518,6 +529,9 @@
     // Navigation und Dropdown-Menü für Klick/Touch auf der Startseite
     document.addEventListener('DOMContentLoaded', function() {
         const revealTargets = document.querySelectorAll('.reveal-target');
+        revealTargets.forEach(function(target, index) {
+            target.style.setProperty('--reveal-delay', String(Math.min(index * 70, 560)) + 'ms');
+        });
 
         if (revealTargets.length && 'IntersectionObserver' in window) {
             const revealObserver = new IntersectionObserver(function(entries, observer) {

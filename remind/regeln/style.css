@@ -1241,3 +1241,105 @@
         display: none;
     }
 }
+
+/* Cross-page polish for pages importing this stylesheet */
+.events-shell,
+.staff-shell,
+.changelog-shell,
+.lore-shell,
+.appeal-shell {
+    padding-top: clamp(128px, 14vw, 148px);
+    padding-bottom: clamp(52px, 8vw, 86px);
+}
+
+.events-hero h1,
+.staff-hero h1,
+.changelog-hero h1,
+.lore-hero h1,
+.appeal-hero h1 {
+    line-height: 1.1;
+    letter-spacing: 0.01em;
+}
+
+.event-card,
+.staff-card,
+.cl-content,
+.lore-card,
+.appeal-step,
+.appeal-template,
+.appeal-cta,
+.join-staff-cta,
+.lore-intro,
+.lore-glossary {
+    box-shadow: 0 16px 34px rgba(0, 0, 0, 0.2);
+    transition: transform var(--motion-smooth), box-shadow var(--motion-smooth), border-color var(--motion-smooth), background var(--motion-smooth);
+}
+
+.event-card:hover,
+.staff-card:hover,
+.cl-content:hover,
+.lore-card:hover,
+.appeal-step:hover,
+.appeal-template:hover,
+.appeal-cta:hover,
+.join-staff-cta:hover,
+.lore-intro:hover,
+.lore-glossary:hover {
+    transform: translateY(-3px);
+    border-color: rgba(161, 143, 255, 0.3);
+    box-shadow: 0 22px 44px rgba(0, 0, 0, 0.28);
+}
+
+.copy-btn,
+.event-type-pill,
+.staff-badge,
+.lore-tag,
+.forum-btn {
+    letter-spacing: 0.05em;
+}
+
+@media (max-width: 900px) {
+    .nav-container {
+        align-items: flex-start;
+    }
+
+    .nav-container .main-nav {
+        display: flex !important;
+        width: 100%;
+        flex-basis: 100%;
+        margin-top: 8px;
+    }
+
+    .nav-container .main-nav ul.main-nav {
+        width: 100%;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        gap: 8px;
+        max-height: none;
+        overflow: visible;
+        padding: 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .events-shell,
+    .staff-shell,
+    .changelog-shell,
+    .lore-shell,
+    .appeal-shell {
+        width: min(1180px, calc(100% - 22px));
+    }
+
+    .event-card,
+    .staff-card,
+    .cl-content,
+    .lore-card,
+    .appeal-step,
+    .appeal-template,
+    .appeal-cta,
+    .join-staff-cta,
+    .lore-intro,
+    .lore-glossary {
+        transform: none !important;
+    }
+}

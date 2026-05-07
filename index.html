@@ -14,7 +14,7 @@
         <div class="announcement-bar">
             <div class="announcement-inner">
                 <span class="announcement-pill"><span class="live-dot"></span>Live</span>
-                <p>Kein Whitelist — sofort auf Remind einsteigen &nbsp;·&nbsp; Aktive Community &nbsp;·&nbsp; <a href="https://discord.gg/FvaTa369bd" style="color:var(--theme-accent);text-decoration:none;font-weight:700;">discord.gg/FvaTa369bd</a></p>
+                <p>Kein Whitelist — sofort auf Remind einsteigen &nbsp;·&nbsp; Aktive Community &nbsp;·&nbsp; <a href="https://discord.gg/GpJuY665z9" style="color:var(--theme-accent);text-decoration:none;font-weight:700;">discord.gg/GpJuY665z9</a></p>
             </div>
         </div>
         <div class="nav-container">
@@ -103,7 +103,7 @@
                     <span class="faction-badge">Discord</span>
                     <h2>Community beitreten</h2>
                     <p>Folge Ankündigungen, lerne andere Spieler kennen und bleibe über Server-Events und Fraktionsnews auf dem Laufenden.</p>
-                    <a href="https://discord.gg/FvaTa369bd" class="forum-btn sheriff-btn faction-btn">Discord beitreten</a>
+                    <a href="https://discord.gg/GpJuY665z9" class="forum-btn sheriff-btn faction-btn">Discord beitreten</a>
                 </article>
             </div>
         </section>
@@ -133,7 +133,7 @@
             </div>
             <div class="visual-story-grid">
                 <article class="visual-shot-card visual-shot-wide">
-                    <img src="remind/Remind_Discord_Server_Banner.png" alt="Remind Discord Server Banner">
+                    <img src="remind/Remind_Discord_Server_Banner.png" alt="Remind Discord Server Banner" loading="lazy" decoding="async">
                     <div class="visual-shot-overlay">
                         <span class="visual-shot-label">Live Look</span>
                         <h3>Offizielles Server-Banner</h3>
@@ -142,7 +142,7 @@
                 </article>
                 <article class="visual-brand-card">
                     <div class="visual-brand-mark">
-                        <img src="remind/Remind_Server_Logo_512x512.png" alt="Remind Logo Emblem">
+                        <img src="remind/Remind_Server_Logo_512x512.png" alt="Remind Logo Emblem" loading="lazy" decoding="async">
                         <div>
                             <span class="visual-shot-label">Brand Core</span>
                             <h3>Remind Identität</h3>
@@ -172,16 +172,16 @@
             </div>
             <div class="media-gallery-grid">
                 <button type="button" class="gallery-item" data-lightbox-src="remind/Remind_Discord_Server_Banner.png" data-lightbox-alt="Remind Discord Server Banner">
-                    <img src="remind/Remind_Discord_Server_Banner.png" alt="Remind Discord Server Banner">
+                    <img src="remind/Remind_Discord_Server_Banner.png" alt="Remind Discord Server Banner" loading="lazy" decoding="async">
                 </button>
                 <button type="button" class="gallery-item" data-lightbox-src="remind/Remind_Server_Logo_512x512.png" data-lightbox-alt="Remind Logo">
-                    <img src="remind/Remind_Server_Logo_512x512.png" alt="Remind Logo">
+                    <img src="remind/Remind_Server_Logo_512x512.png" alt="Remind Logo" loading="lazy" decoding="async">
                 </button>
                 <button type="button" class="gallery-item" data-lightbox-src="remind/Remind_Discord_Server_Banner.png" data-lightbox-alt="Remind Banner Detailansicht">
-                    <img src="remind/Remind_Discord_Server_Banner.png" alt="Remind Banner Detailansicht">
+                    <img src="remind/Remind_Discord_Server_Banner.png" alt="Remind Banner Detailansicht" loading="lazy" decoding="async">
                 </button>
                 <button type="button" class="gallery-item" data-lightbox-src="remind/Remind_Server_Logo_512x512.png" data-lightbox-alt="Remind Logo Variante">
-                    <img src="remind/Remind_Server_Logo_512x512.png" alt="Remind Logo Variante">
+                    <img src="remind/Remind_Server_Logo_512x512.png" alt="Remind Logo Variante" loading="lazy" decoding="async">
                 </button>
             </div>
         </section>
@@ -460,7 +460,7 @@
                     <span>Direkter Austausch mit anderen Spielern vor und nach den Sessions.</span>
                 </div>
             </div>
-            <a href="https://discord.gg/FvaTa369bd" class="forum-btn">Discord beitreten</a>
+            <a href="https://discord.gg/GpJuY665z9" class="forum-btn">Discord beitreten</a>
         </section>
         <section class="application-cta-section">
             <div class="application-cta">
@@ -482,7 +482,7 @@
     <footer class="main-footer">
         <div class="footer-content footer-layout">
             <div>
-                <img src="remind/Remind_Server_Logo_512x512.png" alt="Remind Logo" class="footer-logo" />
+                <img src="remind/Remind_Server_Logo_512x512.png" alt="Remind Logo" class="footer-logo" loading="lazy" decoding="async" />
                 <strong>Remind Roleplay</strong>
                 <p>Professionell strukturierter FiveM-Server für langfristiges City- und County-Roleplay.</p>
             </div>
@@ -500,7 +500,7 @@
                 <a href="remind/ban-appeal/index.html">Ban Appeal</a>
                 <a href="bewerbung-portal/public/impressum.html">Impressum</a>
                 <a href="bewerbung-portal/public/datenschutz.html">Datenschutzerklärung</a>
-                <a href="https://discord.gg/FvaTa369bd">Discord</a>
+                <a href="https://discord.gg/GpJuY665z9">Discord</a>
             </div>
         </div>
         <div class="footer-meta">&copy; 2026 Remind FiveM Server &ndash; Community &amp; Roleplay</div>
@@ -604,31 +604,65 @@
         // Find it at: https://servers.fivem.net — search for "Remind" and copy the ID from the URL
         const FIVEM_CFX_ID = '';   // <-- put your CFX server ID here
 
+        let fivemIntervalId = null;
+
         async function loadFiveMPlayerCount() {
             const el = document.getElementById('fivemOnline');
             if (!el) return;
             if (!FIVEM_CFX_ID) {
                 el.textContent = '–';
-                el.closest('.hero-stat')?.querySelector('span')?.textContent === 'Spieler online';
+                el.setAttribute('title', 'CFX ID fehlt');
                 return;
             }
+
+            const controller = new AbortController();
+            const timeoutId = setTimeout(function() {
+                controller.abort();
+            }, 6000);
+
             try {
                 const res = await fetch(
                     'https://servers-frontend.fivem.net/api/servers/single/' + encodeURIComponent(FIVEM_CFX_ID),
-                    { signal: AbortSignal.timeout(6000) }
+                    { signal: controller.signal }
                 );
                 if (!res.ok) throw new Error('fetch failed');
                 const json = await res.json();
                 const online = json?.Data?.clients ?? json?.clients ?? '–';
                 const max    = json?.Data?.sv_maxclients ?? json?.sv_maxclients ?? '';
                 el.textContent = max ? online + '/' + max : String(online);
+                el.setAttribute('title', 'Live von FiveM API');
             } catch {
                 el.textContent = '–';
+                el.setAttribute('title', 'FiveM API derzeit nicht erreichbar');
+            } finally {
+                clearTimeout(timeoutId);
             }
         }
 
-        loadFiveMPlayerCount();
-        setInterval(loadFiveMPlayerCount, 60000); // refresh every minute
+        function startFiveMUpdates() {
+            loadFiveMPlayerCount();
+            if (fivemIntervalId) {
+                clearInterval(fivemIntervalId);
+            }
+            fivemIntervalId = setInterval(loadFiveMPlayerCount, 60000);
+        }
+
+        function stopFiveMUpdates() {
+            if (fivemIntervalId) {
+                clearInterval(fivemIntervalId);
+                fivemIntervalId = null;
+            }
+        }
+
+        startFiveMUpdates();
+
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden) {
+                stopFiveMUpdates();
+                return;
+            }
+            startFiveMUpdates();
+        });
     });
     </script>
 </body>

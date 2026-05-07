@@ -11,6 +11,18 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body class="body-bg">
+    <div class="cinematic-intro" id="cinematicIntro" aria-hidden="true">
+        <div class="cinematic-intro-inner">
+            <div class="cinematic-intro-mark" aria-hidden="true">
+                <img src="remind/Remind_Server_Logo_512x512.png" alt="" width="82" height="82" loading="eager" decoding="sync">
+            </div>
+            <p class="cinematic-intro-kicker">Remind Roleplay</p>
+            <h1 class="cinematic-intro-title">City Lights. County Pressure. Live Story.</h1>
+            <p class="cinematic-intro-copy">Law, Crime und Civil RP greifen ineinander wie eine Serie in Echtzeit. Willkommen auf Remind.</p>
+            <div class="cinematic-intro-line" aria-hidden="true"><span></span></div>
+            <button type="button" class="cinematic-intro-skip" id="cinematicIntroSkip">Intro überspringen</button>
+        </div>
+    </div>
     <header class="main-header">
         <div class="announcement-bar">
             <div class="announcement-inner">
@@ -542,6 +554,48 @@
     <script>
     // Navigation und Dropdown-Menü für Klick/Touch auf der Startseite
     document.addEventListener('DOMContentLoaded', function() {
+        const introOverlay = document.getElementById('cinematicIntro');
+        const introSkipBtn = document.getElementById('cinematicIntroSkip');
+        const introSeenKey = 'remind-cinematic-intro-seen-v1';
+
+        function closeIntroOverlay() {
+            if (!introOverlay || !introOverlay.classList.contains('is-visible')) {
+                return;
+            }
+            introOverlay.classList.remove('is-visible');
+            introOverlay.classList.add('is-exit');
+            setTimeout(function() {
+                introOverlay.classList.remove('is-exit');
+                introOverlay.style.display = 'none';
+                introOverlay.setAttribute('aria-hidden', 'true');
+                document.body.classList.remove('intro-lock');
+            }, 560);
+        }
+
+        if (introOverlay) {
+            const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            const introSeen = localStorage.getItem(introSeenKey) === '1';
+
+            if (!reducedMotion && !introSeen) {
+                document.body.classList.add('intro-lock');
+                introOverlay.setAttribute('aria-hidden', 'false');
+                requestAnimationFrame(function() {
+                    introOverlay.classList.add('is-visible');
+                });
+
+                localStorage.setItem(introSeenKey, '1');
+
+                setTimeout(function() {
+                    closeIntroOverlay();
+                }, 2800);
+
+                introSkipBtn?.addEventListener('click', closeIntroOverlay);
+            } else {
+                introOverlay.style.display = 'none';
+                introOverlay.setAttribute('aria-hidden', 'true');
+            }
+        }
+
         const revealTargets = document.querySelectorAll('.reveal-target');
         revealTargets.forEach(function(target, index) {
             target.style.setProperty('--reveal-delay', String(Math.min(index * 70, 560)) + 'ms');

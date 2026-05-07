@@ -60,6 +60,130 @@ body.body-bg {
         linear-gradient(140deg, var(--theme-bg-start) 0%, var(--theme-bg-mid) 52%, var(--theme-bg-end) 100%);
 }
 
+body.intro-lock {
+    overflow: hidden;
+}
+
+.cinematic-intro {
+    position: fixed;
+    inset: 0;
+    z-index: 1200;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 26px;
+    background:
+        radial-gradient(circle at 30% 18%, rgba(161, 143, 255, 0.28) 0%, rgba(161, 143, 255, 0) 46%),
+        radial-gradient(circle at 74% 20%, rgba(83, 197, 251, 0.24) 0%, rgba(83, 197, 251, 0) 42%),
+        linear-gradient(140deg, rgba(10, 8, 16, 0.96) 0%, rgba(21, 16, 33, 0.96) 60%, rgba(16, 24, 41, 0.96) 100%);
+    opacity: 0;
+}
+
+.cinematic-intro.is-visible {
+    display: flex;
+    animation: introFadeIn 520ms ease forwards;
+}
+
+.cinematic-intro.is-exit {
+    animation: introFadeOut 580ms ease forwards;
+}
+
+.cinematic-intro-inner {
+    width: min(840px, 100%);
+    position: relative;
+    border-radius: 26px;
+    padding: 34px 28px;
+    border: 1px solid rgba(161, 143, 255, 0.34);
+    background: rgba(10, 9, 17, 0.66);
+    box-shadow: 0 34px 80px rgba(0, 0, 0, 0.46), 0 0 80px rgba(161, 143, 255, 0.2) inset;
+    backdrop-filter: blur(16px);
+}
+
+.cinematic-intro-mark {
+    width: 96px;
+    height: 96px;
+    margin: 0 auto 16px;
+    border-radius: 24px;
+    padding: 7px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    box-shadow: 0 0 34px rgba(161, 143, 255, 0.32);
+    animation: introFloat 3.4s ease-in-out infinite;
+}
+
+.cinematic-intro-mark img {
+    width: 100%;
+    height: 100%;
+    border-radius: 18px;
+}
+
+.cinematic-intro-kicker {
+    margin: 0 0 8px;
+    color: rgba(239, 232, 255, 0.86);
+    font-size: 0.82rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.cinematic-intro-title {
+    margin: 0;
+    color: #ffffff;
+    font-family: var(--font-display);
+    font-size: clamp(2.05rem, 5vw, 4rem);
+    line-height: 0.96;
+    letter-spacing: 0.04em;
+    text-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+}
+
+.cinematic-intro-copy {
+    margin: 16px auto 18px;
+    color: var(--theme-muted);
+    font-size: 1rem;
+    max-width: 62ch;
+    line-height: 1.7;
+}
+
+.cinematic-intro-line {
+    width: min(360px, 88%);
+    height: 8px;
+    margin: 0 auto 18px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+    overflow: hidden;
+}
+
+.cinematic-intro-line span {
+    display: block;
+    width: 18%;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, rgba(161, 143, 255, 0.94) 0%, rgba(83, 197, 251, 0.92) 68%, rgba(255, 255, 255, 0.92) 100%);
+    box-shadow: 0 0 16px rgba(83, 197, 251, 0.52);
+    animation: introScan 2.4s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+
+.cinematic-intro-skip {
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.08);
+    color: #f0ecff;
+    border-radius: 999px;
+    min-height: 42px;
+    padding: 8px 16px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    transition: background var(--motion-smooth), border-color var(--motion-smooth), transform var(--motion-smooth);
+}
+
+.cinematic-intro-skip:hover {
+    background: rgba(161, 143, 255, 0.22);
+    border-color: rgba(161, 143, 255, 0.5);
+    transform: translateY(-1px);
+}
+
 body.body-bg::before,
 body.body-bg::after {
     content: '';
@@ -1782,6 +1906,43 @@ nav ul.main-nav > li.dropdown > a {
     }
 }
 
+@keyframes introFadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes introFadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+@keyframes introScan {
+    from {
+        transform: translateX(-18%);
+    }
+    to {
+        transform: translateX(470%);
+    }
+}
+
+@keyframes introFloat {
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-8px);
+    }
+}
+
 @keyframes orbitSpin {
     from {
         transform: rotate(0deg);
@@ -2043,6 +2204,14 @@ body.lightbox-open {
 }
 
 @media (max-width: 768px) {
+    .cinematic-intro-inner {
+        padding: 26px 20px;
+    }
+
+    .cinematic-intro-copy {
+        font-size: 0.94rem;
+    }
+
     .hero-orbit {
         width: 126px;
         height: 126px;
@@ -2470,6 +2639,10 @@ body.lightbox-open {
 
     .hero-orbit {
         transform: none !important;
+    }
+
+    .cinematic-intro {
+        display: none !important;
     }
 
     .cinematic-strip::before,
